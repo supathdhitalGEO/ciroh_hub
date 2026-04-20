@@ -75,6 +75,11 @@ export default function HydroShareResourcesSelector({
   }));
 
   const hs_icon = colorMode === 'dark' ? DatasetDarkIcon : DatasetLightIcon;
+  const hsIconRef = useRef(hs_icon);
+
+  useEffect(() => {
+    hsIconRef.current = hs_icon;
+  }, [hs_icon]);
   
   // State
   const [resources, setResources] = useState(initialPlaceholders);
@@ -204,7 +209,7 @@ export default function HydroShareResourcesSelector({
             if (customMetadata?.pres_path) embedUrl = `https://www.hydroshare.org/resource/${res.resource_id}/data/contents/${customMetadata.pres_path}`;
             const updatedResource = {
               ...res,
-              thumbnail_url: customMetadata?.thumbnail_url || hs_icon,
+              thumbnail_url: customMetadata?.thumbnail_url || hsIconRef.current,
               page_url: customMetadata?.page_url || "",
               docs_url: customMetadata?.docs_url || "",
               embed_url: embedUrl,
@@ -227,7 +232,7 @@ export default function HydroShareResourcesSelector({
         fetching.current = false;
       }
     },
-    [keyword, filterSearch, sortDirection, sortType, hs_icon]
+    [keyword, filterSearch, sortDirection, sortType]
   );
 
 
