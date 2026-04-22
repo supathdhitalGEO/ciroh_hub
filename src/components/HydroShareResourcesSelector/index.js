@@ -56,6 +56,7 @@ export default function HydroShareResourcesSelector({
   defaultImage,
   variant = 'legacy',
   onResultsChange,
+  cardsComponent: CardsComponent = HydroShareResourcesCards,
 }) {
   const { colorMode } = useColorMode(); // Get the current theme
   const PLACEHOLDER_ITEMS = 10;
@@ -313,6 +314,7 @@ export default function HydroShareResourcesSelector({
   else if (keyword.includes('module')) resultLabel = 'Courses';
   else if (keyword.includes('data')) resultLabel = 'Datasets';
   else if (keyword.includes('presentation')) resultLabel = 'Presentations';
+  else if (keyword.includes('event')) resultLabel = 'Events';
 
 
   /* ---------------- render ---------------- */
@@ -419,7 +421,7 @@ export default function HydroShareResourcesSelector({
           {view === 'grid' ? (
             <HydroShareResourcesTiles resources={resources} defaultImage={defaultImage} />
           ) : (
-            <HydroShareResourcesCards resources={resources} defaultImage={defaultImage} />
+            <CardsComponent resources={resources} defaultImage={defaultImage} />
           )}
 
           {!loading && nonPlaceholderResources.length === 0 && (

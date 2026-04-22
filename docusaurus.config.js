@@ -268,6 +268,10 @@ const config = {
                   label: "Presentations",
                 },
                 {
+                  href: "/events",
+                  label: "Events",
+                },
+                {
                   href: "/publications",
                   label: "Publications",
                 },
