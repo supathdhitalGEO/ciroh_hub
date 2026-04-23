@@ -42,42 +42,65 @@ async function fetchJson(url, errorContext = "resources") {
   return response.json();
 }
 
-function buildDiscoverApiUrl(
+/**
+ * Builds the URL for the HydroShare Discover Atlas API based on the provided search criteria.
+ * @param {string} keyword The keyword(s) (subject) to use for the api request
+ * @param {string} searchText The text to search for in the resources
+ * @param {boolean} ascending Whether to sort the results in ascending order
+ * @param {string} sortBy The field to sort the results by. One of "viewCount", "name", "dateCreated", "lastModified", "creatorName"
+ * @param {string} author The author name to filter the results by
+ * @param {number} pageNumber The page number to fetch (1-based indexing)
+ * @returns {string} The constructed URL for the HydroShare Discover Atlas API
+ */
+function buildDiscoverAtlasApiUrl(
   keyword,
   searchText,
   ascending = false,
   sortBy = undefined,
   author = undefined,
   pageNumber = 1,
+  pageSize = 50,
 ) {
-  const filterAuthor = author !== undefined ? convertAuthorToLastFirst(author) : undefined;
-  const filter = {
-    author: [filterAuthor].filter(a => a !== undefined),
-    subject: keyword.split(","),
-  };
+  // Add required arguments
   const params = new URLSearchParams({
-    q: searchText ? searchText : "",
-    subject: keyword,
-    asc: ascending ? "1" : "-1",
-    pnum: pageNumber.toString(),
-    filter: JSON.stringify(filter),
+    keyword: keyword,
+    order: ascending ? "asc" : "desc",
+    pageSize: pageSize.toString(),
   });
-  if (sortBy !== undefined) {
-    params.set("sort", sortBy);
+
+  // Add search terms if provided
+  if (searchText !== undefined && searchText.trim() !== "") {
+    params.set("term", searchText);
   }
-  return `https://www.hydroshare.org/discoverapi/?${params.toString()}`;
+
+  // Add author filter if provided
+  if (author !== undefined) {
+    params.set("creatorName", author);
+  }
+
+  // Add sortBy if provided
+  if (sortBy !== undefined) {
+    params.set("sortBy", sortBy);
+  }
+
+  // Add page number if provided
+  if (pageNumber !== undefined) {
+    params.set("pageNumber", pageNumber.toString());
+  }
+
+  return `https://www.hydroshare.org/hsapi/discovery-atlas/search?${params.toString()}`;
 }
 
 function mapDiscoverResource(resource) {
   return {
-    resource_id: resource.short_id,
-    resource_title: resource.title,
-    authors: resource.authors,
-    resource_type: resource.type,
-    resource_url: `https://www.hydroshare.org${resource.link}`,
-    abstract: resource.abstract,
-    date_created: resource.created,
-    date_last_updated: resource.modified,
+    resource_id: resource.document[0].url.match(/resource\/([^/]+)/)[1],
+    resource_title: resource.name,
+    authors: resource.creator.map(c => c.name),
+    resource_type: resource.document[0].additionalType,
+    resource_url: resource.document[0].url.replace(/^http:/, 'https:'),
+    abstract: resource.description,
+    date_created: resource.document[0].dateCreated,
+    date_last_updated: resource.document[0].dateModified,
   };
 }
 
@@ -86,20 +109,20 @@ function parseDiscoverResources(data, { pageNumber } = {}) {
     return [];
   }
 
-  if (typeof data.resources === "string") {
+  if (typeof data === "string") {
     try {
-      return JSON.parse(data.resources).map(mapDiscoverResource);
+      return JSON.parse(data).map(mapDiscoverResource);
     } catch (error) {
-      console.error("Failed to parse data.resources as JSON string:", error);
+      console.error("Failed to parse data as JSON string:", error);
       return [];
     }
   }
 
-  if (Array.isArray(data.resources)) {
-    return data.resources.map(mapDiscoverResource);
+  if (Array.isArray(data)) {
+    return data.map(mapDiscoverResource);
   }
 
-  console.warn("Unexpected format for data.resources:", data.resources);
+  console.warn("Unexpected format for data:", data);
   return [];
 }
 
@@ -316,7 +339,7 @@ async function fetchDiscoverResourcesCore({
   pageNumber = 1,
   clampToPageCount = false,
 }) {
-  const url = buildDiscoverApiUrl(keyword, searchText, ascending, sortBy, author, pageNumber);
+  const url = buildDiscoverAtlasApiUrl(keyword, searchText, ascending, sortBy, author, pageNumber);
   const data = await fetchJson(url, "resources");
   const resources = parseDiscoverResources(
     data,
@@ -382,7 +405,7 @@ async function fetchResourcesWithPaginationData(keyword, searchText, ascending=f
 
 /**
  * Fetch the pagination data for a given keyword and search criteria.
- * Uses the discoverapi endpoint to get resource count, page count, and resources per page.
+ * Uses the discover-atlas-api endpoint to get resource count, page count, and resources per page.
  * @param {String} keyword The keyword/subject of the desired resources
  * @param {String} searchText The text to search for within the resources
  * @param {Boolean} ascending Whether to sort the results in ascending order
@@ -391,7 +414,7 @@ async function fetchResourcesWithPaginationData(keyword, searchText, ascending=f
  * @returns {Promise<Object>} An object containing pagination data
  */
 async function fetchKeywordPageData(keyword, searchText, ascending=false, sortBy=undefined, author=undefined) {
-  const url = buildDiscoverApiUrl(keyword, searchText, ascending, sortBy, author, 1);
+  const url = buildDiscoverAtlasApiUrl(keyword, searchText, ascending, sortBy, author, 1);
   const data = await fetchJson(url, "resources");
 
   return {

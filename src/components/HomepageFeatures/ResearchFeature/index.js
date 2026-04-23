@@ -1,6 +1,5 @@
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import { fetchResourcesBySearch } from "@site/src/api/hydroshareAPI";
-import { getCommunityResources } from "@site/src/components/HydroShareImporter";
+import { fetchResourcesBySearch, getCommunityResources } from "@site/src/components/HydroShareImporter";
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import React, { useState, useRef, useEffect } from 'react';
 

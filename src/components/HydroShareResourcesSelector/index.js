@@ -57,7 +57,7 @@ export default function HydroShareResourcesSelector({
   // Search State
   const [searchInput,    setSearchInput]    = useState('');
   const [filterSearch,   setFilterSearch]   = useState('');
-  const [sortType,       setSortType]       = useState('modified');
+  const [sortType,       setSortType]       = useState('lastModified');
   const [sortDirection,  setSortDirection]  = useState('desc');
 
 
@@ -304,10 +304,10 @@ export default function HydroShareResourcesSelector({
                   onChange={e => setSortType(e.target.value)}
                   className="tw-rounded-lg tw-border tw-border-slate-200/80 dark:tw-border-slate-700/80 tw-bg-white/80 dark:tw-bg-slate-900/50 tw-backdrop-blur tw-px-3 tw-py-3 tw-text-sm tw-text-slate-900 dark:tw-text-white focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-cyan-500/30"
                 >
-                  <option value="modified">Last Updated</option>
-                  <option value="created">Date Created</option>
-                  <option value="title">Title</option>
-                  <option value="author">Authors</option>
+                  <option value="lastModified">Last Updated</option>
+                  <option value="dateCreated">Date Created</option>
+                  <option value="name">Title</option>
+                  <option value="creatorName">Authors</option>
                 </select>
 
                 <button
