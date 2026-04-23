@@ -7,7 +7,7 @@ tags: [Products, CIROH, National Water Model, AWS, Google Cloud, NOAA]
 
 # NWM Data Access
 
-Within the [CIROH projects](https://ciroh.ua.edu/about/), we encounter a wide range of data resources and data access inquiries. One of the most frequently asked questions is, "How can I obtain access to xyz-resource?". To help with answering that question, we have documented some of the most common data access methods and resources here, with links to additional sites to dive deeper.
+Within projects at CIROH ([learn more about the consortium here](https://ciroh.ua.edu/about/)), we encounter a wide range of data resources and data access inquiries. One of the most frequently asked questions is, "How can I obtain access to xyz-resource?". To help with answering that question, we have documented some of the most common data access methods and resources here, with links to additional sites to dive deeper.
 
 ## Input and Output Data of the National Water Model
 
@@ -49,11 +49,11 @@ The NODD datasets made available through several public cloud vendors are an inc
 
 Amazon Web Services (AWS) hosts two repositories as part of their sustainability data initiative. 
 
-The first repository contains the operational data. It now hosts 4 week rolling collection of all output; it used to only be short range and the registry entry retains the description only for the short_range data [here](https://registry.opendata.aws/noaa-nwm-pds/). Alternatively, the same resource is described under the sustainability initiative page [here](https://aws.amazon.com/marketplace/pp/prodview-73iwu7dcfuge2).)
+The first repository contains the operational data. It now hosts 4-week rolling collection of all output; it used to only be short range and the registry entry retains the description only for the short_range data [here](https://registry.opendata.aws/noaa-nwm-pds/). Alternatively, the same resource is described under the sustainability initiative page [here](https://aws.amazon.com/marketplace/pp/prodview-73iwu7dcfuge2).)
 - The catalog of AWS-hosted operational NWM data can be browsed [here](https://noaa-nwm-pds.s3.amazonaws.com/index.html).
 
 The second AWS repository contains several versions of the retrospective dataset each described on the main page under the open data registry [here](https://registry.opendata.aws/nwm-archive/).
-{/* (The same information is also on the AWS sustainability initiative webpage [here](https://aws.amazon.com/marketplace/pp/prodview-g6lcchc7brshwa) ) 
+{/* (The same information is also on the AWS sustainability initiative webpage [here](https://registry.opendata.aws/collab/asdi/) ) 
 Commenting this part since the AWS link throws a 404 error */}
 
 The different catalogs of those [currently] five versions of that resource are linked below:
@@ -66,9 +66,9 @@ The different catalogs of those [currently] five versions of that resource are l
 - NWM v1.2 retrospective data
   - netCDF, [here](https://nwm-archive.s3.amazonaws.com/index.html)
 
-The AWS retrospective resource is the primary publicly available source for the version 1.0 of the Analysis of Record for Calibration dataset (AORC), which is a 40-year best-available estimate of most common meteorological parameters required for hydrological modeling. Version 1.1 of the dataset will accompany the release of the NWM model version 3.0 retrospective (or 2.2 version??), hopefully in the next few weeks. 
+The AWS retrospective resource is the primary publicly available source for the version 1.0 of the Analysis of Record for Calibration dataset (AORC), which is a 40-year best-available estimate of most common meteorological parameters required for hydrological modeling. Version 1.1 of the dataset accompanied the release of the NWM model version 3.0 retrospective and aimed to resolve issues from version 1.0.
 
-Jupyter notebook instructions for processing NWM Zarr and NetCDF output formats [here](https://github.com/CIROH-UA/data_access_example/)
+Jupyter notebook instructions for processing NWM Zarr and NetCDF output formats are available [here](https://github.com/CIROH-UA/data_access_example/).
 
 <details>
 <summary> Click to see an example of pulling data from the channel output zarr 2.1 archive and writing the results to csv. </summary>
@@ -136,9 +136,9 @@ Google hosts the most complete operational data archive of inputs and outputs fr
 - Operational data can be browsed [here](https://console.cloud.google.com/storage/browser/national-water-model).
 - Google also hosts a copy of the NWM v1.2 retrospective [here](https://console.cloud.google.com/storage/browser/national-water-model-reanalysis).
 
-#### Coming soon: Big Query
+#### NWM BigQuery API
 
-Efforts are underway to make some of the datasets from the NWM operational and retrospective simulations available on BigQuery for ultra-high-bandwidth access. Stay tuned...
+Some of the datasets from the NWM operational and retrospective simulations are available on BigQuery for ultra-high-bandwidth access. For more information, visit the [NWM BigQuery API page](/docs/products/data-management/bigquery-api).
 
 
 #### Azure/Planetary Computer
