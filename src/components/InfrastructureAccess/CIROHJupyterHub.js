@@ -13,7 +13,7 @@ const CIROHJupyterHub = () => {
       buttons: [
         {
           text: "Cloud Infrastructure Request Form",
-          link: "https://github.com/CIROH-UA/NGIAB-CloudInfra/issues/new?template=jupyterhub_access_request.yml"
+          link: "https://github.com/CIROH-UA/NGIAB-CloudInfra/issues/new?template=case_studies_call_template.yml"
         }
       ],
       details: (

@@ -316,14 +316,15 @@ const config = {
               ],
             },
             {
-              label: "Operations",
+              label: "Cyberinfrastructure",
+              position: "left",
+              type: "doc",
+              docId: "services/intro",
+            },
+            {
+              label: "Community",
               position: "left",
               items: [
-                {
-                  type: "doc",
-                  docId: "services/intro",
-                  label: "IT Services",
-                },
                 {
                   type: "doc",
                   docId: "policies/intro",
@@ -333,12 +334,6 @@ const config = {
                   href: "/working-groups",
                   label: "Working Groups",
                 },
-              ],
-            },
-            {
-              label: "Community",
-              position: "left",
-              items: [
                 {
                   href: "/impact",
                   label: "Community Impact",
