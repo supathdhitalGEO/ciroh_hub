@@ -1,5 +1,6 @@
 import React from 'react';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './styles.module.css';
 import clsx from 'clsx';
 import {
@@ -11,7 +12,13 @@ import {
 export default function HydroShareCard() {
   const hydroshareUrl = 'https://www.hydroshare.org/oidc/authenticate/';
   const logo = useBaseUrl('/img/logos/HydroShareLogo.png');
-  const resourcesUrl = useBaseUrl('/resources');
+
+  const { siteConfig } = useDocusaurusContext();
+  const featuredAppsCollectionId = siteConfig.customFields.hs_featured_apps_collection_id || '';
+  const featuredDatasetsCollectionId = siteConfig.customFields.hs_featured_datasets_collection_id || '';
+  const featuredCoursesCollectionId = siteConfig.customFields.hs_featured_courses_collection_id || '';
+  const featuredPresentationsCollectionId = siteConfig.customFields.hs_featured_presentations_collection_id || '';
+  const featuredNotebooksCollectionId = siteConfig.customFields.hs_featured_notebooks_collection_id || '';
 
   return (
     <section className={styles.section}>
@@ -79,6 +86,18 @@ export default function HydroShareCard() {
         <a href={hydroshareUrl} target="_blank" rel="noopener noreferrer" className={styles.primaryButton}>
           Share on CIROH HydroShare
         </a>
+      </div>
+
+      <div className={styles.footer}>
+        <p className={styles.subtitle}>
+          Featured resources are drawn from <a href="https://help.hydroshare.org/hydroshare-resources/collections/">HydroShare Resource Collections</a>.
+          To feature a resource, add it to one of the following collections:
+          {' '}<a href={`https://www.hydroshare.org/resource/${featuredAppsCollectionId}`}>Apps</a>,
+          {' '}<a href={`https://www.hydroshare.org/resource/${featuredDatasetsCollectionId}`}>Datasets</a>,
+          {' '}<a href={`https://www.hydroshare.org/resource/${featuredCoursesCollectionId}`}>Courses</a>,
+          {' '}<a href={`https://www.hydroshare.org/resource/${featuredPresentationsCollectionId}`}>Presentations</a>,
+          {' '}or <a href={`https://www.hydroshare.org/resource/${featuredNotebooksCollectionId}`}>Notebooks</a>.
+        </p>
       </div>
     </section>
   );

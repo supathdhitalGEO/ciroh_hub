@@ -12,6 +12,10 @@ import LMLightIcon from '@site/static/img/cards/modules_light.png';
 import LMDarkIcon from '@site/static/img/cards/modules_dark.png';
 import StatsBar from "@site/src/components/StatsBar";
 import { getResourceStats } from "@site/src/utils/resourceStats";
+import CardCarouselHydroshareFeatured from "@site/src/components/CardCarouselHydroshareFeatured";
+import { featuredCourses } from "@site/src/data/featuredCourses";
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+
 
 const items = [
   {
@@ -59,6 +63,9 @@ function CoursesPageContent({ contributeUrl, docsUrl }) {
 
   const stats = useMemo(() => getResourceStats(courses), [courses]);
 
+  const { siteConfig } = useDocusaurusContext();
+  const featuredResourcesCollectionId = siteConfig.customFields.hs_featured_courses_collection_id;
+
   return (
     <>
       {/* Hero */}
@@ -90,6 +97,17 @@ function CoursesPageContent({ contributeUrl, docsUrl }) {
       />
 
       <main className="tw-relative tw-z-20">
+        {/* Featured Resources Carousel */}
+        <div className="tw-bg-white dark:tw-bg-[#060010]">
+          <CardCarouselHydroshareFeatured
+            header="Featured Courses"
+            collectionId={featuredResourcesCollectionId}
+            defaultImage={defaultImage}
+            overrides={featuredCourses}
+            cardsPerView={1}
+          />
+        </div>
+
         <HydroShareResourcesSelector
           keyword="nwm_portal_module,ciroh_hub_module"
           defaultImage={defaultImage}

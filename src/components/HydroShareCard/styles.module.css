@@ -7,6 +7,11 @@
   margin-bottom: 1rem;
 }
 
+.footer {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
 .titleRow {
   display: flex;
   align-items: center;

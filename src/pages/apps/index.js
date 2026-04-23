@@ -11,6 +11,9 @@ import TethysLogWhite from '@site/static/img/logos/tethys-platform-white.png';
 import HydroShareLogo from '@site/static/img/logos/hydroshare-white.png';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import { useColorMode } from '@docusaurus/theme-common';
+import CardCarouselHydroshareFeatured from "@site/src/components/CardCarouselHydroshareFeatured";
+import { featuredApps } from "@site/src/data/featuredApps";
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 const items = [
   {
@@ -31,7 +34,7 @@ const items = [
 
 export default function AppsPage() {
   const contributeUrl = useBaseUrl('/contribute?current-contribution=apps');
-  const docsUrl = useBaseUrl('/docs/products/intro');
+  const docsUrl = useBaseUrl('/contribute/develop');
   const defaultImage = 'https://ciroh-portal-static-data.s3.us-east-1.amazonaws.com/app_placeholder.png'
 
   return (
@@ -59,6 +62,9 @@ function AppsPageContent({ contributeUrl, docsUrl, defaultImage }) {
 
   const stats = useMemo(() => getResourceStats(apps), [apps]);
 
+  const { siteConfig } = useDocusaurusContext();
+  const featuredAppsCollectionId = siteConfig.customFields.hs_featured_apps_collection_id;
+
   return (
     <>
       {/* Hero */}
@@ -72,12 +78,10 @@ function AppsPageContent({ contributeUrl, docsUrl, defaultImage }) {
             tagline="Enhance forecasting, analysis, and water resource management by making your web applications and tools accessible to CIROH and NOAA&apos;s hydrologic research initiatives."
             buttons={[
                 { label: "Add your Apps", href: contributeUrl, primary: true },
-                { label: "Browse Documentation", href: docsUrl }
+                { label: "Build with Tethys", href: docsUrl }
               ]}
         />
       </div>
-
-
       </section>
 
       {/* Stats */}
@@ -92,6 +96,22 @@ function AppsPageContent({ contributeUrl, docsUrl, defaultImage }) {
       />
 
       <main className="tw-relative tw-z-20">
+        {/* Link to tethys.ciroh.org */}
+        <div className="tw-flex tw-w-full tw-h-full tw-pt-10 tw-justify-center tw-items-center tw-bg-white dark:tw-bg-[#060010]">
+            <h2>Explore real-world Tethys apps built by the CIROH community on the <a href="https://tethys.ciroh.org/apps/">CIROH Tethys Portal</a></h2>
+        </div>
+
+        {/* Featured Apps Carousel */}
+        <div className="tw-bg-white dark:tw-bg-[#060010]">
+          <CardCarouselHydroshareFeatured
+            header="Featured Apps"
+            collectionId={featuredAppsCollectionId}
+            defaultImage={defaultImage}
+            overrides={featuredApps}
+            cardsPerView={1}
+          />
+        </div>
+
         <HydroShareResourcesSelector
           keyword="nwm_portal_app,ciroh_hub_app"
           defaultImage={defaultImage}

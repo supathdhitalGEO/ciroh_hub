@@ -13,13 +13,13 @@ arpita-2023:
 
 jordan:
   name: Jordan Laser
-  title: 'at Lynker'
+  title: 'Software Engineer at Lynker'
   url: 'https://github.com/JordanLaserGit'
   image_url: https://avatars.githubusercontent.com/u/79336055?v=4
 
 zach:
   name: Zach Wills
-  title: 'at Lynker'
+  title: 'Software Engineer at Lynker'
   url: https://github.com/orgs/CIROH-UA/people/ZacharyWills
   image_url: https://avatars.githubusercontent.com/u/60660437?v=4
 
@@ -238,3 +238,15 @@ prajwal-halalae:
   title: Undergraduate Research Intern
   url: https://www.linkedin.com/in/prajwal-nh/
   image_url: /img/profiles/Prajwal_Halalae.jpg
+
+furqan-baig:
+  name: Furqan Baig
+  title: Research Programmer 
+  url: https://www.linkedin.com/in/furqanbaig/
+  image_url: /img/blog/authors/furqan-baig.jpeg
+
+harsha-vemula:
+  name: Harsha Vemula
+  title: DevOps Engineer at Alabama Water Institute
+  url: https://github.com/harshavemula-ua
+  image_url: /img/blog/authors/harsha-vemula.jpeg

@@ -10,6 +10,10 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import { useColorMode } from '@docusaurus/theme-common';
 import StatsBar from "@site/src/components/StatsBar";
 import { getResourceStats } from "@site/src/utils/resourceStats";
+import CardCarouselHydroshareFeatured from "@site/src/components/CardCarouselHydroshareFeatured";
+import { featuredNotebooks } from "@site/src/data/featuredNotebooks";
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+
 
 const items = [
   {
@@ -51,6 +55,9 @@ function NoteBooksPageContent({ contributeUrl, docsUrl, defaultImage }) {
 
   const stats = useMemo(() => getResourceStats(notebooks), [notebooks]);
 
+  const { siteConfig } = useDocusaurusContext();
+  const featuredResourcesCollectionId = siteConfig.customFields.hs_featured_notebooks_collection_id;
+
   return (
     <>
       {/* Hero */}
@@ -82,6 +89,17 @@ function NoteBooksPageContent({ contributeUrl, docsUrl, defaultImage }) {
       />
 
       <main className="tw-relative tw-z-20">
+        {/* Featured Resources Carousel */}
+        <div className="tw-bg-white dark:tw-bg-[#060010]">
+          <CardCarouselHydroshareFeatured
+            header="Featured Notebooks"
+            collectionId={featuredResourcesCollectionId}
+            defaultImage={defaultImage}
+            overrides={featuredNotebooks}
+            cardsPerView={1}
+          />
+        </div>
+
         <HydroShareResourcesSelector
           keyword="ciroh_hub_notebook"
           defaultImage={defaultImage}

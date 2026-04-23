@@ -9,7 +9,7 @@ const WorkshopSupport = () => {
       buttons: [
         {
           text: "Workshop IT Request Form",
-          link: "https://github.com/CIROH-UA/NGIAB-CloudInfra/issues/new?assignees=&projects=&template=workshop_IT_request.md"
+          link: "https://github.com/CIROH-UA/NGIAB-CloudInfra/issues/new?template=workshop_IT_request_template.yml"
         }
       ],
       details: "Our team will process your request and ensure participants have necessary access before your workshop begins."
@@ -43,4 +43,4 @@ const WorkshopSupport = () => {
   );
 };
 
-export default WorkshopSupport;
+export default WorkshopSupport; 

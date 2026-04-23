@@ -9,6 +9,9 @@ import Header from "@site/src/components/Header";
 import { useColorMode } from '@docusaurus/theme-common';
 import StatsBar from "@site/src/components/StatsBar";
 import { getResourceStats } from "@site/src/utils/resourceStats";
+import CardCarouselHydroshareFeatured from "@site/src/components/CardCarouselHydroshareFeatured";
+import { featuredPresentations } from "@site/src/data/featuredPresentations";
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 const items = [
   {
@@ -37,6 +40,7 @@ export default function PresentationsPage() {
 function PresentationsPageContent({ contributeUrl, docsUrl }) {
   const { colorMode } = useColorMode();
   const isDarkTheme = colorMode === 'dark';
+  const defaultImage = 'https://ciroh-portal-static-data.s3.us-east-1.amazonaws.com/presentation_placeholder.png';
 
   const [presentations, setPresentations] = useState([]);
   const [statsLoading, setStatsLoading] = useState(true);
@@ -47,6 +51,9 @@ function PresentationsPageContent({ contributeUrl, docsUrl }) {
   }, []);
 
   const stats = useMemo(() => getResourceStats(presentations), [presentations]);
+
+  const { siteConfig } = useDocusaurusContext();
+  const featuredResourcesCollectionId = siteConfig.customFields.hs_featured_presentations_collection_id;
 
   return (
     <>
@@ -80,9 +87,20 @@ function PresentationsPageContent({ contributeUrl, docsUrl }) {
       />
 
       <main className="tw-relative tw-z-20">
+        {/* Featured Resources Carousel */}
+        <div className="tw-bg-white dark:tw-bg-[#060010]">
+          <CardCarouselHydroshareFeatured
+            header="Featured Presentations"
+            collectionId={featuredResourcesCollectionId}
+            defaultImage={defaultImage}
+            overrides={featuredPresentations}
+            cardsPerView={1}
+          />
+        </div>
+
         <HydroShareResourcesSelector
           keyword="ciroh_portal_presentation,ciroh_hub_presentation"
-          defaultImage="https://ciroh-portal-static-data.s3.us-east-1.amazonaws.com/presentation_placeholder.png"
+          defaultImage={defaultImage}
           variant="modern"
           onResultsChange={onResultsChange}
         />

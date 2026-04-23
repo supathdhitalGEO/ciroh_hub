@@ -8,6 +8,7 @@ import CardSwap, { Card } from './cardSwap'
 import Particles from './particleBG';
 import CloudInfraDashboard from "./cloudInfraDashboard";
 import Link from '@docusaurus/Link';
+import { communityImpactData } from '@site/src/data/communityImpactData';
 
 
 const ImpactItem = ({ title, count, imageSrc, users }) => (
@@ -27,28 +28,28 @@ export default function CommunityImpactComponent() {
     color: "#FF9900",
     svg: <img src={useBaseUrl("/img/logos/corp/aws-black.svg")} alt="AWS Logo" />,
     stats: [
-      { value: 24, bar: "38%", label: "Ongoing Projects" },
-      { value: 69, bar: "17%", label: "Active Users" },
+      { value: communityImpactData.aws.projects, bar: communityImpactData.aws.projectsBar, label: "Ongoing Projects" },
+      { value: communityImpactData.aws.users, bar: communityImpactData.aws.usersBar, label: "Active Users" },
     ],
   },
   {
     accent: "gcp",
-    title: "GCP / JupyterHub",
+    title: "GCP + 2i2c JupyterHub",
     color: "#4285F4",
     svg: <img src={useBaseUrl("/img/logos/corp/google-cloud.jpg")} alt="GCP Logo" />,
     stats: [
-      { value: 63, bar: "100%", label: "Ongoing Projects" },
-      { value: 183, bar: "45%", label: "Active Users" },
+      { value: communityImpactData.gcp.projects, bar: communityImpactData.gcp.projectsBar, label: "Ongoing Projects" },
+      { value: communityImpactData.gcp.users, bar: communityImpactData.gcp.usersBar, label: "Active Users" },
     ],
   },
   {
     accent: "hpc",
-    title: "On-premise HPC",
+    title: "On-Premise HPC",
     color: "#10B981",
     svg: <img src={useBaseUrl("/img/logos/pantarhei.jpg")} alt="HPC Logo" />,
     stats: [
-      { value: 57, bar: "75%", label: "Ongoing Projects" },
-      { value: 78, bar: "30%", label: "Active Users" },
+      { value: communityImpactData.nsf.projects, bar: communityImpactData.nsf.projectsBar, label: "Ongoing Projects" },
+      { value: communityImpactData.nsf.users, bar: communityImpactData.nsf.usersBar, label: "Active Users" },
     ],
   },
   {
@@ -57,8 +58,8 @@ export default function CommunityImpactComponent() {
     color: "#8B5CF6",
     svg: <img src={useBaseUrl("/img/logos/nsf-logo.png")} alt="NSF Logo" />,
     stats: [
-      { value: 7, bar: "50%", label: "Ongoing Projects" },
-      { value: 75, bar: "60%", label: "Active Users" },
+      { value: communityImpactData.nsf.projects, bar: communityImpactData.nsf.projectsBar, label: "Ongoing Projects" },
+      { value: communityImpactData.nsf.users, bar: communityImpactData.nsf.usersBar, label: "Active Users" },
     ],
   },
 ];
@@ -82,9 +83,9 @@ export default function CommunityImpactComponent() {
         </div>
 
         {/* HERO CONTENT (ignores pointer events EXCEPT buttons/card components) */}
-        <div className="tw-container tw-mx-auto tw-flex tw-px-5 tw-py-16 md:tw-flex-row tw-flex-col tw-items-center tw-relative tw-z-10 tw-pointer-events-none">
+        <div className="tw-container tw-mx-auto tw-flex tw-px-5 tw-py-6 md:tw-py-8 lg:tw-py-16 tw-flex-col lg:tw-flex-row tw-items-center tw-relative tw-z-10 tw-pointer-events-none">
 
-          <div className="lg:tw-flex-grow md:tw-w-1/2 lg:tw-pr-24 md:tw-pr-16 tw-flex tw-flex-col md:tw-items-start md:tw-text-left tw-mb-16 md:tw-mb-0 tw-items-center tw-text-center">
+          <div className="lg:tw-w-1/2 lg:tw-pr-24 tw-flex tw-flex-col lg:tw-flex-grow lg:tw-items-start tw-mb-8 lg:tw-mb-0 tw-items-center tw-text-center lg:tw-text-left">
 
             <h1
               className={clsx(
@@ -114,8 +115,8 @@ export default function CommunityImpactComponent() {
           </div>
 
           {/* CARD SWAP SECTION (also restored pointer events) */}
-          <div className="lg:tw-max-w-xl lg:tw-w-full md:tw-w-1/2 tw-w-5/6 tw-pointer-events-auto">
-            <div className="tw-relative tw-h-[600px]">
+          <div className="lg:tw-max-w-xl sm:tw-w-1/2 md:tw-w-5/6 lg:tw-w-full tw-pointer-events-auto">
+            <div className="tw-relative tw-h-[360px] lg:tw-h-[600px]">
               <CardSwap
                 cardDistance={60}
                 verticalDistance={70}

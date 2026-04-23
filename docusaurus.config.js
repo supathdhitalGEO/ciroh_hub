@@ -24,7 +24,7 @@ const config = {
       'https://67h5z9ih7j.execute-api.us-east-1.amazonaws.com/default',
     onBrokenMarkdownLinks: "warn",
     onBrokenMarkdownImages: "warn",
-    githubProjectToken: process.env.GITHUB_PROJECT_TOKEN,
+    githubProjectToken: process.env.GH_PROJECT_TOKEN,
 
     // Workaround to fix page highlighting in the
     // product/documentation section.
@@ -98,6 +98,12 @@ const config = {
     hs_redirect_uri: "https://portal.ciroh.org/contribute",
     hs_logout_endpoint: "https://www.hydroshare.org/accounts/logout/",
     hs_logout_redirect: "https://portal.ciroh.org/contribute",
+    hs_featured_apps_collection_id: process.env.HS_FEATURED_APPS_COLLECTION_ID || "dummy",
+    hs_featured_datasets_collection_id: process.env.HS_FEATURED_DATASETS_COLLECTION_ID || "dummy",
+    hs_featured_courses_collection_id: process.env.HS_FEATURED_COURSES_COLLECTION_ID || "dummy",
+    hs_featured_presentations_collection_id: process.env.HS_FEATURED_PRESENTATIONS_COLLECTION_ID || "dummy",
+    hs_featured_notebooks_collection_id: process.env.HS_FEATURED_NOTEBOOKS_COLLECTION_ID || "dummy",
+
     // URL for submitting a new product request (used in ProductCards component)
     productIssueUrl: "https://github.com/CIROH-UA/ciroh_hub/issues/new?template=product-request.md",
 
@@ -119,7 +125,7 @@ const config = {
   // Future flags. (In preparation for Docusaurus v4.)
   future: {
     v4: true,
-    experimental_faster: true,
+    faster: true,
   },
 
   markdown: {
@@ -274,6 +280,7 @@ const config = {
             {
               label: "Documentation",
               position: "left",
+              to: "/docs/products/intro",
               items: [
                 // The sidebar loader is weirdly brittle. If a page is instantiated in "index.js", that must be specified explicitly.
                 {
@@ -343,23 +350,24 @@ const config = {
               ],
             },
             {
-            label: "Updates",
-            position: "left",
-            items: [
-              {
-                href: "/blog",
-                label: "Blog",
-              },
-              {
-                href: "/news",
-                label: "News",
-              },
-              {
-                href: "/release-notes",
-                label: "Release Notes",
-              }
-            ]
-          },
+              
+              label: "Blog",
+              position: "right",
+              to: "/blog",
+            },
+            {
+              
+              label: "News",
+              position: "right",
+              to: "/news",
+            },
+            {
+              
+              label: "Release Notes",
+              position: "right",
+              to: "/release-notes",
+            },
+            
           ],
         },
         footer: {
