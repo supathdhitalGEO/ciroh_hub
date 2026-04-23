@@ -4,12 +4,28 @@
  * Dark Mode = Blue Gradient
  */
 
-/* ----------------------------- */
-/* LIGHT MODE - solid white      */
-/* ----------------------------- */
 @import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 :root {
+
+  /* Font size adjustments (note: these need to have the font tag recalculate for scoping reasons) */
+
+  /* Increase text size for markdown components (see Issue #107) */
+  .markdown p {
+    --ifm-font-size-base: 110%;
+    --ifm-code-font-size: 105%;
+    font: var(--ifm-font-size-base) / var(--ifm-line-height-base) var(--ifm-font-family-base);
+  }
+
+  /* Scaling fonts + sidebar for smaller screens */
+  @media (max-width: 1400px) {
+    --doc-sidebar-width: 240px;
+  }
+
+  /* ----------------------------- */
+  /* LIGHT MODE - solid white      */
+  /* ----------------------------- */
+
   /* Restricted palette: black, white, cyan */
   --ifm-color-primary: #19a7ce; /* cyan */
   --ifm-color-primary-dark: #19a7ce;
@@ -23,12 +39,12 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.04);
 
   /* Light mode background override (WHITE) */
-  --ifm-background-color: #ffffff !important;
-  --ifm-background-surface-color: #ffffff !important;
+  --ifm-background-color: whitesmoke !important;
+  --ifm-background-surface-color: whitesmoke !important;
 
   /* Navbar dropdown menus should never be transparent */
-  --ifm-dropdown-background-color: #ffffff;
-  --ifm-navbar-dropdown-background-color: #ffffff;
+  --ifm-dropdown-background-color: whitesmoke;
+  --ifm-navbar-dropdown-background-color: whitesmoke;
 
   /* Text colors constrained to black/white/cyan */
   --ifm-heading-color: #000000;       /* black */
@@ -36,19 +52,19 @@
   --ifm-footer-color: #000000;        /* black for footer text */
 
   /* fallback card color */
-  --ifm-cards-resources: #ffffff;
+  --ifm-cards-resources: whitesmoke;
 
   /* Global button theme tokens */
   --ciroh-button-primary-bg: #19a7ce;
-  --ciroh-button-primary-text: #ffffff;
+  --ciroh-button-primary-text: whitesmoke;
   --ciroh-button-primary-border: #19a7ce;
-  --ciroh-button-secondary-bg: #ffffff;
+  --ciroh-button-secondary-bg: whitesmoke;
   --ciroh-button-secondary-text: #000000;
   --ciroh-button-secondary-border: #19a7ce;
 }
 
 [data-theme='light'] body {
-  background: #ffffff !important;
+  background: whitesmoke !important;
   color: var(--ifm-font-color-base) !important;
 }
 
@@ -69,8 +85,8 @@
 
 /* Ensure light-mode surface elements (cards, panels) use white or slight shade */
 [data-theme='light'] {
-  --ifm-background-surface-color: #ffffff !important;
-  --ifm-block-background: #ffffff !important;
+  --ifm-background-surface-color: whitesmoke !important;
+  --ifm-block-background: whitesmoke !important;
 }
 
 /* ----------------------------- */
@@ -111,22 +127,22 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 
   /* Dark mode text defaults */
-  --ifm-heading-color: #ffffff;
-  --ifm-font-color-base: #ffffff;
-  --ifm-footer-color: #ffffff;
+  --ifm-heading-color: whitesmoke;
+  --ifm-font-color-base: whitesmoke;
+  --ifm-footer-color: whitesmoke;
 
   /* Global button theme tokens (dark mode) */
   --ciroh-button-primary-bg: #19a7ce;
-  --ciroh-button-primary-text: #ffffff;
+  --ciroh-button-primary-text: whitesmoke;
   --ciroh-button-primary-border: #19a7ce;
   --ciroh-button-secondary-bg: #060010;
-  --ciroh-button-secondary-text: #ffffff;
+  --ciroh-button-secondary-text: whitesmoke;
   --ciroh-button-secondary-border: #19a7ce;
 }
 
 :root[data-theme='light'] {
-  --bg-primary: #ffffff;
-  --bg-card: #f7f7f9;
+  --bg-primary: whitesmoke;
+  --bg-card: #efeff2;
   --text-primary: #1a1a1a;
   --text-secondary: #4b5563;
 
@@ -140,7 +156,7 @@
 :root[data-theme='dark'] {
   --bg-primary: #0c0e12;
   --bg-card: #14161b;
-  --text-primary: #ffffff;
+  --text-primary: whitesmoke;
   --text-secondary: #9ca3af;
 
   --accent-1: #22d3ee;
@@ -243,19 +259,6 @@
   0% { opacity: 0.2; }
   50% { opacity: 1; }
   100% { opacity: 0.2; }
-}
-
-/* Scaling fonts + sidebar for smaller screens */
-@media (max-width: 1400px) {
-  :root {
-    font-size: 85% !important;
-    --ifm-font-size-base: 90% !important;
-    --ifm-code-font-size: 90% !important;
-    --doc-sidebar-width: 240px !important;
-  }
-  body {
-    line-height: 1.5;
-  }
 }
 
 /* ----------------------------- */
@@ -421,9 +424,9 @@ a.button.button--secondary:hover {
 
 /* Indent boxes */
 [data-theme="light"] .indent-wrapper {
-  background-color: #f3f4f6; /* light surface */
+  background-color: grey; /* light surface */
   border-left-style: solid;
-  border-color: #d1d5db;
+  border-color: gainsboro;
   padding: 1rem 1rem 0.5rem 2rem;
   margin-bottom: 1rem;
 }
