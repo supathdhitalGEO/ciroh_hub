@@ -30,7 +30,7 @@ const NSFAccessAllocations = () => {
 
   const description = (
     <>
-      In collaboration with <a href="https://allocations.access-ci.org" target="_blank" rel="noopener noreferrer">NSF ACCESS Allocations</a>, CIROH offers access to all the resources that are available through an allocation on the <a href="https://allocations.access-ci.org/resources" target="_blank" rel="noopener noreferrer">Resources</a>. This guide will walk you through the steps necessary to gain access to any resources using your NSF ACCESS allocation.
+      In collaboration with <a href="https://allocations.access-ci.org" target="_blank" rel="noopener noreferrer">NSF ACCESS Allocations</a>, CIROH offers access to all the resources that are available through an allocation on the <a href="https://allocations.access-ci.org/resources" target="_blank" rel="noopener noreferrer">Resources</a>. This guide will walk you through the steps necessary to gain access to any resources using your NSF ACCESS allocation. For more information, review the <a href="https://hub.ciroh.org/docs/services/external-resources/nsf-access/" target="_blank" rel="noopener noreferrer">NSF ACCESS documentation</a>.
     </>
   );
 
@@ -40,14 +40,6 @@ const NSFAccessAllocations = () => {
       title="NSF ACCESS Allocations through CIROH"
       description={description}
       steps={steps}
-      helpBox={{
-        title: "Need Help?",
-        content: (
-          <>
-            If you are unable to access the forms, please contact the CIROH team at <a href="mailto:ciroh-it-support@ua.edu">ciroh-it-support@ua.edu</a> for assistance.
-          </>
-        )
-      }}
       successBox={{
         title: "You're All Set!",
         description: "Once you're granted access, you're ready to begin using the resources!",
