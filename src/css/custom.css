@@ -8,7 +8,7 @@
 
 :root {
 
-  /* Font size adjustments (note: these need to have the font tag recalculate for scoping reasons */
+  /* Font size adjustments (note: these need to have the font tag recalculate for scoping reasons) */
 
   /* Increase text size for markdown components (see Issue #107) */
   .markdown p {
