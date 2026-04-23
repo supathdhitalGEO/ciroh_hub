@@ -19,18 +19,7 @@
 
   /* Scaling fonts + sidebar for smaller screens */
   @media (max-width: 1400px) {
-    --ifm-font-size-base: 90%;
-    --ifm-code-font-size: 85%;
     --doc-sidebar-width: 240px;
-    font: var(--ifm-font-size-base) / var(--ifm-line-height-base) var(--ifm-font-family-base);
-    body {
-      line-height: 1.5;
-    }
-    .markdown p {
-        --ifm-font-size-base: 100%;
-        --ifm-code-font-size: 95%;
-        font: var(--ifm-font-size-base) / var(--ifm-line-height-base) var(--ifm-font-family-base);
-    }
   }
 
   /* ----------------------------- */
