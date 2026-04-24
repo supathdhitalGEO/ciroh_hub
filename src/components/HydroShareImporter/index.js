@@ -291,7 +291,7 @@ async function getCommunityResources(keyword="ciroh_portal_data,ciroh_hub_data",
     const groupIds = await getGroupIds(communityId);
     const [groupResourcesResponse, extraResourcesResponse] = await Promise.all([
       joinGroupResources(groupIds, fullTextSearch, pageNumber, pageSize),
-      fetchResourcesWithPaginationData(keyword, fullTextSearch, ascending, sortBy, author, pageNumber)
+      fetchResourcesWithPaginationData(keyword, fullTextSearch, ascending, sortBy, author, pageNumber, pageSize)
     ]);
 
     // Extract resources
@@ -337,9 +337,10 @@ async function fetchDiscoverResourcesCore({
   sortBy = undefined,
   author = undefined,
   pageNumber = 1,
+  pageSize = undefined,
   clampToPageCount = false,
 }) {
-  const url = buildDiscoverAtlasApiUrl(keyword, searchText, ascending, sortBy, author, pageNumber);
+  const url = buildDiscoverAtlasApiUrl(keyword, searchText, ascending, sortBy, author, pageNumber, pageSize);
   const data = await fetchJson(url, "resources");
   const resources = parseDiscoverResources(
     data,
@@ -357,7 +358,7 @@ async function fetchDiscoverResourcesCore({
  * @param {string} author - The author to filter by
  * @returns {Promise<Array>} Array of resource objects
  */
-async function fetchResourcesBySearch(keyword, searchText, ascending=false, sortBy=undefined, author=undefined, pageNumber=1) {
+async function fetchResourcesBySearch(keyword, searchText, ascending=false, sortBy=undefined, author=undefined, pageNumber=1, pageSize=undefined) {
   const { resources } = await fetchDiscoverResourcesCore({
     keyword,
     searchText,
@@ -365,6 +366,7 @@ async function fetchResourcesBySearch(keyword, searchText, ascending=false, sort
     sortBy,
     author,
     pageNumber,
+    pageSize,
   });
   return resources;
 }
@@ -379,7 +381,7 @@ async function fetchResourcesBySearch(keyword, searchText, ascending=false, sort
  * @param {number} pageNumber - The page number to fetch (1-based indexing)
  * @returns {Promise<Object>} Object containing resources array and pagination metadata
  */
-async function fetchResourcesWithPaginationData(keyword, searchText, ascending=false, sortBy=undefined, author=undefined, pageNumber=1) {
+async function fetchResourcesWithPaginationData(keyword, searchText, ascending=false, sortBy=undefined, author=undefined, pageNumber=1, pageSize=undefined) {
   const { data, resources } = await fetchDiscoverResourcesCore({
     keyword,
     searchText,
@@ -387,6 +389,7 @@ async function fetchResourcesWithPaginationData(keyword, searchText, ascending=f
     sortBy,
     author,
     pageNumber,
+    pageSize,
     clampToPageCount: true,
   });
 

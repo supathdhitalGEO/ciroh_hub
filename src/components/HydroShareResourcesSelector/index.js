@@ -99,7 +99,7 @@ export default function HydroShareResourcesSelector({
           communityResponse = await getCommunityResources(firstKeyword, "4", filterSearch, ascending, sortType, undefined, page, PAGE_SIZE);
           resourceList = communityResponse.resources || [];
         } else {
-          resourceList = await fetchResourcesBySearch(keyword, filterSearch, ascending, sortType, undefined, page);
+          resourceList = await fetchResourcesBySearch(keyword, filterSearch, ascending, sortType, undefined, page, PAGE_SIZE);
         }
 
         const mappedList = resourceList.map((res) => ({
@@ -123,10 +123,12 @@ export default function HydroShareResourcesSelector({
         if (page === 1) {
           setResources(mappedList); // Replace for first page
         } else {
-          setResources(prev => [
-            ...prev.filter(r => !r.resource_id.startsWith('placeholder-')),
-            ...mappedList
-          ]);
+          setResources(prev => {
+            const existing = prev.filter(r => !String(r.resource_id).startsWith('placeholder-'));
+            const seen = new Set(existing.map(r => r.resource_id));
+            const newItems = mappedList.filter(r => !seen.has(r.resource_id));
+            return [...existing, ...newItems];
+          });
         }
         
         // Update hasMore based on API response
