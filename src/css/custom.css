@@ -474,6 +474,15 @@ a.button.button--secondary:hover {
   display: none;
 }
 
+/* Keep author avatars circular without image distortion */
+.avatar__photo {
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
 /* ----------------------------- */
 /* IMPORT TAILWIND LAST          */
 /* ----------------------------- */
