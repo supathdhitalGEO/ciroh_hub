@@ -32,12 +32,7 @@ const NWMBigQuery = () => {
         fontSize: '3rem',
         fontWeight: 700,
         marginBottom: '1.5rem',
-        background: isDark
-          ? 'linear-gradient(to right, var(--ifm-font-color-base), rgba(156, 163, 175, 0.8))'
-          : 'linear-gradient(to right, var(--ifm-font-color-base), rgba(100, 116, 139, 0.7))',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
+        color: 'var(--ifm-heading-color)',
         lineHeight: 1.2
       }}>
         Accessing NWM BigQuery API
