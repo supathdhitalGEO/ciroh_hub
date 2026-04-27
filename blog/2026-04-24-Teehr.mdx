@@ -49,9 +49,9 @@ TEEHR is built on a fundamental question: “Which hydrologic model is better?�
 -	What if we want to compare many models against each other?
 -	What if we want to analyze thousands of locations with 40-years of hourly timestep data at the continental scale?
 -	What if we want to interrogate the data with questions like:
-    o	“How does performance during high-flow events compare to low-flow events?”
-    o	“How does model performance relate to physical basin attributes?”
-    o	“What's the uncertainty associated with the resulting metrics?”
+    -	“How does performance during high-flow events compare to low-flow events?”
+    -	“How does model performance relate to physical basin attributes?”
+    -	“What's the uncertainty associated with the resulting metrics?”
 -	What if we want to make the data easily accessible to the hydrologic community to support both historical and near-real time analyses?
 
 These are the challenges TEEHR is designed to address.
@@ -99,7 +99,7 @@ TEEHR-Cloud delivers evaluation-ready insights and datasets that are publicly av
 ### TEEHR-Python
 TEEHR-Python is the analytics engine that puts this data to work. Powered by PySpark for scalable, distributed compute and Apache Iceberg for robust data management — including time travel, upsert/append/delete operations, schema evolution, and ACID transactions — it gives analysts the full power of modern data engineering in a hydrologic context. An ever-growing suite of signature, deterministic, and probabilistic metrics, with sampling uncertainty estimation built-in, means users can interrogate model performance in ways that simply weren't easily accessible before.  TEEHR-Python is still a python package that users can install in their own environment via `pip install teehr` to use with their own data and to access datasets in the TEEHR-Cloud data warehouse.
 
-<figure style={{ textAlign: "center" }}>
+<figure style={{ textAlign: "center", width: "110%", marginLeft: "0%" }}>
   <img
    class="dark-mode-white-bg"
    src={useBaseUrl('/img/blog/2026-04-teehr/fig4.png')}
@@ -132,7 +132,8 @@ Several web-based dashboards, currently in development, allow users to view and 
 The TEEHR framework is under active development, as we continue to expand historical and real-time data ingests, application-specific dashboards, and core TEEHR-Python functionality. To learn more about TEEHR the [documentation](https://rtiinternational.github.io/teehr/) is a good place to start (link below). If you want to ask a question, request a change or new feature, or report a bug, you can reach out through the CIROH #teehr slack channel, by creating an issue on the [TEEHR github repos](https://github.com/RTIInternational/teehr), or by contacting us directly. Thanks for reading!
 
 ### Additional Links:
-- Documentation: https://rtiinternational.github.io/teehr/
+- Documentation: https://hub.ciroh.org/docs/products/evaluation/rtiteehr/
+- TEEHR documentation: https://rtiinternational.github.io/teehr/
 - Dashboards (in-development): https://dashboards.teehr.rtiamanzi.org/
 - TEEHR repo: https://github.com/RTIInternational/teehr
 - TEEHR-Cloud repo: https://github.com/RTIInternational/teehr-hub
