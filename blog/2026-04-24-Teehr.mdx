@@ -70,20 +70,20 @@ These are the challenges TEEHR is designed to address.
 
 ## What is TEEHR?
 ### The TEEHR Framework
-TEEHR began as a python package enabling robust and iterative evaluation of hydrologic models.  It has since expanded into a cloud-based platform (TEEHR-Cloud) consisting of a high-performance data warehouse optimized for huge analytic tables, a suite of cloud-based services supporting data exploration, automated processing and data ingests, and web-hosted interactive dashboards. 
+TEEHR began as a Python package enabling robust and iterative evaluation of hydrologic models.  It has since expanded into a cloud-based platform (TEEHR-Cloud) consisting of a high-performance data warehouse optimized for huge analytic tables, a suite of cloud-based services supporting data exploration, automated processing and data ingests, and web-hosted interactive dashboards. 
 
 <figure style={{ textAlign: "center" }}>
   <img
    class="dark-mode-white-bg"
    src={useBaseUrl('/img/blog/2026-04-teehr/fig2.png')}
    width='60%'
-   alt="The TEEHR-Cloud framework consists of a high-performance data warehouse, cloud-based evaluation manager, and an installable python package"
+   alt="The TEEHR-Cloud framework consists of a high-performance data warehouse, cloud-based evaluation manager, and an installable Python package"
    />
-  <figcaption><em>The TEEHR-Cloud framework consists of a high-performance data warehouse, cloud-based evaluation manager, and an installable python package</em></figcaption>
+  <figcaption><em>The TEEHR-Cloud framework consists of a high-performance data warehouse, cloud-based evaluation manager, and an installable Python package</em></figcaption>
 </figure>
 
 ### TEEHR-Cloud
-TEEHR-Cloud delivers evaluation-ready insights and datasets that are publicly available and continuously updated — including 40 years of hourly retrospective streamflow simulations across more than 8,000 gage sites, model forcings summarized to drainage basins (mean areal precipitation and temperature), and a real-time evaluation manager for live data ingestion and analysis of operational NWM, RFC forecasts and CIROH’s NextGen Research Data Stream (NRDS) . It's all built on Apache Iceberg, an open table format designed for the demands of big data at scale and proven by well-known big data industries (e.g., Netflix).
+TEEHR-Cloud delivers evaluation-ready insights and datasets that are publicly available and continuously updated — including 40 years of hourly retrospective streamflow simulations across more than 8,000 gage sites, model forcings summarized to drainage basins (mean areal precipitation and temperature), and a real-time evaluation manager for live data ingestion and analysis of operational NWM, RFC forecasts and CIROH’s NextGen Research Data Stream (NRDS). It's all built on Apache Iceberg, an open table format designed for the demands of big data at scale and proven by well-known big data industries (e.g., Netflix).
 
 
 <figure style={{ textAlign: "center" }}>
@@ -97,7 +97,7 @@ TEEHR-Cloud delivers evaluation-ready insights and datasets that are publicly av
 </figure>
 
 ### TEEHR-Python
-TEEHR-Python is the analytics engine that puts this data to work. Powered by PySpark for scalable, distributed compute and Apache Iceberg for robust data management — including time travel, upsert/append/delete operations, schema evolution, and ACID transactions — it gives analysts the full power of modern data engineering in a hydrologic context. An ever-growing suite of signature, deterministic, and probabilistic metrics, with sampling uncertainty estimation built-in, means users can interrogate model performance in ways that simply weren't easily accessible before.  TEEHR-Python is still a python package that users can install in their own environment via `pip install teehr` to use with their own data and to access datasets in the TEEHR-Cloud data warehouse.
+TEEHR-Python is the analytics engine that puts this data to work. Powered by PySpark for scalable, distributed compute and Apache Iceberg for robust data management — including time travel, upsert/append/delete operations, schema evolution, and ACID transactions — it gives analysts the full power of modern data engineering in a hydrologic context. An ever-growing suite of signature, deterministic, and probabilistic metrics, with sampling uncertainty estimation built-in, means users can interrogate model performance in ways that simply weren't easily accessible before.  TEEHR-Python is still a Python package that users can install in their own environment via `pip install teehr` to use with their own data and to access datasets in the TEEHR-Cloud data warehouse.
 
 <figure style={{ textAlign: "center"}}>
   <img
@@ -129,7 +129,7 @@ Several web-based dashboards, currently in development, allow users to view and 
 </figure>
 ## Summary
 
-The TEEHR framework is under active development, as we continue to expand historical and real-time data ingests, application-specific dashboards, and core TEEHR-Python functionality. To learn more about TEEHR the [documentation](https://rtiinternational.github.io/teehr/) is a good place to start (link below). If you want to ask a question, request a change or new feature, or report a bug, you can reach out through the CIROH #teehr slack channel, by creating an issue on the [TEEHR github repos](https://github.com/RTIInternational/teehr), or by contacting us directly. Thanks for reading!
+The TEEHR framework is under active development, as we continue to expand historical and real-time data ingests, application-specific dashboards, and core TEEHR-Python functionality. To learn more about TEEHR, the [documentation](https://rtiinternational.github.io/teehr/) is a good place to start (link below). If you want to ask a question, request a change or new feature, or report a bug, you can reach out through the CIROH #teehr slack channel, by creating an issue on the [TEEHR GitHub repos](https://GitHub.com/RTIInternational/teehr), or by contacting us directly. Thanks for reading!
 
 ### Additional Links:
 - Documentation: https://hub.ciroh.org/docs/products/evaluation/rtiteehr/
