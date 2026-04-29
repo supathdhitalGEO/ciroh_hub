@@ -2,23 +2,16 @@
 	"April 2026 Update": [
 		{
 			"type": "update",
-			"title": "CIROH Hub - AWI News",
-			"links": "https://awi.ua.edu/2026/04/01/new-ciroh-hub-to-streamline-access-to-water-research-tools-and-data/",
+			"title": "NGIAB-CCNH-NRDS Demo to NOAA-OWP: Presentation Slides",
+			"links": [],
 			"description": "Erin White and Fred Ogden invited to share an NGIAB-CCNH-NRDS demo, and [Arpita Patel](https://github.com/arpita0911patel) and [Joshua Cunningham](https://github.com/JoshCu) pulled together informative presentation that's available online at [GitHub Repository](https://github.com/CIROH-UA/Conferences/blob/main/OWP_Demo/NGIAB_NRDS_Demo_April2026.pdf).",
 			"release_date": "04/16/2026"
 		},
         {
 			"type": "update",
 			"title": "NGIAB Website Update",
-			"links": "ngiab.ciroh.org",
+			"links": "https://github.com/CIROH-UA/ngiab-website/releases/tag/v1.3.0",
 			"description": "Updated NGIAB product porfolio website to include NRDS and CCNH information. New Status Dashboard and Data Visualizers links are added.",
-			"release_date": "04/16/2026"
-		},
-		{
-			"type": "update",
-			"title": "NGIAB-CCNH-NRDS Demo to NOAA-OWP: Presentation Slides",
-			"links": [],
-			"description": "Erin White and Fred Ogden invited to share an NGIAB-CCNH-NRDS demo, and [Arpita Patel](https://github.com/arpita0911patel) and [Joshua Cunningham](https://github.com/JoshCu) pulled together informative presentation that's available online at [GitHub Repository](https://github.com/CIROH-UA/Conferences/blob/main/OWP_Demo/NGIAB_NRDS_Demo_April2026.pdf).",
 			"release_date": "04/16/2026"
 		},
 		{
@@ -28,13 +21,7 @@
 			"description": "This update features an updated Cyberinfrastructure forms for better user experience, a fully revamped NextGen on CIROH-2i2c JupyterHub tutorial and adds featured resource carousels to Research Portal pages.",
 			"release_date": "04/16/2026",
 			"version": "v20260416-161726",
-			"contributors": 4,
-			"contributor_list": [
-				"Sheargrub",
-				"manjilasingh",
-				"Prajwal2006",
-				"James-Dolinar"
-			]
+			"contributors": 4
 		},
 		{
 			"type": "update",
@@ -48,24 +35,18 @@
 			"type": "update",
 			"title": "Stevens River Ice Mapping System - Added to CIROH Hub",
 			"links": [],
-			"description": "The Stevens River Ice Mapping System has been added to the [CIROH Hub](https://hub.ciroh.org) apps list. Want to add your app to the portal? Tag your HydroShare resource with `ciroh_hub_app`. If you have datasets, notebooks, presentation or publications and want to learn more about how to contribute, visit [hub.ciroh.org/contribute](https://hub.ciroh.org/contribute).",
+			"description": "The Stevens River Ice Mapping System has been added to the [CIROH Hub apps list](/apps). Want to add your app to the portal? Tag your HydroShare resource with `ciroh_hub_app`. If you have datasets, notebooks, presentation or publications and want to learn more about how to contribute, visit [hub.ciroh.org/contribute](/contribute).",
 			"release_date": "04/27/2026",
 			"contributors": 1
 		},
 		{
 			"type": "update",
 			"title": "CIROH Hub — April Blog Update",
-			"link": "https://github.com/CIROH-UA/ciroh_hub/releases/tag/v20260331-163535",
+			"link": "https://github.com/CIROH-UA/ciroh_hub/pull/120",
 			"description": "This update adds a new blog post covering the TEEHR cloud-based evaluation system running on CIROH Cyberinfrastructure and it's integration with the NGIAB-NRDS ecosystem.",
 			"release_date": "03/31/2026",
 			"version": "v20260331-163535",
-			"contributors": 3,
-			"contributor_list": [
-				"Sam Lamont",
-				"Matt Denno",
-				"Katie Werkhoven",
-				"Sam Landsteiner"
-			]
+			"contributors": 3
 		},
 		{
 			"type": "NRDS",
@@ -74,12 +55,7 @@
 			"description": "This release deploys a new Troute restart datastream that seeds the routing-only model with initial NWM channel routing outputs, improving NextGen stream flow prediction accuracy. Contributors also delivered AMI updates for the DAILY resolution fix and added streamcommander support for ANALYSIS_ASSIM_RESTART_CHRT forcing source.",
 			"release_date": "04/27/2026",
 			"version": "v3.1.0",
-			"contributors": 3,
-			"contributor_list": [
-				"harshavemula-ua",
-				"quinnylee",
-				"JordanLaserGit"
-			]
+			"contributors": 3
 		},
 		{
 			"type": "NRDS",
@@ -88,12 +64,7 @@
 			"description": "This release patches Troute restart DAILY path resolution and upgrades the integrated NGIAB image to v1.8.0, which adds SUMMA integration, a model form UI, and support for hourly/daily δHBV2. CI/CD workflows were migrated from static AWS keys to OIDC for improved security compliance.",
 			"release_date": "04/24/2026",
 			"version": "v1.7.1",
-			"contributors": 3,
-			"contributor_list": [
-				"harshavemula-ua",
-				"quinnylee",
-				"JordanLaserGit"
-			]
+			"contributors": 3
 		},
 		{
 			"type": "NRDS",
@@ -102,12 +73,7 @@
 			"description": "This release patches Troute restart tooling and corrects the NRDS output time axis by adjusting t0 by one hour; an S3 reading bug was fixed and the palisade.gpkg URL was updated to the community bucket. AWS CI/CD workflows were also migrated to OIDC in adherence with CIROH's AWS policy.",
 			"release_date": "04/24/2026",
 			"version": "v2.1.1",
-			"contributors": 3,
-			"contributor_list": [
-				"harshavemula-ua",
-				"quinnylee",
-				"JordanLaserGit"
-			]
+			"contributors": 3
 		},
         {
 			"type": "TEEHR",
@@ -116,10 +82,7 @@
 			"description": "This release patches Troute restart tooling and corrects the NRDS output time axis by adjusting t0 by one hour; an S3 reading bug was fixed and the palisade.gpkg URL was updated to the community bucket. AWS CI/CD workflows were also migrated to OIDC in adherence with CIROH's AWS policy.This release adds two new threshold-based event detection calculated fields, improves write performance via partition filtering and additional write method arguments for non-core tables, and tunes the default Spark shuffle partition count. It also fixes two bugs affecting NWM data fetching for Hawaii and kerchunk-based file naming.",
 			"release_date": "04/14/2026",
 			"version": "v0.6.2",
-			"contributors": 1,
-			"contributor_list": [
-				"Sam Lamont"
-			]
+			"contributors": 1
 		},
 		{
 			"type": "NGIAB",
@@ -128,10 +91,7 @@
 			"description": "This release rebuilds ngen-cal against the latest NGIAB base image to stay synchronized with upstream NextGen model infrastructure updates and ensure compatibility with current tooling.",
 			"release_date": "04/22/2026",
 			"version": "v0.2.0",
-			"contributors": 1,
-			"contributor_list": [
-				"JoshCu"
-			]
+			"contributors": 1
 		}
 		],
 	"March 2026 Update": [
