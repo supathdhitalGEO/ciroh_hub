@@ -8,24 +8,25 @@
 			"release_date": "04/01/2026"
 		},
 		{
-			"type": "update",
+			"type": "R20",
 			"title": "NGIAB-CCNH-NRDS Demo to NOAA-OWP: Presentation Slides",
 			"links": [],
-			"description": "Erin White and Fred Ogden invited to share an NGIAB-CCNH-NRDS demo, and [Arpita Patel](https://github.com/arpita0911patel) and [Joshua Cunningham](https://github.com/JoshCu) pulled together informative presentation that's available online at [GitHub Repository](https://github.com/CIROH-UA/Conferences/blob/main/OWP_Demo/NGIAB_NRDS_Demo_April2026.pdf).",
+			"description": "Erin White and Fred Ogden invited to share an NGIAB-CCNH-NRDS demo, and [Arpita Patel](https://github.com/arpita0911patel) and [Joshua Cunningham](https://github.com/JoshCu) pulled together informative presentation that's available online at [GitHub Repository](https://github.com/CIROH-UA/Conferences/blob/main/OWP_Demo/NGIAB_NRDS_Demo_April2026.pdf). The presentation covers an overview of the NGIAB ecosystem, a live demo of the CCNH and NRDS tools, and a discussion on how these resources can support NOAA-OWP's mission and goals. This provided NGIAB team with good feedback and insights from the NOAA-OWP team to further align NGIAB and NRDS development with the needs of the broader water modeling and prediction community.",
 			"release_date": "04/16/2026"
 		},
         {
 			"type": "update",
 			"title": "NGIAB Website Update",
-			"links": "https://github.com/CIROH-UA/ngiab-website/releases/tag/v1.3.0",
+			"links": ["https://github.com/CIROH-UA/ngiab-website/releases/tag/v1.3.0"],
 			"description": "Updated NGIAB product porfolio website to include NRDS and CCNH information. New Status Dashboard and Data Visualizers links are added.",
-			"release_date": "04/16/2026"
+			"release_date": "04/16/2026",
+			"contributors":2
 		},
 		{
 			"type": "update",
 			"title": "CIROH Hub — April Content Update",
 			"link": "https://github.com/CIROH-UA/ciroh_hub/releases/tag/v20260416-161726",
-			"description": "This update features an updated Cyberinfrastructure forms for better user experience, a fully revamped NextGen on CIROH-2i2c JupyterHub tutorial and adds featured resource carousels to Research Portal pages.",
+			"description": "This update features an updated Cyberinfrastructure forms for better user experience, a fully revamped [NextGen on CIROH-2i2c JupyterHub tutorial](/docs/products/ngiab/distributions/nextgen-2i2c/) and adds [featured resource carousels to Research Portal pages](/apps).",
 			"release_date": "04/16/2026",
 			"version": "v20260416-161726",
 			"contributors": 4
@@ -50,7 +51,7 @@
 			"type": "update",
 			"title": "CIROH Hub — April Blog Update",
 			"link": "https://github.com/CIROH-UA/ciroh_hub/pull/120",
-			"description": "This update adds a new blog post covering the TEEHR cloud-based evaluation system running on CIROH Cyberinfrastructure and it's integration with the NGIAB-NRDS ecosystem.",
+			"description": "This update adds a new blog post covering the [TEEHR cloud-based evaluation system running on CIROH Cyberinfrastructure and it's integration with the NGIAB-NRDS ecosystem](/blog/teehr-april-2026).",
 			"release_date": "03/31/2026",
 			"version": "v20260331-163535",
 			"contributors": 3

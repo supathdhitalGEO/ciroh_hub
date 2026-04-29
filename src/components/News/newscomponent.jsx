@@ -264,6 +264,7 @@ function getBadgeClass(type) {
     NRDS: "teal",
     blog: "rose",
     TEEHR: "cyan",
+    R20: "success"
   };
   return badgeMap[type] || "danger";
 }
