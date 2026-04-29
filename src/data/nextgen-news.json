@@ -1,61 +1,106 @@
 {
 	"April 2026 Update": [
-			{
+		{
 			"type": "update",
-			"title": "NGIAB Demo to OWP folks: Presentation Slides",
+			"title": "CIROH Hub featured in AWI News",
+			"links": "https://awi.ua.edu/2026/04/01/new-ciroh-hub-to-streamline-access-to-water-research-tools-and-data/",
+			"description": "The Alabama Water Institute featured the CIROH Hub launch in [a news article](https://awi.ua.edu/2026/04/01/new-ciroh-hub-to-streamline-access-to-water-research-tools-and-data/), spotlighting how the new platform unifies CIROH's research tools, data and community resources at hub.ciroh.org, replacing the legacy CIROH Portal and DocuHub.",
+			"release_date": "04/01/2026"
+		},
+		{
+			"type": "R20",
+			"title": "NGIAB-CCNH-NRDS Demo to NOAA-OWP: Presentation Slides",
 			"links": [],
-			"description": "The NGIAB team presented a demo of the NGIAB-NRDS ecosystem to the OWP folks. The presentation slides are now available on our [GitHub Repository](https://github.com/CIROH-UA/Conferences/blob/main/OWP_Demo/NGIAB_NRDS_Demo_April2026.pdf).",
+			"description": "Erin White and Fred Ogden invited to share an NGIAB-CCNH-NRDS demo, and [Arpita Patel](https://github.com/arpita0911patel) and [Joshua Cunningham](https://github.com/JoshCu) pulled together informative presentation that's available online at [GitHub Repository](https://github.com/CIROH-UA/Conferences/blob/main/OWP_Demo/NGIAB_NRDS_Demo_April2026.pdf). The presentation covers an overview of the NGIAB ecosystem, a live demo of the CCNH and NRDS tools, and a discussion on how these resources can support NOAA-OWP's mission and goals. This provided NGIAB team with good feedback and insights from the NOAA-OWP team to further align NGIAB and NRDS development with the needs of the broader water modeling and prediction community.",
 			"release_date": "04/16/2026"
-			},
-			{
-			"type": "NRDS",
-			"title": "ForcingProcessor",
-			"link": "https://github.com/CIROH-UA/forcingprocessor/releases/tag/v2.1.0",
-			"description":"This release patches existing troute restart tooling([#79](https://github.com/CIROH-UA/forcingprocessor/issues/79)) and updates the NRDS output time axis([#84](https://github.com/CIROH-UA/forcingprocessor/issues/84)).",
-			"release_date": "04/24/2026",
-			"contributors": 3
-			},
-			{
-			"type": "NRDS",
-			"title": "DataStreamCLI",
-			"link": "https://github.com/CIROH-UA/datastreamcli/releases/tag/v1.7.1",
-			"description":"This release patches existing troute restart tooling([#97](https://github.com/CIROH-UA/datastreamcli/issues/97), [#96](https://github.com/CIROH-UA/datastreamcli/pull/96))). In this release is an update to [awiciroh/ciroh-ngen-image:v1.8.0](https://github.com/CIROH-UA/NGIAB-CloudInfra/releases/tag/v1.8.0), which includes a model integration form, SUMMA integration, and support for hourly and daily δHBV2. Future releases may include updates to datastreamcli tooling to support these new models in NGIAB..",
-			"release_date": "04/24/2026",
-			"contributors": 3
-			},
-            {
-			"type": "NRDS",
-			"title": "Ngen-DataStream",
-			"link": "https://github.com/CIROH-UA/ngen-datastream/releases/tag/v3.1.0",
-			"description":"In this latest update to the NRDS, a new datastream has been deployed for generating NextGen compatible Troute restart files from NWM channel routing outputs. This restart datastream provides the routing-only datastream with initial stream flow values, benefiting the accuracy of the output stream flow predictions. This contribution was initiated and developed by [@quinnylee](https://github.com/quinnylee) [(CIROH-UA/datastreamcli#69)](https://github.com/CIROH-UA/datastreamcli/issues/69) and deployed by [@harshavemula-ua](https://github.com/harshavemula-ua) in [#349](https://github.com/CIROH-UA/ngen-datastream/pull/349).",
-			"release_date": "04/27/2026",
-			"contributors": 3
-			},
-			{
+		},
+        {
 			"type": "update",
-			"title": "Infrastructure Form Updates",
-			"links": ["https://github.com/CIROH-UA/ciroh_hub/pull/111"],
-			"description": "All links on CIROH Hub have been updated to point to the new infrastructure form template. The new template is more user-friendly and includes detailed instructions to guide users through submitting an infrastructure request.",
-			"release_date": "04/27/2026",
-			"contributors": 1
-			},
-			{
+			"title": "NGIAB Website Update",
+			"links": ["https://github.com/CIROH-UA/ngiab-website/releases/tag/v1.3.0"],
+			"description": "Updated NGIAB product porfolio website to include NRDS and CCNH information. New Status Dashboard and Data Visualizers links are added.",
+			"release_date": "04/16/2026",
+			"contributors":2
+		},
+		{
 			"type": "update",
-			"title": "NGIAB Presented at EWRI 2026 NextGen Workshop",
+			"title": "CIROH Hub — April Content Update",
+			"link": "https://github.com/CIROH-UA/ciroh_hub/releases/tag/v20260416-161726",
+			"description": "This update features an updated Cyberinfrastructure forms for better user experience, a fully revamped [NextGen on CIROH-2i2c JupyterHub tutorial](/docs/products/ngiab/distributions/nextgen-2i2c/) and adds [featured resource carousels to Research Portal pages](/apps).",
+			"release_date": "04/16/2026",
+			"version": "v20260416-161726",
+			"contributors": 4
+		},
+		{
+			"type": "update",
+			"title": "NGIAB Workshop at EWRI 2026 Conference",
 			"links": [],
 			"description": "[Sifan Koriche](https://github.com/skoriche) and [Joshua Cunningham](https://github.com/JoshCu) presented at the [EWRI 2026 NextGen Workshop](https://www.ewricongress.org/program/technical-workshops#:~:text=Oregon%20State%20University-,Technical%20Workshop,-%3A%20Application%20of%20NOAA). The workshop covered an end-to-end exploration of the broader NextGen Framework and a hands-on session on hydrological model calibration within the NGIAB ecosystem. The presentation slides are now available on [EWRI2026_NextGen_Workshop Repository](https://github.com/skoriche/EWRI2026_NextGen_Workshop).",
 			"release_date": "04/27/2026",
 			"contributors": 2
-			},
-			{
+		},
+		{
 			"type": "update",
-			"title": "Stevens River Ice Mapping System Added to CIROH Hub",
+			"title": "Stevens River Ice Mapping System - Added to CIROH Hub",
 			"links": [],
-			"description": "The Stevens River Ice Mapping System has been added to the [CIROH Hub](https://hub.ciroh.org) apps list. Want to add your app to the portal? Tag your HydroShare resource with `ciroh_hub_app`. If you have datasets, notebooks, presentation or publications and want to learn more about how to contribute, visit [hub.ciroh.org/contribute](https://hub.ciroh.org/contribute).",
+			"description": "The Stevens River Ice Mapping System has been added to the [CIROH Hub apps list](/apps). Want to add your app to the portal? Tag your HydroShare resource with `ciroh_hub_app`. If you have datasets, notebooks, presentation or publications and want to learn more about how to contribute, visit [hub.ciroh.org/contribute](/contribute).",
 			"release_date": "04/27/2026",
 			"contributors": 1
-			}
-		
+		},
+		{
+			"type": "update",
+			"title": "CIROH Hub — April Blog Update",
+			"link": "https://github.com/CIROH-UA/ciroh_hub/pull/120",
+			"description": "This update adds a new blog post covering the [TEEHR cloud-based evaluation system running on CIROH Cyberinfrastructure and it's integration with the NGIAB-NRDS ecosystem](/blog/teehr-april-2026).",
+			"release_date": "03/31/2026",
+			"version": "v20260331-163535",
+			"contributors": 3
+		},
+		{
+			"type": "NRDS",
+			"title": "Ngen-DataStream",
+			"link": "https://github.com/CIROH-UA/ngen-datastream/releases/tag/v3.1.0",
+			"description": "This release deploys a new Troute restart datastream that seeds the routing-only model with initial NWM channel routing outputs, improving NextGen stream flow prediction accuracy. Contributors also delivered AMI updates for the DAILY resolution fix and added streamcommander support for ANALYSIS_ASSIM_RESTART_CHRT forcing source.",
+			"release_date": "04/27/2026",
+			"version": "v3.1.0",
+			"contributors": 3
+		},
+		{
+			"type": "NRDS",
+			"title": "DataStreamCLI",
+			"link": "https://github.com/CIROH-UA/datastreamcli/releases/tag/v1.7.1",
+			"description": "This release patches Troute restart DAILY path resolution and upgrades the integrated NGIAB image to v1.8.0, which adds SUMMA integration, a model form UI, and support for hourly/daily δHBV2. CI/CD workflows were migrated from static AWS keys to OIDC for improved security compliance.",
+			"release_date": "04/24/2026",
+			"version": "v1.7.1",
+			"contributors": 3
+		},
+		{
+			"type": "NRDS",
+			"title": "ForcingProcessor",
+			"link": "https://github.com/CIROH-UA/forcingprocessor/releases/tag/v.2.1.1",
+			"description": "This release patches Troute restart tooling and corrects the NRDS output time axis by adjusting t0 by one hour; an S3 reading bug was fixed and the palisade.gpkg URL was updated to the community bucket. AWS CI/CD workflows were also migrated to OIDC in adherence with CIROH's AWS policy.",
+			"release_date": "04/24/2026",
+			"version": "v2.1.1",
+			"contributors": 3
+		},
+        {
+			"type": "TEEHR",
+			"title": "TEEHR",
+			"link": "https://github.com/RTIInternational/teehr/releases/tag/v0.6.2",
+			"description": "This release adds two new threshold-based event detection calculated fields, improves write performance via partition filtering and additional write method arguments for non-core tables, and tunes the default Spark shuffle partition count. It also fixes two bugs affecting NWM data fetching for Hawaii and kerchunk-based file naming.",
+			"release_date": "04/14/2026",
+			"version": "v0.6.2",
+			"contributors": 1
+		},
+		{
+			"type": "NGIAB",
+			"title": "ngen-cal",
+			"link": "https://github.com/CIROH-UA/ngen-cal/releases/tag/v0.2.0",
+			"description": "This release rebuilds ngen-cal against the latest NGIAB base image to stay synchronized with upstream NextGen model infrastructure updates and ensure compatibility with current tooling.",
+			"release_date": "04/22/2026",
+			"version": "v0.2.0",
+			"contributors": 1
+		}
 		],
 	"March 2026 Update": [
 		 	{
