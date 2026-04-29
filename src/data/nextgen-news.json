@@ -2,6 +2,13 @@
 	"April 2026 Update": [
 		{
 			"type": "update",
+			"title": "CIROH Hub featured in AWI News",
+			"links": "https://awi.ua.edu/2026/04/01/new-ciroh-hub-to-streamline-access-to-water-research-tools-and-data/",
+			"description": "The Alabama Water Institute featured the CIROH Hub launch in [a news article](https://awi.ua.edu/2026/04/01/new-ciroh-hub-to-streamline-access-to-water-research-tools-and-data/), spotlighting how the new platform unifies CIROH's research tools, data and community resources at hub.ciroh.org, replacing the legacy CIROH Portal and DocuHub.",
+			"release_date": "04/01/2026"
+		},
+		{
+			"type": "update",
 			"title": "NGIAB-CCNH-NRDS Demo to NOAA-OWP: Presentation Slides",
 			"links": [],
 			"description": "Erin White and Fred Ogden invited to share an NGIAB-CCNH-NRDS demo, and [Arpita Patel](https://github.com/arpita0911patel) and [Joshua Cunningham](https://github.com/JoshCu) pulled together informative presentation that's available online at [GitHub Repository](https://github.com/CIROH-UA/Conferences/blob/main/OWP_Demo/NGIAB_NRDS_Demo_April2026.pdf).",
