@@ -77,9 +77,9 @@
 		},
         {
 			"type": "TEEHR",
-			"title": "ForcingProcessor",
+			"title": "TEEHR",
 			"link": "https://github.com/RTIInternational/teehr/releases/tag/v0.6.2",
-			"description": "This release patches Troute restart tooling and corrects the NRDS output time axis by adjusting t0 by one hour; an S3 reading bug was fixed and the palisade.gpkg URL was updated to the community bucket. AWS CI/CD workflows were also migrated to OIDC in adherence with CIROH's AWS policy.This release adds two new threshold-based event detection calculated fields, improves write performance via partition filtering and additional write method arguments for non-core tables, and tunes the default Spark shuffle partition count. It also fixes two bugs affecting NWM data fetching for Hawaii and kerchunk-based file naming.",
+			"description": "This release adds two new threshold-based event detection calculated fields, improves write performance via partition filtering and additional write method arguments for non-core tables, and tunes the default Spark shuffle partition count. It also fixes two bugs affecting NWM data fetching for Hawaii and kerchunk-based file naming.",
 			"release_date": "04/14/2026",
 			"version": "v0.6.2",
 			"contributors": 1
