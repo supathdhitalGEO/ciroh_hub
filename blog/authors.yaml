@@ -181,15 +181,27 @@ martyn-clark:
 
 matt-denno:
   name: Matthew Denno
-  title: Senior Engineering Applications Developer at RTI International
+  title: Lead Software Developer at RTI International
   url: https://www.linkedin.com/in/matthew-denno-pe-9b9316a/
-  image_url: /img/blog/authors/matt-denno.jpeg
+  image_url: /img/profiles/Matthew_Denno.jpg
 
 sam-lamont:
   name: Sam Lamont
-  title: Environmental Applications Developer at RTI International
+  title: Lead Software Developer at RTI International
   url: https://www.linkedin.com/in/sam-lamont-3a972813/
-  image_url: /img/blog/authors/sam-lamont.jpeg
+  image_url: /img/blog/authors/Sam_Lamont.jpg
+
+katie-van-werkhoven:
+  name: Katie van Werkhoven
+  title: Lead Science Advisor at RTI International
+  url: https://www.linkedin.com/in/katievanwerkhoven/
+  image_url: /img/profiles/Katie_Werkhoven.jpg
+
+sam-landsteiner:
+  name: Sam Landsteiner
+  title: Software Developer at RTI International
+  url: https://www.linkedin.com/in/sam-landsteiner-00752913/
+  image_url: /img/profiles/Sam_Landsteiner.png
 
 darri-eythorsson:
   name: Darri Eythorsson
