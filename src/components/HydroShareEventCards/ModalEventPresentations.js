@@ -68,7 +68,7 @@ function filterAndSortPresentations(presentations, filterSearch, sortType, sortD
  * @param {Array} presentations - List of presentations to display.
  * @param {boolean} loadError - Whether there was an error loading the presentations.
  */
-export default function EventPresentationsModal({ show, onClose, title, presentations, loadError }) {
+export default function ModalEventPresentations({ show, onClose, title, presentations, loadError }) {
     const defaultImage = 'https://ciroh-portal-static-data.s3.us-east-1.amazonaws.com/presentation_placeholder.png';
 
     // Search / Sort State

@@ -5,7 +5,7 @@ import { LuLayers3 } from 'react-icons/lu';
 import { HiOutlineGlobeAlt, HiOutlineUserGroup } from 'react-icons/hi';
 import { isPlaceholder, splitAuthors, StatTag, ActionLink } from '@site/src/components/HydroShareResourcesCards/shared';
 import { fetchResourcesFromCollection, fetchResourceCustomMetadata, fetchResourceImageUrls, } from '@site/src/components/HydroShareImporter';
-import EventPresentationsModal from './ModalEventPresentations';
+import ModalEventPresentations from './ModalEventPresentations';
 
 /**
  * Load event presentations for a given collection.
@@ -224,7 +224,7 @@ export function EventCard({ resource, defaultImage }) {
             </article>
             
             {/* Event Presentations Modal */}
-            <EventPresentationsModal
+            <ModalEventPresentations
                 show={showModal}
                 onClose={() => setShowModal(false)}
                 title={title}
