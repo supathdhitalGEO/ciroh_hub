@@ -7,7 +7,11 @@ import React, {
   startTransition,
   useMemo,
 } from 'react';
-import Zotero           from 'zotero-api-client';
+import {
+  zoteroApiCreate,
+  zoteroFetchTopItems,
+  zoteroFetchCollections,
+} from '../ZoteroImporter';
 import SelectCollection from './SelectCollection';
 import PublicationCard  from './PublicationCard';
 import SkeletonCard     from './SkeletonCard';
@@ -23,27 +27,11 @@ const SCROLL_THRESHOLD = 200;
 let   debounceTimer    = null;
 const DEBOUNCE_MS      = 1_000;
 
-/* ----- helper: read "Total-Results" header -------------------------------- */
-export async function fetchTotal(groupId, apiKey, params, keyStr = '') {
-  const path = keyStr ? `/collections/${keyStr}/items/top` : '/items/top';
-
-  const url = new URL(`https://api.zotero.org/groups/${groupId}${path}`);
-  Object.entries({ ...params, limit: 1 }).forEach(([k, v]) =>
-    url.searchParams.append(k, v),
-  );
-
-  const resp = await fetch(url.href, { headers: { 'Zotero-API-Key': apiKey } });
-  if (!resp.ok) return null;
-  const hdr = resp.headers.get('Total-Results');
-  return hdr ? Number(hdr) : null;
-}
-
 /* ------------------------------------------------------------------------- */
 export default function Publications({ apiKey, groupId }) {
-  console.log(apiKey, groupId);
   /* memoised Zotero client (doesn't re-create on every render) */
   const zotero = useMemo(
-    () => new Zotero(apiKey).library('group', groupId),
+    () => zoteroApiCreate(apiKey, groupId, 'group'),
     [apiKey, groupId],
   );
 
@@ -56,7 +44,6 @@ export default function Publications({ apiKey, groupId }) {
   const fetching = useRef(false);
 
   const [totalItems,     setTotalItems]     = useState(null);
-  const [totalLoading,   setTotalLoading]   = useState(false);
   const [collectionsCount, setCollectionsCount] = useState(null);
   const [collectionsLoading, setCollectionsLoading] = useState(false);
 
@@ -71,35 +58,6 @@ export default function Publications({ apiKey, groupId }) {
 
   /* stable key string for API paths & dependency arrays */
   const collectionKeyStr = selectedCollection?.value ?? '';  // '' ⇒ no filter
-
-  /* -------- total-count header ----------------------------------- */
-  const refreshTotal = useCallback(async () => {
-    const params = {
-      sort: sortType,
-      direction: sortDirection,
-      ...(filterSearch ? { q: filterSearch } : {}),
-      ...(filterItemType !== 'all' ? { itemType: filterItemType } : {}),
-    };
-    try {
-      setTotalLoading(true);
-      setTotalItems(
-        await fetchTotal(groupId, apiKey, params, collectionKeyStr),
-      );
-    } catch (e) {
-      console.error('Total-Results header error:', e);
-      setTotalItems(null);
-    } finally {
-      setTotalLoading(false);
-    }
-  }, [
-    groupId,
-    apiKey,
-    filterSearch,
-    filterItemType,
-    sortType,
-    sortDirection,
-    collectionKeyStr,
-  ]);
 
   /* -------- loader ----------------------------------------------- */
   const loadPublications = useCallback(
@@ -128,13 +86,11 @@ export default function Publications({ apiKey, groupId }) {
           ...(filterItemType !== 'all' ? { itemType: filterItemType } : {}),
         };
 
-        /* build request chain */
-        let api = zotero;
-        api = collectionKeyStr ? api.collections(collectionKeyStr).items()
-                               : api.items();
+        /* fetch publications */
+        const { data: newItems, total, hasMore: morePages } = await zoteroFetchTopItems(zotero, query, collectionKeyStr || null);
 
-        const newItems = (await api.top().get(query)).getData();
-        setHasMore(newItems.length === PAGE_SIZE);
+        setTotalItems(total);
+        setHasMore(morePages);
 
         /* swap placeholders */
         setDisplayedItems(prev => {
@@ -156,6 +112,7 @@ export default function Publications({ apiKey, groupId }) {
     },
     [
       zotero,
+      apiKey,
       collectionKeyStr,
       filterSearch,
       filterItemType,
@@ -169,8 +126,8 @@ export default function Publications({ apiKey, groupId }) {
     setDisplayedItems([]);
     setCurrentPage(0);
     setHasMore(true);
+    setTotalItems(null);
     loadPublications(0);
-    refreshTotal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     filterSearch,
@@ -220,12 +177,8 @@ export default function Publications({ apiKey, groupId }) {
     (async () => {
       try {
         setCollectionsLoading(true);
-        const res = await zotero.collections().get();
-        const raw = res?.raw ?? [];
-        const count = Array.isArray(raw)
-          ? raw.length
-          : (typeof res?.getData === 'function' ? res.getData().length : 0);
-        if (!cancelled) setCollectionsCount(count);
+        const { total } = await zoteroFetchCollections(zotero, { limit: 1 });
+        if (!cancelled) setCollectionsCount(total);
       } catch (err) {
         console.error('Could not load Zotero collections count:', err);
         if (!cancelled) setCollectionsCount(null);
@@ -277,7 +230,7 @@ export default function Publications({ apiKey, groupId }) {
     };
   }, [displayedItems, totalItems, collectionsCount]);
 
-  const statsLoading = loading || fetching.current || totalLoading || collectionsLoading;
+  const statsLoading = loading || fetching.current || collectionsLoading;
 
   /* ---------------- render ---------------- */
   return (
