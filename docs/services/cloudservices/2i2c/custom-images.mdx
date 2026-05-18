@@ -1,6 +1,6 @@
 ---
-sidebar_position: 22
-title: "Request Custom Images"
+sidebar_position: 21
+title: "Custom Images"
 description: "Request JupyterHub server images tailored to your needs."
 tags: [CIROH, Services, Cloud Services, JupyterHub, 2i2c, Google Cloud, Education]
 ---
@@ -13,30 +13,9 @@ tags: [CIROH, Services, Cloud Services, JupyterHub, 2i2c, Google Cloud, Educatio
     30-39: Miscellaneous/Troubleshooting
 */}
 
-import Link from '@docusaurus/Link'
+import GitHubReadme from '@site/src/components/GitHubHandling/GitHubReadme';
 
-# A Step-by-Step Guide: Requesting custom images
-If you have a request for creating custom images, then please follow these instructions.
-### 1. Create an environment.yml file:
-- Open your terminal or command prompt. Make sure you have conda installed and activated in the environment that contains the packages you want to use for creating custom images. Learn more [here](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html).
-
-- Run the following command, replacing **ENVNAME** with the actual name of your environment.
-
-```bash
-conda env export -n ENVNAME > environment.yml
-```
-
-### 2. Open a GitHub Ticket
-
-- Open a ticket in the [CIROH image repository](https://github.com/CIROH-UA/awi-ciroh-image/issues).
-- Describe the custom image or software changes you need.
-- If relevant, attach or paste the `environment.yml` file you created in step 1.
-
-<Link class="button button--active button--primary" to="https://github.com/CIROH-UA/awi-ciroh-image/issues">Open a Custom Image Ticket</Link>
-
-### 3. Follow up with the CIROH team if needed
-
-- If the team has questions about your request, they will follow up on the GitHub ticket.
+<GitHubReadme username="ciroh-ua" repo="awi-ciroh-image" />
 
 
  
