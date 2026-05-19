@@ -11,6 +11,7 @@ import {
   zoteroApiCreate,
   zoteroFetchTopItems,
   zoteroFetchCollections,
+  zoteroFetchLinkedUrls,
 } from '../ZoteroImporter';
 import SelectCollection from './SelectCollection';
 import PublicationCard  from './PublicationCard';
@@ -92,16 +93,49 @@ export default function Publications({ apiKey, groupId }) {
         setTotalItems(total);
         setHasMore(morePages);
 
-        /* swap placeholders */
+        /* display publications while thumbnails are loading */
         setDisplayedItems(prev => {
           const upd   = [...prev];
           const first = upd.findIndex(i => i.placeholder);
-          newItems.forEach((it, i) => (upd[first + i] = it));
+          newItems.forEach((it, i) => (upd[first + i] = { ...it, thumbnailLoading: true }));
           if (newItems.length < PAGE_SIZE) {
             upd.splice(first + newItems.length, PAGE_SIZE - newItems.length);
           }
           return upd;
         });
+
+        /* fetch URLs for thumbnails and images for each publication */
+        for (const item of newItems) {
+          // fetch linked URLs for the item
+          zoteroFetchLinkedUrls(zotero, item.key)
+            .then(linkedUrls => {
+              // Find thumbnail URL (if any) - convention: title is "thumbnail"
+              const thumbnail = linkedUrls.find(a => a.title === 'thumbnail');
+
+              // Find image URLs (if any) - convention: title starts with "image-"
+              const images = linkedUrls
+                .filter(a => /^image-\d+$/.test(a.title))
+                .sort((a, b) => {
+                  const an = parseInt(a.title.slice('image-'.length), 10);
+                  const bn = parseInt(b.title.slice('image-'.length), 10);
+                  return an - bn;
+                })
+                .map(a => a.url);
+              
+              // Update the publication card with the thumbnail URL and images
+              setDisplayedItems(prev => prev.map(it =>
+                it.key === item.key
+                  ? { ...it, thumbnailUrl: thumbnail?.url ?? null, images, thumbnailLoading: false }
+                  : it
+              ));
+            })
+            .catch(err => {
+              console.error(`Failed to fetch linked URLs for item ${item.key}:`, err);
+              setDisplayedItems(prev => prev.map(it =>
+                it.key === item.key ? { ...it, thumbnailLoading: false } : it
+              ));
+            });
+        }
       } catch {
         if (apiKey === 'dummy') setError('Site administrator: Please provide a Zotero API key in this website\'s environment file.');
         else setError('Error retrieving the publications.');

@@ -26,6 +26,9 @@ export default function PublicationCard({ publication, index }) {
     itemType,
     publicationTitle,
     DOI,
+    thumbnailUrl,
+    thumbnailLoading,
+    images = [],
   } = publication;
 
   // Handle creators with a smaller separator between names
@@ -66,30 +69,47 @@ export default function PublicationCard({ publication, index }) {
         <div className={styles.publishDate}>Published on {pubDate}</div>
       )}
 
-      {/* 3. Title */}
-      <h3 className={styles.cardTitle}>{title}</h3>
-
-      {/* 4. Authors */}
-      <div className={styles.authors}>{authorList}</div>
-
-      {/* 5. Journal */}
-      {publicationTitle && (
-        <div className={styles.journal}>{publicationTitle}</div>
-      )}
-
-      {/* 6. DOI */}
-      {DOI && (
-        <div className={styles.doi}>
-          doi{' '}
-          <p
-            href={`https://doi.org/${DOI}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {DOI}
-          </p>
+      {/* 3. Thumbnail */}
+      {(thumbnailLoading || thumbnailUrl) && (
+        <div className={styles.thumbnailContainer}>
+          {thumbnailUrl ? (
+            <img
+              src={thumbnailUrl}
+              alt={`${title} thumbnail`}
+              className={styles.thumbnail}
+            />
+          ) : (
+            <div className={styles.thumbnailSkeleton} />
+          )}
         </div>
       )}
+
+      <div className={styles.cardScroll}>
+        {/* 4. Title */}
+        <h3 className={styles.cardTitle}>{title}</h3>
+
+        {/* 5. Authors */}
+        <div className={styles.authors}>{authorList}</div>
+
+        {/* 6. Journal */}
+        {publicationTitle && (
+          <div className={styles.journal}>{publicationTitle}</div>
+        )}
+
+        {/* 7. DOI */}
+        {DOI && (
+          <div className={styles.doi}>
+            doi{' '}
+            <p
+              href={`https://doi.org/${DOI}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {DOI}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 

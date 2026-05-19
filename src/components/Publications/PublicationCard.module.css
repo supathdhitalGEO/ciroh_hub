@@ -214,7 +214,7 @@
     color: var(--ifm-color-primary);
     margin-bottom: 0.25rem;
   }
-  
+
   /* 2. Published on Date */
   .publishDate {
     font-size: 0.75rem;
@@ -222,34 +222,96 @@
     margin-bottom: 0.5rem;
   }
   
-  /* 3. Title */
+  /* 3. Thumbnail */
+  .thumbnailContainer {
+    width: 100%;
+    height: 160px;
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Loading placeholder shown in the thumbnail slot while the thumbnail is being fetched */
+  .thumbnailSkeleton {
+    width: 100%;
+    height: 100%;
+    background: var(--ifm-color-emphasis-100);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .thumbnailSkeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(var(--ifm-color-emphasis-100-rgb), 0.4),
+      transparent
+    );
+    animation: skeletonShine 1.5s infinite;
+  }
+
+  /* Scrollable body when content overflows */
+  .cardScroll {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #9ca6b1 #e0e0e000;
+  }
+
+  .cardScroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .cardScroll::-webkit-scrollbar-thumb {
+    background-color: #9ca6b1;
+    border-radius: 4px;
+  }
+
+  .cardScroll::-webkit-scrollbar-track {
+    background-color: #e0e0e000;
+  }
+
+  /* 4. Title */
   .cardTitle {
     font-size: 1.2rem;
     margin: 0.5rem 0;
     color: var(--ifm-heading-color);
   }
-  
-  /* 4. Authors */
+
+  /* 5. Authors */
   .authors {
     font-size: 0.9rem;
     color: var(--ifm-font-color-base);
     margin-bottom: 0.5rem;
   }
-  
+
   /* Separator between authors, making the dot smaller */
   .separator {
     font-size: 0.75rem;
   }
-  
-  /* 5. Journal */
+
+  /* 6. Journal */
   .journal {
     font-size: 0.9rem;
     font-style: italic;
     color: var(--ifm-color-emphasis-700);
     margin-bottom: 0.5rem;
   }
-  
-  /* 6. DOI */
+
+  /* 7. DOI */
   .doi {
     font-size: 0.9rem;
     color: var(--ifm-color-emphasis-700);
