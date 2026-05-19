@@ -112,6 +112,7 @@ jobs:
           HS_FEATURED_COURSES_COLLECTION_ID: ${{ vars.HS_FEATURED_COURSES_COLLECTION_ID }}
           HS_FEATURED_PRESENTATIONS_COLLECTION_ID: ${{ vars.HS_FEATURED_PRESENTATIONS_COLLECTION_ID }}
           HS_FEATURED_NOTEBOOKS_COLLECTION_ID: ${{ vars.HS_FEATURED_NOTEBOOKS_COLLECTION_ID }}
+          GH_PROJECT_TOKEN: ${{ vars.GH_PROJECT_TOKEN }}
         
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4
