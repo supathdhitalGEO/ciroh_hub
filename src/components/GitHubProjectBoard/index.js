@@ -52,15 +52,27 @@ export default function GitHubProjectBoard() {
                       __typename
                       ... on ProjectV2ItemFieldSingleSelectValue {
                         name
-                        field { name }
+                        field {
+                          ... on ProjectV2FieldCommon {
+                            name
+                          }
+                        }
                       }
                       ... on ProjectV2ItemFieldTextValue {
                         text
-                        field { name }
+                        field {
+                          ... on ProjectV2FieldCommon {
+                            name
+                          }
+                        }
                       }
                       ... on ProjectV2ItemFieldNumberValue {
                         number
-                        field { name }
+                        field {
+                          ... on ProjectV2FieldCommon {
+                            name
+                          }
+                        }
                       }
                     }
                   }
