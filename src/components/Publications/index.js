@@ -12,7 +12,7 @@ import {
   zoteroFetchTopItems,
   zoteroFetchCollections,
   zoteroFetchLinkedUrls,
-} from '../ZoteroImporter';
+} from '@site/src/components/ZoteroImporter';
 import SelectCollection from './SelectCollection';
 import PublicationCard  from './PublicationCard';
 import SkeletonCard     from './SkeletonCard';
