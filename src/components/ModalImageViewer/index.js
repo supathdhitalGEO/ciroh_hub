@@ -152,6 +152,16 @@ export default function ModalImageViewer({ open, onClose, title, images }) {
         };
     }, [open]);
 
+    // Dismiss the modal when the user presses Escape
+    useEffect(() => {
+        if (!open) return;
+        const onKeyDown = (e) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, [open, onClose]);
+
     // Don't render the modal at all if it's not open
     if (!open) return null;
 

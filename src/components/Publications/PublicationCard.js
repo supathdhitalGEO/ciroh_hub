@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import styles from './PublicationCard.module.css';
 import { useColorMode } from '@docusaurus/theme-common';
@@ -48,16 +48,6 @@ export default function PublicationCard({ publication, index }) {
 
   // Format the date
   const pubDate = date;
-
-  // Close image modal on Escape key press
-  useEffect(() => {
-      if (!showImageModal) return;
-      const onKeyDown = (e) => {
-          if (e.key === 'Escape') setShowImageModal(false);
-      };
-      window.addEventListener('keydown', onKeyDown);
-      return () => window.removeEventListener('keydown', onKeyDown);
-  }, [showImageModal]);
 
   // Card content component
   const CardContent = () => (
