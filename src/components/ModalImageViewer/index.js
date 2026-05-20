@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from 'react-dom';
 import { FaWindowClose } from 'react-icons/fa';
+import { useColorMode } from '@docusaurus/theme-common';
 import styles from './styles.module.css';
 import "../HomepageFeatures/bootstrap.min.css";
 
@@ -10,8 +11,12 @@ import "../HomepageFeatures/bootstrap.min.css";
  * @param {function} onClose - Function to call when the modal should be closed.
  * @param {string} title - Title to display at the top of the modal.
  * @param {string[]} images - Array of image URLs to display in the modal and as thumbnails.
+ * @param {string} indicatorColorLight - Color of the indicator in light mode. Defaults to '#1D4ED8' (blue).
+ * @param {string} indicatorColorDark - Color of the indicator in dark mode. Defaults to '#FFFFFF' (white).
  */
-export default function ModalImageViewer({ open, onClose, title, images }) {
+export default function ModalImageViewer({ open, onClose, title, images, indicatorColorLight = '#1D4ED8', indicatorColorDark = '#FFFFFF' }) {
+    const { colorMode } = useColorMode();                                           // Active site theme ('light' or 'dark')
+    const indicatorColor = colorMode === 'dark' ? indicatorColorDark : indicatorColorLight;
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);                // Index of the currently selected image in the modal
     const [indicatorRect, setIndicatorRect] = useState({});                         // State to hold the position and size of the selected image indicator
     const [enableTransition, setEnableTransition] = useState(false);                // State to control transition animation for indicator
@@ -221,11 +226,12 @@ export default function ModalImageViewer({ open, onClose, title, images }) {
                         <div
                             id='selected-image-indicator'
                             className={
-                                `tw-absolute pointer-events-none tw-border-solid tw-border-8 tw-border-blue-700 dark:tw-border-white tw-rounded-lg` +
+                                `tw-absolute pointer-events-none tw-border-solid tw-border-8 tw-rounded-lg` +
                                 (enableTransition ? ' tw-transition-all tw-duration-300 tw-ease-in-out' : '') +
                                 (imagesLoadedCount === images.length && images.length > 0 ? '' : ' tw-invisible')
                             }
                             style={{
+                                borderColor: indicatorColor,
                                 left: indicatorRect.left,
                                 top: indicatorRect.top,
                                 width: indicatorRect.width,
