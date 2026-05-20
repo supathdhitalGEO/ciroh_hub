@@ -126,7 +126,7 @@ export default function PublicationCard({ publication, index }) {
           </div>
         )}
       </div>
-    <ModalImageViewer className="tw-absolute" open={showImageModal} onClose={() => setShowImageModal(false)} title={title} images={images} />
+    <ModalImageViewer className="tw-absolute" open={showImageModal} onClose={() => setShowImageModal(false)} title={title} images={images} indicatorColorDark="#F5A424" />
     </div>
   );
 
