@@ -121,13 +121,13 @@ export default function PublicationCard({ publication, index }) {
         {DOI && (
           <div className={styles.doi}>
             doi{' '}
-            <p
+            <a
               href={`https://doi.org/${DOI}`}
               target="_blank"
               rel="noopener noreferrer"
             >
               {DOI}
-            </p>
+            </a>
           </div>
         )}
       </div>
