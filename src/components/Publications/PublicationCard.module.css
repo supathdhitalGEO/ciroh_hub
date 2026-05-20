@@ -280,11 +280,21 @@
     opacity: 0;
     transition: opacity 0.2s ease;
     cursor: pointer;
+    /* Remove default button styles */
+    border: 0;
+    padding: 0;
+    font: inherit;
   }
 
   .thumbnailContainer:hover .imageIcon,
   .thumbnailContainer:focus-within .imageIcon {
     opacity: 1;
+  }
+
+  /* Visible ring for keyboard users when the button is focused via Tab. */
+  .thumbnailContainer .imageIcon:focus-visible {
+    outline: 2px solid var(--ifm-color-primary);
+    outline-offset: -2px;
   }
 
   /* Scrollable body when content overflows */

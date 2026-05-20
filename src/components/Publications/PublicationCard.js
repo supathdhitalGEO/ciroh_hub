@@ -93,9 +93,14 @@ export default function PublicationCard({ publication, index }) {
                 className={styles.thumbnail}
               />
               {/* Open Image Viewer Icon */}
-              <div className={styles.imageIcon} onClick={() => setShowImageModal(true)}>
-                  <FaRegImage size={40} />
-              </div>
+              <button
+                type="button"
+                className={styles.imageIcon}
+                onClick={() => setShowImageModal(true)}
+                aria-label={`View images for ${title}`}
+              >
+                <FaRegImage size={40} />
+              </button>
             </>
           ) : (
             <div className={styles.thumbnailSkeleton} />
