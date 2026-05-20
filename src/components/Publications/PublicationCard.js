@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import styles from './PublicationCard.module.css';
 import { useColorMode } from '@docusaurus/theme-common';
-
+import ModalImageViewer from '@site/src/components/ModalImageViewer';
+import { FaRegImage } from 'react-icons/fa';
 
 
 function addSpacesOnCaseTransition(str) {
@@ -15,6 +16,7 @@ function addSpacesOnCaseTransition(str) {
 
 export default function PublicationCard({ publication, index }) {
   const { colorMode } = useColorMode();
+  const [showImageModal, setShowImageModal] = useState(false);
 
   if (!publication) return null;
 
@@ -45,7 +47,17 @@ export default function PublicationCard({ publication, index }) {
       : 'No authors listed';
 
   // Format the date
-  const pubDate = date
+  const pubDate = date;
+
+  // Close image modal on Escape key press
+  useEffect(() => {
+      if (!showImageModal) return;
+      const onKeyDown = (e) => {
+          if (e.key === 'Escape') setShowImageModal(false);
+      };
+      window.addEventListener('keydown', onKeyDown);
+      return () => window.removeEventListener('keydown', onKeyDown);
+  }, [showImageModal]);
 
   // Card content component
   const CardContent = () => (
@@ -73,11 +85,18 @@ export default function PublicationCard({ publication, index }) {
       {(thumbnailLoading || thumbnailUrl) && (
         <div className={styles.thumbnailContainer}>
           {thumbnailUrl ? (
-            <img
-              src={thumbnailUrl}
-              alt={`${title} thumbnail`}
-              className={styles.thumbnail}
-            />
+            <>
+              {/* Thumbnail Image */}
+              <img
+                src={thumbnailUrl}
+                alt={`${title} thumbnail`}
+                className={styles.thumbnail}
+              />
+              {/* Open Image Viewer Icon */}
+              <div className={styles.imageIcon} onClick={() => setShowImageModal(true)}>
+                  <FaRegImage size={40} />
+              </div>
+            </>
           ) : (
             <div className={styles.thumbnailSkeleton} />
           )}
@@ -86,7 +105,9 @@ export default function PublicationCard({ publication, index }) {
 
       <div className={styles.cardScroll}>
         {/* 4. Title */}
-        <h3 className={styles.cardTitle}>{title}</h3>
+        <a href={url} target="_blank" rel="noopener noreferrer" className={styles.cardLink}>
+          <h3 className={styles.cardTitle}>{title}</h3>
+        </a>
 
         {/* 5. Authors */}
         <div className={styles.authors}>{authorList}</div>
@@ -110,22 +131,9 @@ export default function PublicationCard({ publication, index }) {
           </div>
         )}
       </div>
+    <ModalImageViewer className="tw-absolute" open={showImageModal} onClose={() => setShowImageModal(false)} title={title} images={images} />
     </div>
   );
-
-  // If there's a URL, wrap the card in a link
-  if (url) {
-    return (
-      <a
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.cardLink}
-      >
-        <CardContent />
-      </a>
-    );
-  }
 
   return <CardContent />;
 }

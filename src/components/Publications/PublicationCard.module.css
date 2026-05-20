@@ -200,7 +200,13 @@
   .cardLink:focus,
   .cardLink:active {
     text-decoration: none;
-    color: inherit;
+    color: #22D3EE;
+  }
+
+  .cardLink:hover .cardTitle,
+  .cardLink:focus .cardTitle,
+  .cardLink:active .cardTitle {
+    color: #22D3EE;
   }
   
   /* -------------------------------------
@@ -231,6 +237,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    position: relative;
   }
 
   .thumbnail {
@@ -262,6 +269,24 @@
     animation: skeletonShine 1.5s infinite;
   }
 
+  .thumbnailContainer .imageIcon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+  }
+
+  .thumbnailContainer:hover .imageIcon,
+  .thumbnailContainer:focus-within .imageIcon {
+    opacity: 1;
+  }
+
   /* Scrollable body when content overflows */
   .cardScroll {
     flex: 1 1 0;
@@ -289,6 +314,7 @@
     font-size: 1.2rem;
     margin: 0.5rem 0;
     color: var(--ifm-heading-color);
+    transition: color 0.2s ease;
   }
 
   /* 5. Authors */
