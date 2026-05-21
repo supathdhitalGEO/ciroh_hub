@@ -14,9 +14,11 @@ function addSpacesOnCaseTransition(str) {
     .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2');
 }
 
-export default function PublicationCard({ publication, index }) {
+export default function PublicationCard({ publication, index, resolveImageUrls }) {
   const { colorMode } = useColorMode();
   const [showImageModal, setShowImageModal] = useState(false);
+  const [resolvedImageUrls, setResolvedImageUrls] = useState([]);
+  const [openingModal, setOpeningModal] = useState(false);
 
   if (!publication) return null;
 
@@ -48,6 +50,26 @@ export default function PublicationCard({ publication, index }) {
 
   // Format the date
   const pubDate = date;
+
+  // Resolve image URLs fresh when the user opens the modal. Done at click
+  // time (not at page load) so Zotero's signed file URLs for imported_file
+  // attachments don't expire while the user reads the page.
+  const onOpenImageViewer = async () => {
+    if (openingModal) return;
+    setOpeningModal(true);
+    try {
+      const urls = resolveImageUrls && images.length > 0
+        ? await resolveImageUrls(images)
+        : [];
+      setResolvedImageUrls(urls);
+    } catch (err) {
+      console.error(`Failed to resolve image URLs for "${title}":`, err);
+      setResolvedImageUrls([]);
+    } finally {
+      setShowImageModal(true);
+      setOpeningModal(false);
+    }
+  };
 
   // Card content component
   const CardContent = () => (
@@ -86,7 +108,8 @@ export default function PublicationCard({ publication, index }) {
               <button
                 type="button"
                 className={styles.imageIcon}
-                onClick={() => setShowImageModal(true)}
+                onClick={onOpenImageViewer}
+                disabled={openingModal}
                 aria-label={`View images for ${title}`}
               >
                 <FaRegImage size={40} />
@@ -126,7 +149,7 @@ export default function PublicationCard({ publication, index }) {
           </div>
         )}
       </div>
-    <ModalImageViewer className="tw-absolute" open={showImageModal} onClose={() => setShowImageModal(false)} title={title} images={images} indicatorColorDark="#F5A424" />
+    <ModalImageViewer className="tw-absolute" open={showImageModal} onClose={() => setShowImageModal(false)} title={title} images={resolvedImageUrls} indicatorColorDark="#F5A424" />
     </div>
   );
 

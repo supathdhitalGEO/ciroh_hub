@@ -11,7 +11,8 @@ import {
   zoteroApiCreate,
   zoteroFetchTopItems,
   zoteroFetchCollections,
-  zoteroFetchLinkedUrls,
+  zoteroFetchAttachments,
+  zoteroFetchAttachmentFileUrl,
 } from '@site/src/components/ZoteroImporter';
 import SelectCollection from './SelectCollection';
 import PublicationCard  from './PublicationCard';
@@ -60,6 +61,20 @@ export default function Publications({ apiKey, groupId }) {
   /* stable key string for API paths & dependency arrays */
   const collectionKeyStr = selectedCollection?.value ?? '';  // '' ⇒ no filter
 
+  /* Resolve a Zotero attachment item to a displayable URL based on its
+   * linkMode. linked_url attachments carry the URL on the data object;
+   * imported_file attachments need a Zotero round-trip to fetch a
+   * temporary file URL. Other linkModes (linked_file, imported_url) are
+   * not handled and resolve to null. */
+  const resolveAttachmentUrl = useCallback(async (attachment) => {
+    if (!attachment) return null;
+    if (attachment.linkMode === 'linked_url') return attachment.url;
+    if (attachment.linkMode === 'imported_file') {
+      return zoteroFetchAttachmentFileUrl(zotero, attachment.key);
+    }
+    return null;
+  }, [zotero]);
+
   /* -------- loader ----------------------------------------------- */
   const loadPublications = useCallback(
     async (page) => {
@@ -104,33 +119,42 @@ export default function Publications({ apiKey, groupId }) {
           return upd;
         });
 
-        /* fetch URLs for thumbnails and images for each publication */
+        /* For each publication, fetch attachments, resolve the thumbnail URL (if any), and stash image attachment descriptors for later resolution on demand */
         for (const item of newItems) {
-          // fetch linked URLs for the item
-          zoteroFetchLinkedUrls(zotero, item.key)
-            .then(linkedUrls => {
-              // Find thumbnail URL (if any) - convention: title is "thumbnail"
-              const thumbnail = linkedUrls.find(a => a.title === 'thumbnail');
+          zoteroFetchAttachments(zotero, item.key)
+            .then(async ({ data: attachments }) => {
+              // Helper to strip extensions (allow various image file types) and allow lowercase
+              const baseTitle = (t) => (t || '').replace(/\.[a-z0-9]+$/i, '').toLowerCase();
 
-              // Find image URLs (if any) - convention: title starts with "image-"
-              const images = linkedUrls
-                .filter(a => /^image-\d+$/.test(a.title))
+              // Find thumbnail attachment (if any)
+              const thumbnailAttachment = attachments.find(a => baseTitle(a.title) === 'thumbnail');
+
+              // Find images (if any) and sort by the number in the title (image-1, image-2, etc.)
+              const imageAttachments = attachments
+                .filter(a => /^image-\d+$/.test(baseTitle(a.title)))
                 .sort((a, b) => {
-                  const an = parseInt(a.title.slice('image-'.length), 10);
-                  const bn = parseInt(b.title.slice('image-'.length), 10);
+                  const an = parseInt(baseTitle(a.title).slice('image-'.length), 10);
+                  const bn = parseInt(baseTitle(b.title).slice('image-'.length), 10);
                   return an - bn;
-                })
-                .map(a => a.url);
+                });
+
+              // Resolve thumbnail URL (if any)
+              const thumbnailUrl = await resolveAttachmentUrl(thumbnailAttachment);
+
+              // Stash image descriptors for later resolution. image descriptors contain the info needed to resolve the URL for the image on demand
+              const images = imageAttachments
+                .filter(a => a.linkMode === 'linked_url' || a.linkMode === 'imported_file')
+                .map(a => ({ key: a.key, linkMode: a.linkMode, url: a.url }));
               
-              // Update the publication card with the thumbnail URL and images
+              // Update displayed publications with thumbnail URL and image descriptors
               setDisplayedItems(prev => prev.map(it =>
                 it.key === item.key
-                  ? { ...it, thumbnailUrl: thumbnail?.url ?? null, images, thumbnailLoading: false }
+                  ? { ...it, thumbnailUrl: thumbnailUrl ?? null, images, thumbnailLoading: false }
                   : it
               ));
             })
             .catch(err => {
-              console.error(`Failed to fetch linked URLs for item ${item.key}:`, err);
+              console.error(`Failed to fetch attachments for item ${item.key}:`, err);
               setDisplayedItems(prev => prev.map(it =>
                 it.key === item.key ? { ...it, thumbnailLoading: false } : it
               ));
@@ -152,8 +176,18 @@ export default function Publications({ apiKey, groupId }) {
       filterItemType,
       sortType,
       sortDirection,
+      resolveAttachmentUrl,
     ],
   );
+
+  /* Resolve a list of image-attachment descriptors (as stashed on each
+   * publication item by loadPublications) into displayable URLs. Called
+   * by PublicationCard when its modal opens so signed URLs are always
+   * fresh. Memoised on `zotero` so each card receives a stable reference. */
+  const resolveImageUrls = useCallback(async (imageDescriptors) => {
+    const urls = await Promise.all(imageDescriptors.map(resolveAttachmentUrl));
+    return urls.filter((u) => u !== null);
+  }, [resolveAttachmentUrl]);
 
   /* -- reload whenever filters OR selected collection change -------- */
   useEffect(() => {
@@ -412,7 +446,7 @@ export default function Publications({ apiKey, groupId }) {
             displayedItems.map((item, i) =>
               item.placeholder
                 ? <SkeletonCard key={`ph-${i}`} />
-                : <PublicationCard key={item.key || `pub-${i}`} publication={item} />,
+                : <PublicationCard key={item.key || `pub-${i}`} publication={item} resolveImageUrls={resolveImageUrls} />,
             )}
         </div>
 
