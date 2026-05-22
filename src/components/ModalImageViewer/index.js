@@ -17,12 +17,37 @@ import "../HomepageFeatures/bootstrap.min.css";
 export default function ModalImageViewer({ open, onClose, title, images, indicatorColorLight = '#1D4ED8', indicatorColorDark = '#FFFFFF' }) {
     const { colorMode } = useColorMode();                                           // Active site theme ('light' or 'dark')
     const indicatorColor = colorMode === 'dark' ? indicatorColorDark : indicatorColorLight;
-    const [selectedImageIndex, setSelectedImageIndex] = useState(0);                // Index of the currently selected image in the modal
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0);                // Index of the currently selected image (within validImages)
     const [indicatorRect, setIndicatorRect] = useState({});                         // State to hold the position and size of the selected image indicator
     const [enableTransition, setEnableTransition] = useState(false);                // State to control transition animation for indicator
-    const [imageLoaded, setImageLoaded] = useState(() => images.map(() => false));  // State to track which images have loaded
-    const [imagesLoadedCount, setImagesLoadedCount] = useState(0);                  // State to track how many images have loaded
-    const imageRefs = useRef([]);                                                   // Refs to hold references to the thumbnail image elements for calculating indicator position
+    const [loadedUrls, setLoadedUrls] = useState(new Set());                        // URLs whose <img> has fired onLoad
+    const [failedUrls, setFailedUrls] = useState(new Set());                        // URLs whose <img> has fired onError — filtered out of validImages
+    const imageRefs = useRef([]);                                                   // Refs to thumbnail elements for indicator positioning
+
+    // Images filtered to those that haven't failed to load. Drives every
+    // render path so broken thumbnails simply disappear from the UI.
+    const validImages = images.filter((url) => !failedUrls.has(url));
+    const allValidLoaded = validImages.length > 0 && validImages.every((url) => loadedUrls.has(url));
+
+    // Record a successful image load.
+    const handleImageLoad = (url) => {
+        setLoadedUrls((prev) => {
+            if (prev.has(url)) return prev;
+            const next = new Set(prev);
+            next.add(url);
+            return next;
+        });
+    };
+
+    // Record a failed image load and remove the URL from the gallery.
+    const handleImageError = (url) => {
+        setFailedUrls((prev) => {
+            if (prev.has(url)) return prev;
+            const next = new Set(prev);
+            next.add(url);
+            return next;
+        });
+    };
 
     /**
      * Updates the indicator rectangle to match the position and size of the image with the given index using an animation.
@@ -82,10 +107,9 @@ export default function ModalImageViewer({ open, onClose, title, images, indicat
         }
     }
 
-    // Set the size and position of the indicator once all images have loaded
+    // Set the size and position of the indicator once all valid images have loaded
     useEffect(() => {
-        // Check whether all images have loaded
-        if (imagesLoadedCount === images.length && images.length > 0)
+        if (allValidLoaded)
         {
             // Make the indicator visible
             const indicator = document.getElementById('selected-image-indicator');
@@ -97,24 +121,17 @@ export default function ModalImageViewer({ open, onClose, title, images, indicat
             // Set the indicator position and size to match the selected image
             imageSelectedIndicatorUpdate(selectedImageIndex);
         }
-        
-        // Check each image's load status and hide the loading indicator for loaded images
-        for (let i = 0;i < images.length; i++)
+    }, [allValidLoaded, selectedImageIndex]);
+
+    // If the selected index lands past the end of validImages (because an
+    // image at or before it failed), clamp it to the last valid position.
+    useEffect(() => {
+        if (validImages.length === 0) return;
+        if (selectedImageIndex >= validImages.length)
         {
-            // Skip if this image hasn't loaded yet
-            if (!imageLoaded[i])
-            {
-                continue;
-            }
-            
-            // Hide the loading indicator for this image
-            const loadingIndicator = document.getElementById(`loading-indicator-${i}`);
-            if (loadingIndicator)
-            {
-                loadingIndicator.style.display = 'none';
-            }
+            setSelectedImageIndex(validImages.length - 1);
         }
-    }, [imagesLoadedCount, images.length, imageLoaded]);
+    }, [validImages.length, selectedImageIndex]);
 
     // Update indicator position and size when selected image changes and show the spinner until the new selected image has loaded
     useEffect(() => {
@@ -151,8 +168,8 @@ export default function ModalImageViewer({ open, onClose, title, images, indicat
         }
         return () => {
             document.body.style.overflow = '';
-            setImageLoaded(images.map(() => false));
-            setImagesLoadedCount(0);
+            setLoadedUrls(new Set());
+            setFailedUrls(new Set());
             setSelectedImageIndex(0);
         };
     }, [open]);
@@ -193,17 +210,19 @@ export default function ModalImageViewer({ open, onClose, title, images, indicat
 
                 {/* Selected Image Container */}
                 <div className="tw-flex tw-flex-col tw-flex-1 tw-min-h-0 tw-w-full tw-h-4/5 tw-items-center tw-justify-center tw-gap-4">
-                    { images[selectedImageIndex] ? (
+                    { validImages[selectedImageIndex] ? (
                         <div className="tw-relative tw-w-full tw-h-full tw-min-h-0">
                             {/* Selected Image */}
                             <img
-                                src={images[selectedImageIndex]}
+                                src={validImages[selectedImageIndex]}
                                 alt="Selected"
                                 className="tw-w-full tw-h-full tw-max-h-full tw-min-h-0 tw-object-contain tw-rounded"
                                 onLoad={() => {
+                                    handleImageLoad(validImages[selectedImageIndex]);
                                     const loader = document.getElementById('selected-image-loader');
                                     if (loader) loader.style.display = 'none';
                                 }}
+                                onError={() => handleImageError(validImages[selectedImageIndex])}
                             />
                             {/* Loading Wheel */}
                             <div id="selected-image-loader" className="tw-absolute tw-inset-0 tw-z-10 tw-pointer-events-none">
@@ -228,7 +247,7 @@ export default function ModalImageViewer({ open, onClose, title, images, indicat
                             className={
                                 `tw-absolute pointer-events-none tw-border-solid tw-border-8 tw-rounded-lg` +
                                 (enableTransition ? ' tw-transition-all tw-duration-300 tw-ease-in-out' : '') +
-                                (imagesLoadedCount === images.length && images.length > 0 ? '' : ' tw-invisible')
+                                (allValidLoaded ? '' : ' tw-invisible')
                             }
                             style={{
                                 borderColor: indicatorColor,
@@ -240,45 +259,30 @@ export default function ModalImageViewer({ open, onClose, title, images, indicat
                             }}
                         />
 
-                        {/* Thumbnail Images */}
-                        {images.map((src, idx) => (
+                        {/* Thumbnail Images — broken ones are filtered out via validImages */}
+                        {validImages.map((src, idx) => (
                             <div className="tw-relative tw-flex tw-items-center tw-justify-center tw-gap-x-1 tw-min-w-32 tw-bg-slate-300 dark:tw-bg-slate-800"
-                            key={idx}
+                            key={src}
                             ref={el => imageRefs.current[idx] = el}
                             onClick={() => setSelectedImageIndex(idx)}
                             >
                                 {/* Show loading indicator until image is loaded */}
-                                {!imageLoaded[idx] && (
-                                    <div id={`loading-indicator-${idx}`} className="tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-slate-200/80 dark:tw-bg-slate-700/80 tw-z-10">
+                                {!loadedUrls.has(src) && (
+                                    <div className="tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-slate-200/80 dark:tw-bg-slate-700/80 tw-z-10">
                                         {/* Spinning Wheel */}
                                         <div className="spinner-border" role="status">
                                             <span className="visually-hidden">Loading...</span>
                                         </div>
                                     </div>
                                 )}
-                                
+
                                 {/* Thumbnail Image */}
                                 <img
-                                    key={idx}
-                                    src={images[idx]}
+                                    src={src}
                                     alt={`Gallery ${idx}`}
                                     className="tw-flex tw-max-h-32 tw-h-auto tw-w-auto tw-rounded tw-object-contain"
-                                    onLoad={() => {
-                                        setImageLoaded(loaded => {
-                                            const arr = [...loaded];
-                                            arr[idx] = true;
-                                            return arr;
-                                        });
-                                        setImagesLoadedCount(count => count + 1);
-                                    }}
-                                    onError={() => {
-                                        setImageLoaded(loaded => {
-                                            const arr = [...loaded];
-                                            arr[idx] = true;
-                                            return arr;
-                                        });
-                                        setImagesLoadedCount(count => count + 1);
-                                    }}
+                                    onLoad={() => handleImageLoad(src)}
+                                    onError={() => handleImageError(src)}
                                 />
                             </div>
                         ))}
