@@ -19,6 +19,7 @@ export default function PublicationCard({ publication, index, resolveImageUrls }
   const [showImageModal, setShowImageModal] = useState(false);
   const [resolvedImageUrls, setResolvedImageUrls] = useState([]);
   const [openingModal, setOpeningModal] = useState(false);
+  const [failedThumbnailUrl, setFailedThumbnailUrl] = useState(null);
 
   if (!publication) return null;
 
@@ -94,15 +95,19 @@ export default function PublicationCard({ publication, index, resolveImageUrls }
       )}
 
       {/* 3. Thumbnail */}
-      {(thumbnailLoading || thumbnailUrl) && (
+      {(thumbnailLoading || (thumbnailUrl && thumbnailUrl !== failedThumbnailUrl)) && (
         <div className={styles.thumbnailContainer}>
-          {thumbnailUrl ? (
+          {thumbnailUrl && thumbnailUrl !== failedThumbnailUrl ? (
             <>
               {/* Thumbnail Image */}
               <img
                 src={thumbnailUrl}
                 alt={`${title} thumbnail`}
                 className={styles.thumbnail}
+                onError={() => {
+                  console.warn(`Failed to load thumbnail for "${title}"`);
+                  setFailedThumbnailUrl(thumbnailUrl);
+                }}
               />
               {/* Open Image Viewer Icon */}
               <button
