@@ -1,0 +1,87 @@
+---
+title: "Continental-Scale Streamflow Simulation Using Kriging in the NGIAB-NRDS NextGen Ecosystem"
+description: Hourly streamflow kriging is now operational within the NextGen Research Data Stream, delivering spatially complete streamflow estimates for all NextGen v2.2 hydrofabric catchments across CONUS.
+slug: continental-scale-streamflow-kriging-ngiab-nrds
+authors:
+  - name: Suma Battula
+    title: Department of Geological Sciences, The University of Alabama
+    url: https://github.com/sumabattula
+    image_url: https://github.com/sumabattula.png
+  - name: Kunal Sarna
+    title: Department of Computer Science, The University of Alabama
+    url: https://github.com/Kunal2605
+    image_url: https://github.com/Kunal2605.png
+  - name: Sonali Vyas
+    title: Department of Computer Science, The University of Alabama
+    url: https://github.com/sonalivyascse19-stack
+    image_url: https://github.com/sonalivyascse19-stack.png
+  - name: Harsha Vemula
+    title: Alabama Water Institute, The University of Alabama
+    url: https://github.com/harshavemula-ua
+    image_url: https://github.com/harshavemula-ua.png
+  - name: Arpita Patel
+    title: Alabama Water Institute, The University of Alabama
+    url: https://github.com/arpita0911patel
+    image_url: https://github.com/arpita0911patel.png
+  - name: Jonathan Frame
+    title: Department of Geological Sciences / Alabama Water Institute, The University of Alabama
+    url: https://github.com/jmframe
+    image_url: https://github.com/jmframe.png
+tags: [nextgen, kriging, streamflow, nrds, datastream, ngiab, aws, t-route, conus]
+hide_table_of_contents: false
+---
+
+Hourly streamflow kriging is now operational within the NextGen Research Data Stream, delivering spatially complete estimates for all NextGen v2.2 hydrofabric catchments. This observation-based approach supports streamflow analysis, NWM calibration, forecasting, and data assimilation for ungauged basins.
+
+<!-- truncate -->
+
+## Kriging-Based Streamflow Estimation
+
+Process-based hydrologic models are subject to structural and forcing uncertainties throughout the modeling domain, yet these can only be evaluated where USGS gauge observations exist. There is a clear need for a data-driven, observation-based framework that provides spatially complete streamflow estimates with well-characterized uncertainty, independent of model structure. Recent results from the CIROH project "Developing and Benchmarking Data Assimilation Methods on a Standardized Testbed" suggest that a simple Kriging interpolation between USGS gauged locations is both scalable and accurate for producing such spatially complete streamflow fields. As a pure data-driven method, this interpolation cannot be used directly for forecasting, but it serves as a valuable "pseudo-observation" for streamflow analysis and historical reconstruction.
+
+## Hourly Streamflow Kriging Across CONUS
+
+Streamflow kriging effectively leverages spatial correlations in observations and has previously been implemented in the National Hydrologic Model for calibration and evaluation at daily timescales ([Farmer et al., 2019](https://ascelibrary.org/doi/10.1061/%28ASCE%29HE.1943-5584.0001854)). Here, we extend this approach to hourly resolution using instantaneous-value (IV) discharge records from approximately 7,300 active USGS gauges across CONUS. Instantaneous values are aggregated to hourly means, and variogram parameters are estimated using a spherical variogram model. These parameters drive gridded hourly interpolated runoff and kriging error variance fields across CONUS, which are then used to estimate distributed runoff at every catchment divide within the NextGen hydrofabric.
+
+## Integration into the NextGen Research Data Stream
+
+To make hourly kriging operationally available, we integrated it into the NextGen Research Data Stream (NRDS; [ngen-datastream#352](https://github.com/CIROH-UA/ngen-datastream/issues/352)). Kunal Sarna designed the software stack aligning the outputs in long-format BROTLI-compressed Parquet schema that downstream consumers such as T-route expects and built a Docker image packaging the kriging workflow (`docker.io/kunal2605/qkrig`). Harsha Vemula led and executed all aspects of deployment: configuring the AWS infrastructure, setting up the EventBridge schedule, provisioning and managing the nightly EC2 instance, orchestrating the end-to-end data pipeline and delivery of outputs to the NRDS status dashboard.
+
+The NRDS at CIROH-UA now runs qkrig as a first-class datastream, updating the previous 24 hourly estimates once per day. Each night at 00:30 ET, the pipeline:
+
+1. Fetches USGS instantaneous-value discharge for ~7,300 active gauges
+2. Fits an ordinary kriging field across CONUS at hourly resolution
+3. Samples the field at every NextGen v2.2 catchment centroid
+
+The full daily output — 24 hourly kriged NetCDFs and variograms, kriging plots and a daily GIF, and a single ~13 MB Parquet file covering all 831,777 catchments × 24 hours of streamflow — is published publicly at:
+
+```
+s3://ciroh-community-ngen-datastream/outputs/qkrig/qkrig.{YYYYMMDD}/
+```
+
+and tracked on the [NRDS status dashboard](https://datastream.ciroh.org/#outputs/qkrig/) alongside other operational datastreams.
+
+**Figure 1:** Hourly kriged streamflow and variogram for the CONUS region, accessed from the NextGen Research Data Stream: [https://datastream.ciroh.org/#outputs/qkrig/qkrig.20260519/plots/kriging/](https://datastream.ciroh.org/#outputs/qkrig/qkrig.20260519/plots/kriging/)
+
+## Streamflow Simulation Using T-Route
+
+To evaluate the utility of kriging for generating spatially distributed runoff in ungauged basins, we interpolated runoff over the South Toe River hydrofabric by withholding observations from 20% of USGS gauges affected by Hurricane Helene in September 2024. The resulting kriged runoff was used to initialize T-route, a river-routing engine developed by NOAA's Office of Water Prediction. Sonali Vyas implemented streamflow simulation with interpolated runoff at hydrofabric catchments using T-route. Comparison of routed streamflow at the gauge outlet with observations showed that the kriging-initialized T-route simulation captured both the peak timing and recession during Hurricane Helene. This demonstrates that combining streamflow kriging with T-route is a viable approach for streamflow simulation (with lag times of 1–24 hours) in ungauged basins within the NextGen water resources modeling framework.
+
+**Figure 2:** T-route simulation of streamflow initialized using held-out kriged runoff in the NextGen hydrofabric of the South Toe River.
+
+## Summary
+
+Hourly streamflow kriging is now operational within the NextGen Research Data Stream, delivering spatially complete estimates for all NextGen v2.2 hydrofabric catchments. This observation-based approach supports a broad range of potential applications including streamflow analysis and historical reconstruction, National Water Model calibration, streamflow forecasting, and data assimilation for ungauged basins.
+
+## Links
+
+1. [GitHub repository — streamflow kriging (qkrig)](https://github.com/DualEarth/qkrig)
+2. [GitHub repository — T-route streamflow simulation with kriging](https://github.com/sonalivyascse19-stack/t-route)
+3. [Streamflow analysis from kriging DataStream](https://datastream.ciroh.org/#outputs/qkrig/)
+4. [Daily and hourly streamflow reanalysis datasets based on kriging](https://streamflow-interpolation-noaa14.s3.amazonaws.com/)
+
+## Acknowledgements
+
+This work was supported by CIROH for funding and resources. Special thanks to Kunal Sarna and Harsha Vemula for collaborating and integrating hourly kriging into NRDS in 3 weeks.
+
+This research was supported by the Cooperative Institute for Research to Operations in Hydrology (CIROH) through NOAA Cooperative Agreement NA22NWS4320003. CIROH cyberinfrastructure used: AWS S3 (daily and hourly streamflow reanalysis products from 1979–2025 WYs), EC2 (testing the kriging workflow in NRDS), and DataStream (hourly streamflow analysis outputs).
