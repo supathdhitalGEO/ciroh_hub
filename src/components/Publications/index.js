@@ -141,10 +141,25 @@ export default function Publications({ apiKey, groupId }) {
               // Resolve thumbnail URL (if any)
               const thumbnailUrl = await resolveAttachmentUrl(thumbnailAttachment);
 
-              // Stash image descriptors for later resolution. image descriptors contain the info needed to resolve the URL for the image on demand
-              const images = imageAttachments
-                .filter(a => a.linkMode === 'linked_url' || a.linkMode === 'imported_file')
-                .map(a => ({ key: a.key, linkMode: a.linkMode, url: a.url }));
+              // Stash image descriptors for later resolution. Include thumbnail as first image
+              const toDescriptor = (a) => ({ key: a.key, linkMode: a.linkMode, url: a.url });
+              const hasSupportedLinkMode = (a) => a.linkMode === 'linked_url' || a.linkMode === 'imported_file';
+
+              const imageDescriptors = imageAttachments
+                .filter(hasSupportedLinkMode)
+                .map(toDescriptor);
+
+              const thumbnailDescriptor = thumbnailAttachment && thumbnailUrl && hasSupportedLinkMode(thumbnailAttachment)
+                ? toDescriptor(thumbnailAttachment)
+                : null;
+
+              const thumbnailAlreadyPresent = thumbnailDescriptor
+                ? imageDescriptors.some((img) => img.url === thumbnailDescriptor.url)
+                : false;
+
+              const images = thumbnailDescriptor && !thumbnailAlreadyPresent
+                ? [thumbnailDescriptor, ...imageDescriptors]
+                : imageDescriptors;
               
               // Update displayed publications with thumbnail URL and image descriptors
               setDisplayedItems(prev => prev.map(it =>
