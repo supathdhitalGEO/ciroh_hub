@@ -2,38 +2,14 @@
 title: "Continental-Scale Streamflow Simulation Using Kriging in the NGIAB-NRDS NextGen Ecosystem"
 description: Hourly streamflow kriging is now operational within the NextGen Research Data Stream, delivering spatially complete streamflow estimates for all NextGen v2.2 hydrofabric catchments across CONUS.
 slug: continental-scale-streamflow-kriging-ngiab-nrds
-authors:
-  - name: Suma Battula
-    title: Department of Geological Sciences, The University of Alabama
-    url: https://github.com/sumabattula
-    image_url: https://github.com/sumabattula.png
-  - name: Kunal Sarna
-    title: Department of Computer Science, The University of Alabama
-    url: https://github.com/Kunal2605
-    image_url: https://github.com/Kunal2605.png
-  - name: Sonali Vyas
-    title: Department of Computer Science, The University of Alabama
-    url: https://github.com/sonalivyascse19-stack
-    image_url: https://github.com/sonalivyascse19-stack.png
-  - name: Harsha Vemula
-    title: Alabama Water Institute, The University of Alabama
-    url: https://github.com/harshavemula-ua
-    image_url: https://github.com/harshavemula-ua.png
-  - name: Arpita Patel
-    title: Alabama Water Institute, The University of Alabama
-    url: https://github.com/arpita0911patel
-    image_url: https://github.com/arpita0911patel.png
-  - name: Jonathan Frame
-    title: Department of Geological Sciences / Alabama Water Institute, The University of Alabama
-    url: https://github.com/jmframe
-    image_url: https://github.com/jmframe.png
-tags: [nextgen, kriging, streamflow, nrds, datastream, ngiab, aws, t-route, conus]
+authors: [suma-battula, kunal-sarna, sonali-vyas, harsha-vemula, arpita-2025, jonathan-frame]
+tags: [NextGen, Kriging, Streamflow, NRDS, DataStream, NGIAB, AWS, T-Route, CONUS]
 hide_table_of_contents: false
 ---
 
 Hourly streamflow kriging is now operational within the NextGen Research Data Stream, delivering spatially complete estimates for all NextGen v2.2 hydrofabric catchments. This observation-based approach supports streamflow analysis, NWM calibration, forecasting, and data assimilation for ungauged basins.
 
-<!-- truncate -->
+{/* truncate */}
 
 ## Kriging-Based Streamflow Estimation
 
@@ -59,7 +35,7 @@ The full daily output — 24 hourly kriged NetCDFs and variograms, kriging plots
 s3://ciroh-community-ngen-datastream/outputs/qkrig/qkrig.{YYYYMMDD}/
 ```
 
-and tracked on the [NRDS status dashboard](https://datastream.ciroh.org/#outputs/qkrig/) alongside other operational datastreams.
+and tracked on the [NRDS status dashboard](https://ciroh-community-ngen-datastream.s3.amazonaws.com/status/dashboard.html) alongside other operational datastreams.
 
 **Figure 1:** Hourly kriged streamflow and variogram for the CONUS region, accessed from the NextGen Research Data Stream: [https://datastream.ciroh.org/#outputs/qkrig/qkrig.20260519/plots/kriging/](https://datastream.ciroh.org/#outputs/qkrig/qkrig.20260519/plots/kriging/)
 
