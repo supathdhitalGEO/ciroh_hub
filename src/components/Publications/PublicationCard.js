@@ -128,9 +128,13 @@ export default function PublicationCard({ publication, index, resolveImageUrls }
 
       <div className={styles.cardScroll}>
         {/* 4. Title */}
-        <a href={url} target="_blank" rel="noopener noreferrer" className={styles.cardLink}>
+        { url ? (
+          <a href={url} target="_blank" rel="noopener noreferrer" className={styles.cardLink}>
+            <h3 className={styles.cardTitle}>{title}</h3>
+          </a>
+        ) : (
           <h3 className={styles.cardTitle}>{title}</h3>
-        </a>
+        )}
 
         {/* 5. Authors */}
         <div className={styles.authors}>{authorList}</div>
