@@ -269,6 +269,14 @@
     animation: skeletonShine 1.5s infinite;
   }
 
+  .imageIcon {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+  }
+
   .thumbnailContainer .imageIcon {
     position: absolute;
     inset: 0;
@@ -280,10 +288,20 @@
     opacity: 0;
     transition: opacity 0.2s ease;
     cursor: pointer;
-    /* Remove default button styles */
-    border: 0;
-    padding: 0;
-    font: inherit;
+  }
+
+  .noThumbnail {
+    margin: 0.5rem 0;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .noThumbnail .imageIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ifm-color-emphasis-700);
+    cursor: pointer;
   }
 
   .thumbnailContainer:hover .imageIcon,

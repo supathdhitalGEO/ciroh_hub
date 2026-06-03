@@ -157,6 +157,22 @@ export default function PublicationCard({ publication, index, resolveImageUrls }
             </a>
           </div>
         )}
+
+        {/* 8. Images button when no thumbnail is available */}
+        {(!thumbnailLoading && (!thumbnailUrl || thumbnailUrl === failedThumbnailUrl) && images.length > 0) && (
+          <div className={styles.noThumbnail}>
+            {/* Open Image Viewer Icon */}
+            <button
+              type="button"
+              className={styles.imageIcon}
+              onClick={onOpenImageViewer}
+              disabled={openingModal}
+              aria-label={`View images for ${title}`}
+            >
+              <FaRegImage size={25} />
+            </button>
+          </div>
+        )}
       </div>
     <ModalImageViewer className="tw-absolute" open={showImageModal} onClose={() => setShowImageModal(false)} title={title} images={resolvedImageUrls} indicatorColorDark="#F5A424" />
     </div>
