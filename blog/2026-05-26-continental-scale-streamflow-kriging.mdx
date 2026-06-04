@@ -21,7 +21,7 @@ Streamflow kriging effectively leverages spatial correlations in observations an
 
 ## Integration into the NextGen Research Data Stream
 
-To make hourly kriging operationally available, we integrated it into the NextGen Research Data Stream (NRDS; [ngen-datastream#352](https://github.com/CIROH-UA/ngen-datastream/issues/352)). Kunal Sarna designed the software stack aligning the outputs in long-format BROTLI-compressed Parquet schema that downstream consumers such as T-route expects and built a Docker image packaging the kriging workflow (`docker.io/kunal2605/qkrig`). Harsha Vemula led and executed all aspects of deployment: configuring the AWS infrastructure, setting up the EventBridge schedule, provisioning and managing the nightly EC2 instance, orchestrating the end-to-end data pipeline and delivery of outputs to the NRDS status dashboard.
+To make hourly kriging operationally available, we integrated it into the NextGen Research Data Stream (NRDS; [ngen-datastream#352](https://github.com/CIROH-UA/ngen-datastream/issues/352)). Kunal Sarna designed the software stack aligning the outputs in long-format BROTLI-compressed Parquet schema that downstream consumers such as T-route expects and built a Docker image packaging the kriging workflow (`docker.io/awiciroh/qkrig:2.2.0`). Harsha Vemula led and executed all aspects of deployment: configuring the AWS infrastructure, setting up the EventBridge schedule, provisioning and managing the nightly EC2 instance, orchestrating the end-to-end data pipeline and delivery of outputs to the NRDS status dashboard.
 
 The NRDS at CIROH-UA now runs qkrig as a first-class datastream, updating the previous 24 hourly estimates once per day. Each night at 00:30 ET, the pipeline:
 
