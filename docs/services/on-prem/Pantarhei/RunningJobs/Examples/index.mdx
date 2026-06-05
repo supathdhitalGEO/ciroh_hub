@@ -1,0 +1,120 @@
+---
+sidebar_position: 4
+title: "Examples"
+description: "Ready-to-run job script examples for Pantarhei — Python, C, MPI, GPU, Jupyter, and VSCode tunneling, sourced from the pantarhei-examples GitHub repository."
+tags: [CIROH, Services, On-Premises Services, Pantarhei, HPC]
+---
+
+## Pantarhei Examples
+
+This section contains ready-to-run job script examples for Pantarhei covering Python, C, MPI, GPU (CUDA/CuPy/PyTorch), Jupyter notebooks, and VSCode tunneling. All source files are hosted on GitHub and can be cloned directly onto Pantarhei.
+
+## Getting the Examples
+
+Clone the repository into your Pantarhei home directory from the login node:
+
+```bash
+git clone https://github.com/kamalcou/pantarhei-examples.git
+cd pantarhei-examples
+```
+
+If you already have a copy and want the latest updates:
+
+```bash
+cd pantarhei-examples
+git pull
+```
+
+## Repository Structure
+
+```
+pantarhei-examples/
+├── python/
+│   ├── myscript.py
+│   ├── myscript_parallel.py
+│   ├── myscript_mpi4py.py
+│   ├── python_serial_job.sh
+│   ├── python_parallel_job.sh
+│   └── python_mpi4py_job.sh
+├── c/
+│   ├── serial_compute.c
+│   ├── mpi_compute.c
+│   ├── c_serial_job.sh
+│   └── mpi_c_job.sh
+├── mpi/
+│   ├── mpi_integrate.c
+│   ├── mpi_omp_integrate.c
+│   ├── mpi_reduce.py
+│   ├── mpi_single_node.sh
+│   ├── mpi_multi_node.sh
+│   ├── mpi_omp_job.sh
+│   └── mpi_python_job.sh
+├── gpu/
+│   ├── vector_add.cu
+│   ├── matmul.cu
+│   ├── cupy_example.py
+│   ├── pytorch_example.py
+│   ├── cuda_vector_add.sh
+│   ├── cuda_matmul.sh
+│   ├── cupy_job.sh
+│   └── pytorch_job.sh
+├── hydrology/
+│   ├── generate_hydrology_data.py
+│   ├── hydrology_toy_example.py
+│   ├── hydrology_toy_example_mpi.py
+│   ├── generate_hydrology_data.c
+│   ├── hydrology_toy_c.c
+│   ├── hydrology_mpi_c.c
+│   ├── hydrology_toy_job.sh
+│   ├── hydrology_mpi_job.sh
+│   ├── hydrology_toy_c_job.sh
+│   └── hydrology_mpi_c_job.sh
+├── jupyter/
+│   ├── jupyter_notebook.job
+│   └── jupyter_notebook_gpu.job
+└── vscode/
+    └── vscode.job
+```
+
+## Connecting to Pantarhei
+
+Before cloning or submitting any jobs, log in to the Pantarhei login node:
+
+```bash
+ssh username@pantarhei.ua.edu
+```
+
+Replace `username` with your Pantarhei account username.
+
+## Running an Example
+
+**Step 1 — Copy the example files to your working directory:**
+
+```bash
+cp pantarhei-examples/python/* ~/my_jobs/
+cd ~/my_jobs/
+```
+
+**Step 2 — Submit the job:**
+
+```bash
+sbatch python_serial_job.sh
+```
+
+**Step 3 — Monitor the job:**
+
+```bash
+squeue -u $USER
+```
+
+**Step 4 — Check output when complete:**
+
+```bash
+cat slurm-<JOBID>.out
+```
+
+## Available Examples
+
+import DocCardList from '@theme/DocCardList';
+
+<DocCardList />
