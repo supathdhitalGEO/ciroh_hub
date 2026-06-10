@@ -4,9 +4,7 @@ import clsx from 'clsx';
 import { HiOutlineSortDescending, HiOutlineSortAscending } from 'react-icons/hi';
 import ResourceList from './ResourceList';
 import styles from './styles.module.css';
-
-// Use wrapper API (re-exports HydroShareImporter functions)
-import { fetchResourcesBySearch, fetchResourceCustomMetadata } from '../../api/hydroshareAPI';
+import { fetchResourcesBySearch, fetchResourceCustomMetadata } from '@site/src/components/HydroShareImporter';
 
 const PAGE_SIZE = 40;            // HydroShare discoverapi per-page (default)
 const SCROLL_THRESHOLD = 800;    // px from bottom before we load more (default)
