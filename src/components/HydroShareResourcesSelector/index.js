@@ -50,9 +50,14 @@ export default function HydroShareResourcesSelector({
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState("row");
-  const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const fetching = useRef(false);
+
+  // Pagination state
+  const groupPageNumberRef = useRef(undefined);   // For getCommunityResources group pagination
+  const communityTokenRef = useRef(undefined);    // For getCommunityResources discover-atlas pagination
+  const searchTokenRef = useRef(undefined);       // For fetchResourcesBySearch pagination
+  const placeholderBatchRef = useRef(0);          // Counter that produces unique IDs for placeholder resources across paginated fetches
 
   // Search State
   const [searchInput,    setSearchInput]    = useState('');
@@ -63,19 +68,27 @@ export default function HydroShareResourcesSelector({
 
 
   const fetchResources = useCallback(
-    async (page) => {
+    async ({ reset = false } = {}) => {
       if (fetching.current) return;
       fetching.current = true;
 
       try {
         let resourceList = undefined;
-        
-        // Add placeholders for loading state (only for pagination, not first page)
-        if (page > 1) {
+
+        // Reset pagination state on a filter-change refetch
+        if (reset) {
+          groupPageNumberRef.current = undefined;
+          communityTokenRef.current = undefined;
+          searchTokenRef.current = undefined;
+          placeholderBatchRef.current = 0;
+        } else {
+          // Add placeholders for loading state on subsequent pages
+          placeholderBatchRef.current += 1;
+          const batchId = placeholderBatchRef.current;
           setResources(prev => [
             ...prev,
             ...Array.from({ length: PAGE_SIZE }, (_, i) => ({
-              resource_id: `placeholder-page${page}-${i}`,
+              resource_id: `placeholder-batch${batchId}-${i}`,
               title: "",
               authors: "",
               resource_type: "",
@@ -91,15 +104,26 @@ export default function HydroShareResourcesSelector({
 
         // Start data fetching (while placeholders are already rendered)
         const ascending = sortDirection === 'asc' ? true : false;
-        
+
         // For datasets, use getCommunityResources which combines group and keyword resources
         let communityResponse = null;
+        let searchResponse = null;
         if (keyword.includes('data')) {
+          // Extract the first keyword for community search
           const firstKeyword = keyword.split(',')[0].trim();
-          communityResponse = await getCommunityResources(firstKeyword, "4", filterSearch, ascending, sortType, undefined, page, PAGE_SIZE);
+
+          // Fetch resources using the community endpoint which handles both group and keyword resources, along with pagination tokens
+          communityResponse = await getCommunityResources(firstKeyword, "4", filterSearch, ascending, sortType, undefined, groupPageNumberRef.current, communityTokenRef.current, PAGE_SIZE);
           resourceList = communityResponse.resources || [];
+
+          // Advance pagination state for the next fetch.
+          groupPageNumberRef.current = (communityResponse.groupResourcesPageData?.pageNumber || 1) + 1;
+          communityTokenRef.current = communityResponse.extraResourcesPageData?.nextPaginationToken;
         } else {
-          resourceList = await fetchResourcesBySearch(keyword, filterSearch, ascending, sortType, undefined, page, PAGE_SIZE);
+          // For other resource types, use the standard search endpoint
+          searchResponse = await fetchResourcesBySearch(keyword, filterSearch, ascending, sortType, undefined, searchTokenRef.current, PAGE_SIZE);
+          resourceList = searchResponse?.resources || [];
+          searchTokenRef.current = searchResponse?.nextPaginationToken;
         }
 
         const mappedList = resourceList.map((res) => ({
@@ -120,7 +144,7 @@ export default function HydroShareResourcesSelector({
         }));
 
         // Handle first page vs pagination
-        if (page === 1) {
+        if (reset) {
           setResources(mappedList); // Replace for first page
         } else {
           setResources(prev => {
@@ -130,14 +154,12 @@ export default function HydroShareResourcesSelector({
             return [...existing, ...newItems];
           });
         }
-        
+
         // Update hasMore based on API response
         if (communityResponse) {
-          // For datasets using getCommunityResources
-          setHasMore(communityResponse.groupResourcesPageData?.hasMorePages || communityResponse.extraResourcesPageData?.hasMorePages || false);
+          setHasMore(Boolean(communityResponse.hasMorePages));
         } else {
-          // For other resources using fetchResourcesBySearch
-          setHasMore(mappedList.length === PAGE_SIZE);
+          setHasMore(Boolean(searchResponse?.hasMorePages));
         }
         setLoading(false);
 
@@ -180,13 +202,12 @@ export default function HydroShareResourcesSelector({
   // Reset and load first page when filters change
   useEffect(() => {
     setResources(initialPlaceholders);
-    setCurrentPage(1);
     setHasMore(true);
-    
+
     // Reset the fetching flag to allow new requests (fixes race condition)
     fetching.current = false;
-    
-    fetchResources(1);
+
+    fetchResources({ reset: true });
   }, [keyword, filterSearch, sortDirection, sortType, fetchResources]);
 
   const nonPlaceholderResources = useMemo(
@@ -229,14 +250,12 @@ export default function HydroShareResourcesSelector({
       if (fetching.current || !hasMore) return;
       const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - SCROLL_THRESHOLD) {
-        const next = currentPage + 1;
-        setCurrentPage(next);
-        fetchResources(next);
+        fetchResources();
       }
     };
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
-  }, [currentPage, hasMore, fetchResources]);
+  }, [hasMore, fetchResources]);
 
   /* search helpers */
   const commitSearch = (q) => {

@@ -4,13 +4,12 @@ import { FaThLarge, FaBars, FaListUl } from "react-icons/fa";
 import styles from "./styles.module.css";
 import HydroShareResourcesTiles from "@site/src/components/HydroShareResourcesTiles";
 import HydroShareResourcesRows from "@site/src/components/HydroShareResourcesRows";
-import { 
+import {
   fetchResource,
   fetchResourcesBySearch,
-  fetchKeywordPageData, 
   getCuratedIds,
-  fetchResourceCustomMetadata, 
-  joinExtraResources 
+  fetchResourceCustomMetadata,
+  joinExtraResources,
 } from "../HydroShareImporter";
 import { useColorMode } from "@docusaurus/theme-common"; // Hook to detect theme
 import DatasetLightIcon from '@site/static/img/cards/datasets_logo_light.png';
@@ -127,8 +126,9 @@ export default function Presentations({ community_id = 4 }) {
   const [activeTab, setActiveTab] = useState("presentations");
 
   // Pagination State
-  const [currentPage, setCurrentPage] = useState(1);
-  const [lastPage, setLastPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);   // Whether more pages are available for infinite scroll
+  const tokenRef = useRef(undefined);             // Token for the next page of keyword search results
+  const placeholderBatchRef = useRef(0);          // Counter that produces unique IDs for placeholder resources across paginated fetches
   const fetching = useRef(false);
 
   // Search State
@@ -141,11 +141,13 @@ export default function Presentations({ community_id = 4 }) {
   const usingSearch = useCallback(() => filterSearch.trim() !== '', [filterSearch]);
 
   // Helper function to add placeholder resources for loading state
-  const addPlaceholderResources = useCallback((page) => {
+  const addPlaceholderResources = useCallback(() => {
+    placeholderBatchRef.current += 1;
+    const batchId = placeholderBatchRef.current;
     setResources(prev => [
       ...prev,
       ...Array.from({ length: PAGE_SIZE }, (_, i) => ({
-        resource_id: `placeholder-page${page}-${i}`,
+        resource_id: `placeholder-batch${batchId}-${i}`,
         title: "",
         authors: "",
         resource_type: "",
@@ -159,31 +161,36 @@ export default function Presentations({ community_id = 4 }) {
   }, []);
 
 
+  // fetchAll handles the first load after a filter change. It pulls curated
+  // resources, the combined keyword search, and the collections list.
+  // Pagination tokens are reset so the next scroll triggers a fresh fetchPage.
   const fetchAll = useCallback(
-    async (page) => {
+    async () => {
       if (fetching.current) return;
       fetching.current = true;
 
       try {
-        // Add placeholders for loading state (only for pagination, not first page)
-        if (page > 1) {
-          addPlaceholderResources(page);
-        }
+        // Reset pagination state for the new filter/sort
+        tokenRef.current = undefined;
+        placeholderBatchRef.current = 0;
 
         // Search parameters
         const ascending = sortDirection === 'asc';
 
         // Retrieve resources
-        let [rawCuratedResources, invKeywordResources, invCollections, pageData] = await Promise.all([
+        let [rawCuratedResources, presentationsResponse, collectionsResponse] = await Promise.all([
           fetchRawCuratedResources(CURATED_PARENT_ID), // get array of curated resource IDs
-          fetchResourcesBySearch('ciroh_portal_presentation,ciroh_hub_presentation', filterSearch, ascending, sortType, undefined, page),
-          fetchResourcesBySearch('ciroh_portal_pres_collections', filterSearch, ascending, sortType, undefined, page),
-          fetchKeywordPageData('ciroh_portal_presentation,ciroh_hub_presentation', filterSearch, ascending, sortType, undefined)
+          fetchResourcesBySearch('ciroh_portal_presentation,ciroh_hub_presentation', filterSearch, ascending, sortType, undefined, undefined),
+          fetchResourcesBySearch('ciroh_portal_pres_collections', filterSearch, ascending, sortType, undefined, undefined),
         ]);
 
-        // Set last page
-        setLastPage(pageData.pageCount);
-        
+        const invKeywordResources = presentationsResponse?.resources || [];
+        const invCollections = collectionsResponse?.resources || [];
+
+        // After the first load, assume more pages may be available; fetchPage
+        // will refine this once the scroll triggers it.
+        setHasMore(true);
+
         // Apply search filtering to curated resources
         if (usingSearch()) {
           rawCuratedResources = rawCuratedResources.filter(res => searchRawResource(res, filterSearch));
@@ -230,17 +237,9 @@ export default function Presentations({ community_id = 4 }) {
         // Map the full resource lists to your internal format (with custom metadata)
         const mappedResources = await mapWithCustomMetadata(rawResources, hs_icon);
         const mappedCollections = await mapWithCustomMetadata(rawCollections, hs_icon);
-        
-        // Handle first page vs pagination
-        if (page === 1) {
-          setResources(mappedResources);
-        } else {
-          setResources(prev => [
-            ...prev.filter(r => !r.resource_id.startsWith('placeholder-')),
-            ...mappedResources
-          ]);
-        }
 
+        // First load — replace contents.
+        setResources(mappedResources);
         setCollections(mappedCollections);
         //setCuratedResources(mappedCurated);
 
@@ -254,46 +253,46 @@ export default function Presentations({ community_id = 4 }) {
         fetching.current = false;
       }
     },
-    [addPlaceholderResources, hs_icon, sortDirection, sortType, filterSearch, usingSearch]
+    [hs_icon, sortDirection, sortType, filterSearch, usingSearch]
   );
 
   const fetchPage = useCallback(
-    async (page) => {
+    async () => {
       if (fetching.current) return;
       fetching.current = true;
 
       try {
-        // Add placeholders for loading state (only for pagination, not first page)
-        if (page > 1) {
-          addPlaceholderResources(page);
-        }
+        addPlaceholderResources();
 
         // Search parameters
         const ascending = sortDirection === 'asc';
 
-        // Retrieve resources
-        let [invKeywordResources, pageData] = await Promise.all([
-          fetchResourcesBySearch('ciroh_portal_presentation', filterSearch, ascending, sortType, undefined, page),
-          fetchKeywordPageData('ciroh_portal_presentation', filterSearch, ascending, sortType, undefined)
-        ]);
+        // Retrieve resources using the pagination token
+        const response = await fetchResourcesBySearch(
+          'ciroh_portal_presentation',
+          filterSearch,
+          ascending,
+          sortType,
+          undefined,
+          tokenRef.current,
+          PAGE_SIZE,
+        );
 
-        // Set last page
-        setLastPage(pageData.pageCount);
+        // Advance pagination token and update hasMore.
+        tokenRef.current = response?.nextPaginationToken;
+        setHasMore(Boolean(response?.hasMorePages));
 
+        const invKeywordResources = response?.resources || [];
         const rawKeywordResources = invKeywordResources.reverse(); // Reverse chronological order
 
         // Map the full resource lists to your internal format (with custom metadata)
         const mappedResources = await mapWithCustomMetadata(rawKeywordResources, hs_icon);
-        
-        // Handle first page vs pagination
-        if (page === 1) {
-          setResources(mappedResources);
-        } else {
-          setResources(prev => [
-            ...prev.filter(r => !r.resource_id.startsWith('placeholder-')),
-            ...mappedResources
-          ]);
-        }
+
+        // Append, replacing this batch's placeholders with real data.
+        setResources(prev => [
+          ...prev.filter(r => !r.resource_id.startsWith('placeholder-')),
+          ...mappedResources
+        ]);
 
         //setCuratedResources(mappedCurated);
 
@@ -313,29 +312,27 @@ export default function Presentations({ community_id = 4 }) {
   // Reset and load first page when filters change
   useEffect(() => {
     setResources(initialPlaceholders);
-    setCurrentPage(1);
-    
+    setHasMore(true);
+
     // Reset the fetching flag to allow new requests
     fetching.current = false;
-    
-    fetchAll(1); // Use fetchAll for first page (includes curated resources)
+
+    fetchAll(); // Use fetchAll for first page (includes curated resources)
   }, [filterSearch, sortDirection, sortType, fetchAll]);
 
   /* infinite scroll */
   useEffect(() => {
     const onScroll = () => {
-      // Check if we can fetch more pages
-      if (fetching.current || currentPage >= lastPage) return;
+      // Stop scrolling once there are no more pages or a fetch is in progress
+      if (fetching.current || !hasMore) return;
       const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - SCROLL_THRESHOLD) {
-        const next = currentPage + 1;
-        setCurrentPage(next);
-        fetchPage(next);
+        fetchPage();
       }
     };
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
-  }, [currentPage, lastPage, fetchPage]);
+  }, [hasMore, fetchPage]);
 
   /* search helpers */
   const commitSearch = q => {

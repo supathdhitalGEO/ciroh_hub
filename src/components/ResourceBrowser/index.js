@@ -6,7 +6,7 @@ import ResourceList from './ResourceList';
 import styles from './styles.module.css';
 import { fetchResourcesBySearch, fetchResourceCustomMetadata } from '@site/src/components/HydroShareImporter';
 
-const PAGE_SIZE = 40;            // HydroShare discoverapi per-page (default)
+const PAGE_SIZE = 40;            // discover-atlas pageSize request parameter
 const SCROLL_THRESHOLD = 800;    // px from bottom before we load more (default)
 const DEBOUNCE_MS = 1000;        // search debounce delay
 const PLACEHOLDER_COUNT = 10;    // initial skeleton rows
@@ -22,19 +22,22 @@ export default function ResourceBrowser({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
 
   const [searchInput, setSearchInput] = useState('');
   const [activeSearch, setActiveSearch] = useState('');
   const [sortBy, setSortBy] = useState('modified');
   const [sortDirection, setSortDirection] = useState('desc');
 
+  // Pagination State
+  const paginationTokenRef = useRef(undefined);   // Token for the next page of keyword search results
+  const placeholderPageRef = useRef(0);           // Counter that produces unique IDs for placeholder resources across paginated fetches
+
   const fetchingRef = useRef(false);
   const debounceRef = useRef(null);
 
-  const createPlaceholders = useCallback((count = PLACEHOLDER_COUNT, page = 1) => {
+  const createPlaceholders = useCallback((count = PLACEHOLDER_COUNT, batchId = 0) => {
     return Array.from({ length: count }, (_, i) => ({
-      id: `placeholder-${page}-${i}`,
+      id: `placeholder-${batchId}-${i}`,
       title: '',
       description: '',
       authors: '',
@@ -54,41 +57,46 @@ export default function ResourceBrowser({
     resourceUrl: res.resource_url,
   }), []);
 
-  const fetchPage = useCallback(async (page, replace = false) => {
+  // Fetch a page using the current paginationToken. When `reset` is true the
+  // token is reset (first page after a filter change).
+  const fetchPage = useCallback(async ({ reset = false } = {}) => {
     if (fetchingRef.current) return;
     fetchingRef.current = true;
 
     try {
-      if (page === 1 && replace) {
+      if (reset) {
+        paginationTokenRef.current = undefined;
+        placeholderPageRef.current = 0;
         setResources(createPlaceholders());
         setLoading(true);
-      } else if (page > 1) {
-        setResources((prev) => [...prev, ...createPlaceholders(pageSize, page)]);
+      } else {
+        placeholderPageRef.current += 1;
+        setResources((prev) => [...prev, ...createPlaceholders(pageSize, placeholderPageRef.current)]);
       }
 
       const ascending = sortDirection === 'asc';
-      
-      // Use fetchResourcesBySearch for keyword-specific filtering
+
       const response = await fetchResourcesBySearch(
         keyword,
         activeSearch,
         ascending,
         sortBy,
-        undefined, // author filter
-        page
+        undefined,                       // author filter
+        paginationTokenRef.current,      // pagination token (undefined for first page)
+        pageSize,
       );
 
-      // Extract resources from response
-      const raw = response || [];
+      const raw = response?.resources || [];
       const normalized = raw.map(normalize);
 
-      if (page === 1 && replace) {
+      if (reset) {
         setResources(normalized);
       } else {
         setResources((prev) => [...prev.filter((r) => !r.isPlaceholder), ...normalized]);
       }
 
-      setHasMore(raw.length === pageSize);
+      paginationTokenRef.current = response?.nextPaginationToken;
+      setHasMore(Boolean(response?.hasMorePages));
       setLoading(false);
 
       // Lazy metadata enrichment
@@ -116,10 +124,9 @@ export default function ResourceBrowser({
 
   // Reset + fetch whenever filters change
   useEffect(() => {
-    setCurrentPage(1);
     setHasMore(true);
     fetchingRef.current = false;
-    fetchPage(1, true);
+    fetchPage({ reset: true });
   }, [keyword, activeSearch, sortBy, sortDirection, fetchPage]);
 
   // Infinite scroll
@@ -128,14 +135,12 @@ export default function ResourceBrowser({
       if (fetchingRef.current || !hasMore || loading) return;
       const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - scrollThreshold) {
-        const next = currentPage + 1;
-        setCurrentPage(next);
-        fetchPage(next);
+        fetchPage();
       }
     };
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
-  }, [currentPage, hasMore, loading, fetchPage, scrollThreshold]);
+  }, [hasMore, loading, fetchPage, scrollThreshold]);
 
   // Debounced search
   const handleSearchChange = (val) => {
