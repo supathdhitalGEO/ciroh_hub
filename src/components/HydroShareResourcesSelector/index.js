@@ -20,6 +20,37 @@ const SCROLL_THRESHOLD = 800;
 let   debounceTimer    = null;
 const DEBOUNCE_MS      = 1_000;
 
+// Sort a mapped resource list in place. Needed because datasets combines group resources
+// with keyword search results so they must be sorted after the fact
+const sortResources = (resourceList, sortType, sortDirection) => {
+  return resourceList.sort((a, b) => {
+    // Keep placeholders at the beginning during loading
+    if (a.resource_id.startsWith('placeholder-')) return -1;
+    if (b.resource_id.startsWith('placeholder-')) return 1;
+
+    let comparison = 0;
+
+    switch (sortType) {
+      case 'lastModified':
+        comparison = a.date_last_updated.localeCompare(b.date_last_updated);
+        break;
+      case 'dateCreated':
+        comparison = a.date_created.localeCompare(b.date_created);
+        break;
+      case 'name':
+        comparison = a.title.localeCompare(b.title);
+        break;
+      case 'creatorName':
+        comparison = a.authors.localeCompare(b.authors);
+        break;
+      default:
+        comparison = 0;
+        break;
+    }
+    return sortDirection === 'asc' ? comparison : -comparison;
+  });
+};
+
 export default function HydroShareResourcesSelector({
   keyword = "nwm_portal_app,ciroh_hub_app",
   defaultImage,
@@ -142,6 +173,11 @@ export default function HydroShareResourcesSelector({
           docs_url: "",
           embed_url: "",
         }));
+
+        // Sort locally when fetching datasets to account for curated resources being combined with searched resources
+        if (keyword.includes('data')) {
+          sortResources(mappedList, sortType, sortDirection);
+        }
 
         // Handle first page vs pagination
         if (reset) {
