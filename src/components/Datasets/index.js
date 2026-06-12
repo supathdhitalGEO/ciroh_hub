@@ -95,7 +95,7 @@ export default function Datasets({ community_id = 4 }) {
   const [activeTab, setActiveTab] = useState("all");
 
   // Pagination State — page number for the hsapi group call, pagination token for
-  // the discover-atlas call. Tracked as separate refs to match the explicit
+  // the discovery-atlas call. Tracked as separate refs to match the explicit
   // parameter form on getCommunityResources.
   const [hasMore, setHasMore] = useState(true);
   const fetching = useRef(false);

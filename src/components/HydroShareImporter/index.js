@@ -43,7 +43,7 @@ async function fetchJson(url, errorContext = "resources") {
 }
 
 /**
- * Builds the URL for the HydroShare Discover Atlas API based on the provided search criteria.
+ * Builds the URL for the HydroShare Discovery Atlas API based on the provided search criteria.
  *
  * @param {string} keyword The keyword(s) (subject) to use for the api request
  * @param {string} searchText The text to search for in the resources
@@ -52,9 +52,9 @@ async function fetchJson(url, errorContext = "resources") {
  * @param {string} author The author name to filter the results by
  * @param {string|undefined} paginationToken Token that identifies the next page. Omit on the first request.
  * @param {number} pageSize The number of resources to request per page
- * @returns {string} The constructed URL for the HydroShare Discover Atlas API
+ * @returns {string} The constructed URL for the HydroShare Discovery Atlas API
  */
-function buildDiscoverAtlasApiUrl(
+function buildDiscoveryAtlasApiUrl(
   keyword,
   searchText,
   ascending = false,
@@ -93,7 +93,7 @@ function buildDiscoverAtlasApiUrl(
   return `https://www.hydroshare.org/hsapi/discovery-atlas/search?${params.toString()}`;
 }
 
-function mapDiscoverResource(resource) {
+function mapDiscoveryResource(resource) {
   return {
     resource_id: resource.document[0].url.match(/resource\/([^/]+)/)[1],
     resource_title: resource.name,
@@ -107,13 +107,13 @@ function mapDiscoverResource(resource) {
 }
 
 /**
- * Normalize a discover-atlas response body to a raw array of resource objects.
+ * Normalize a discovery-atlas response body to a raw array of resource objects.
  * Tolerates both an already-decoded array and a JSON-encoded string.
  * 
- * @param {Array|String} data The raw response body from the discover-atlas API, either as an array or a JSON string
+ * @param {Array|String} data The raw response body from the discovery-atlas API, either as an array or a JSON string
  * @returns {Array} An array of resource objects
  */
-function getRawDiscoverResources(data) {
+function getRawDiscoveryResources(data) {
   // Data given is an array
   if (Array.isArray(data)) {
     return data;
@@ -294,10 +294,10 @@ function joinExtraResources(groupResources, extraResources) {
 
 /**
  * Fetch community resources by combining hsapi group results with
- * discover-atlas keyword search results.
+ * discovery-atlas keyword search results.
  *
  * Pagination is heterogeneous: `groupPageNumber` advances the hsapi group call
- * (1-based page numbers) while `paginationToken` advances the discover-atlas
+ * (1-based page numbers) while `paginationToken` advances the discovery-atlas
  * call (cursor). For the first request, omit both. For subsequent requests,
  * read the next values off the previous response:
  *   - groupPageNumber: previousResponse.groupResourcesPageData.pageNumber + 1
@@ -305,14 +305,14 @@ function joinExtraResources(groupResources, extraResources) {
  *
  * `hasMorePages` is the union of both internal sources' hasMorePages.
  *
- * @param {string} keyword The keyword(s) to search for in the discover-atlas API
+ * @param {string} keyword The keyword(s) to search for in the discovery-atlas API
  * @param {string} communityId The ID of the HydroShare community to fetch group resources from
  * @param {string} fullTextSearch Optional full text search string to filter results
- * @param {boolean} ascending Whether to sort discover-atlas results in ascending order
- * @param {string} sortBy The field to sort discover-atlas results by. One of "viewCount", "name", "dateCreated", "lastModified", "creatorName"
- * @param {string} author The author name to filter discover-atlas results by
+ * @param {boolean} ascending Whether to sort discovery-atlas results in ascending order
+ * @param {string} sortBy The field to sort discovery-atlas results by. One of "viewCount", "name", "dateCreated", "lastModified", "creatorName"
+ * @param {string} author The author name to filter discovery-atlas results by
  * @param {number|undefined} groupPageNumber Page number for the hsapi group call. Omit on the first request.
- * @param {string|undefined} paginationToken Cursor for the discover-atlas call. Omit on the first request.
+ * @param {string|undefined} paginationToken Cursor for the discovery-atlas call. Omit on the first request.
  * @param {number} pageSize The number of resources to request per page for both sources
  * @returns {Promise<Object>} An object containing combined resources and pagination data from both sources
  */
@@ -371,7 +371,7 @@ async function fetchResourcesByKeyword(keyword, { page = 1, count = 15, fullText
 }
 
 /**
- * Internal helper that performs a single discover-atlas request and returns
+ * Internal helper that performs a single discovery-atlas request and returns
  * mapped resources together with the cursor for the next page. Callers should
  * use `fetchResourcesBySearch` instead, which wraps this core function.
  *
@@ -385,7 +385,7 @@ async function fetchResourcesByKeyword(keyword, { page = 1, count = 15, fullText
  * @param {number} params.pageSize The number of resources to request per page
  * @returns {Promise<{resources: Array, nextPaginationToken: string|undefined, hasMorePages: boolean}>}
  */
-async function fetchDiscoverResourcesCore({
+async function fetchDiscoveryResourcesCore({
   keyword,
   searchText,
   ascending = false,
@@ -394,11 +394,11 @@ async function fetchDiscoverResourcesCore({
   paginationToken = undefined,
   pageSize = 50,
 }) {
-  const url = buildDiscoverAtlasApiUrl(keyword, searchText, ascending, sortBy, author, paginationToken, pageSize);
+  const url = buildDiscoveryAtlasApiUrl(keyword, searchText, ascending, sortBy, author, paginationToken, pageSize);
   const data = await fetchJson(url, "resources");
-  const rawResources = getRawDiscoverResources(data);
+  const rawResources = getRawDiscoveryResources(data);
   const nextPaginationToken = rawResources.length === pageSize ? (rawResources[rawResources.length - 1].paginationToken ?? null) : null;
-  const resources = rawResources.map(mapDiscoverResource);
+  const resources = rawResources.map(mapDiscoveryResource);
   return {
     resources,
     nextPaginationToken,
@@ -407,7 +407,7 @@ async function fetchDiscoverResourcesCore({
 }
 
 /**
- * Fetch a page of resources from HydroShare's discover-atlas search.
+ * Fetch a page of resources from HydroShare's discovery-atlas search.
  *
  * Returns an object so callers can drive cursor-based pagination — the previous
  * response's `nextPaginationToken` must be passed back as `paginationToken` to
@@ -423,7 +423,7 @@ async function fetchDiscoverResourcesCore({
  * @returns {Promise<{resources: Array, nextPaginationToken: string|undefined, hasMorePages: boolean}>}
  */
 async function fetchResourcesBySearch(keyword, searchText, ascending=false, sortBy=undefined, author=undefined, paginationToken=undefined, pageSize=undefined) {
-  return fetchDiscoverResourcesCore({
+  return fetchDiscoveryResourcesCore({
     keyword,
     searchText,
     ascending,

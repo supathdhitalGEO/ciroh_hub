@@ -55,7 +55,7 @@ export default function HydroShareResourcesSelector({
 
   // Pagination state
   const groupPageNumberRef = useRef(undefined);   // For getCommunityResources group pagination
-  const communityTokenRef = useRef(undefined);    // For getCommunityResources discover-atlas pagination
+  const communityTokenRef = useRef(undefined);    // For getCommunityResources discovery-atlas pagination
   const searchTokenRef = useRef(undefined);       // For fetchResourcesBySearch pagination
   const placeholderBatchRef = useRef(0);          // Counter that produces unique IDs for placeholder resources across paginated fetches
 

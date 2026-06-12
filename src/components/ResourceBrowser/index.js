@@ -6,7 +6,7 @@ import ResourceList from './ResourceList';
 import styles from './styles.module.css';
 import { fetchResourcesBySearch, fetchResourceCustomMetadata } from '@site/src/components/HydroShareImporter';
 
-const PAGE_SIZE = 40;            // discover-atlas pageSize request parameter
+const PAGE_SIZE = 40;            // discovery-atlas pageSize request parameter
 const SCROLL_THRESHOLD = 800;    // px from bottom before we load more (default)
 const DEBOUNCE_MS = 1000;        // search debounce delay
 const PLACEHOLDER_COUNT = 10;    // initial skeleton rows
