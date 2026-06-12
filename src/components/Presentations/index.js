@@ -134,7 +134,7 @@ export default function Presentations({ community_id = 4 }) {
   // Search State
   const [searchInput,    setSearchInput]    = useState('');
   const [filterSearch,   setFilterSearch]   = useState('');
-  const [sortType,       setSortType]       = useState('modified');
+  const [sortType,       setSortType]       = useState('lastModified');
   const [sortDirection,  setSortDirection]  = useState('desc');
 
   // Helper function to determine if search is active
@@ -200,7 +200,7 @@ export default function Presentations({ community_id = 4 }) {
         const rawCollections = invCollections.reverse();
         let rawResources = joinExtraResources(rawKeywordResources, rawCuratedResources); // Merge ensures backwards compatibility for presentations predating the keyword
 
-        if (sortType === 'author') {
+        if (sortType === 'creatorName') {
           for (let i = 0; i < rawResources.length; i++) {
             rawResources[i].authorSort = rawResources[i].authors.map(author => author.split(',').reverse().join(' ')).join(' 🖊️ ');
           }
@@ -211,16 +211,16 @@ export default function Presentations({ community_id = 4 }) {
           let comparison = 0;
           
           switch (sortType) {
-            case 'modified':
+            case 'lastModified':
               comparison = a.date_last_updated.localeCompare(b.date_last_updated);
               break;
-            case 'created':
+            case 'dateCreated':
               comparison = a.date_created.localeCompare(b.date_created);
               break;
-            case 'title':
+            case 'name':
               comparison = a.resource_title.localeCompare(b.resource_title);
               break;
-            case 'author':
+            case 'creatorName':
               const aAuthors = a.authorSort;
               const bAuthors = b.authorSort;
               comparison = aAuthors.localeCompare(bAuthors);
@@ -411,10 +411,10 @@ export default function Presentations({ community_id = 4 }) {
             onChange={e => setSortType(e.target.value)}
             className={styles.sortSelect}
           >
-            <option value="modified">Last Updated</option>
-            <option value="created">Date Created</option>
-            <option value="title">Title</option>
-            <option value="author">Authors</option>
+            <option value="lastModified">Last Updated</option>
+            <option value="dateCreated">Date Created</option>
+            <option value="name">Title</option>
+            <option value="creatorName">Authors</option>
           </select>
 
           <button

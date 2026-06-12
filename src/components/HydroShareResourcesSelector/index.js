@@ -443,10 +443,10 @@ export default function HydroShareResourcesSelector({
             onChange={e => setSortType(e.target.value)}
             className={styles.sortSelect}
           >
-            <option value="modified">Last Updated</option>
-            <option value="created">Date Created</option>
-            <option value="title">Title</option>
-            <option value="author">Authors</option>
+            <option value="lastModified">Last Updated</option>
+            <option value="dateCreated">Date Created</option>
+            <option value="name">Title</option>
+            <option value="creatorName">Authors</option>
           </select>
 
           <button

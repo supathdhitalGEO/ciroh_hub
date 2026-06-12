@@ -25,7 +25,7 @@ export default function ResourceBrowser({
 
   const [searchInput, setSearchInput] = useState('');
   const [activeSearch, setActiveSearch] = useState('');
-  const [sortBy, setSortBy] = useState('modified');
+  const [sortBy, setSortBy] = useState('lastModified');
   const [sortDirection, setSortDirection] = useState('desc');
 
   // Pagination State
@@ -194,10 +194,10 @@ export default function ResourceBrowser({
               onChange={(e) => setSortBy(e.target.value)}
               className={styles.sortSelect}
             >
-              <option value="modified">Last Updated</option>
-              <option value="created">Date Created</option>
-              <option value="title">Title</option>
-              <option value="author">Author</option>
+              <option value="lastModified">Last Updated</option>
+              <option value="dateCreated">Date Created</option>
+              <option value="name">Title</option>
+              <option value="creatorName">Author</option>
             </select>
 
           <button

@@ -52,10 +52,10 @@ export default function ResearchFeature() {
             while (true) {
                 const response = await fetchResourcesBySearch(
                     keyword,
-                    "",          // searchText
-                    false,       // ascending
-                    "modified",  // sortBy
-                    undefined,   // author
+                    "",              // searchText
+                    false,           // ascending
+                    "lastModified",  // sortBy
+                    undefined,       // author
                     paginationToken,
                     PAGE_SIZE,
                 );
@@ -99,10 +99,10 @@ export default function ResearchFeature() {
                 const response = await getCommunityResources(
                   keyword,
                   communityId,
-                  undefined,   // fullTextSearch
-                  false,       // ascending
-                  "modified",  // sortBy
-                  undefined,   // author
+                  undefined,       // fullTextSearch
+                  false,           // ascending
+                  "lastModified",  // sortBy
+                  undefined,       // author
                   groupPageNumber,
                   paginationToken,
                   PAGE_SIZE,

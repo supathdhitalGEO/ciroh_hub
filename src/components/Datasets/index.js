@@ -37,16 +37,16 @@ const sortResources = (resourceList, sortType, sortDirection) => {
     let comparison = 0;
     
     switch (sortType) {
-      case 'modified':
+      case 'lastModified':
         comparison = a.date_last_updated.localeCompare(b.date_last_updated);
         break;
-      case 'created':
+      case 'dateCreated':
         comparison = a.date_created.localeCompare(b.date_created);
         break;
-      case 'title':
+      case 'name':
         comparison = a.title.localeCompare(b.title);
         break;
-      case 'author':
+      case 'creatorName':
         comparison = a.authors.localeCompare(b.authors);
         break;
       default:
@@ -106,7 +106,7 @@ export default function Datasets({ community_id = 4 }) {
   // Search State
   const [searchInput,    setSearchInput]    = useState('');
   const [filterSearch,   setFilterSearch]   = useState('');
-  const [sortType,       setSortType]       = useState('modified');
+  const [sortType,       setSortType]       = useState('lastModified');
   const [sortDirection,  setSortDirection]  = useState('desc');
 
   // Fetch all resources by group, then filter them based on curated IDs.
@@ -348,10 +348,10 @@ export default function Datasets({ community_id = 4 }) {
             onChange={e => setSortType(e.target.value)}
             className={styles.sortSelect}
           >
-            <option value="modified">Last Updated</option>
-            <option value="created">Date Created</option>
-            <option value="title">Title</option>
-            <option value="author">Authors</option>
+            <option value="lastModified">Last Updated</option>
+            <option value="dateCreated">Date Created</option>
+            <option value="name">Title</option>
+            <option value="creatorName">Authors</option>
           </select>
 
           <button
