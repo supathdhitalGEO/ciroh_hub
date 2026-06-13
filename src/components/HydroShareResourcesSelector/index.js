@@ -140,11 +140,8 @@ export default function HydroShareResourcesSelector({
         let communityResponse = null;
         let searchResponse = null;
         if (keyword.includes('data')) {
-          // Extract the first keyword for community search
-          const firstKeyword = keyword.split(',')[0].trim();
-
           // Fetch resources using the community endpoint which handles both group and keyword resources, along with pagination tokens
-          communityResponse = await getCommunityResources(firstKeyword, "4", filterSearch, ascending, sortType, undefined, groupPageNumberRef.current, communityTokenRef.current, PAGE_SIZE);
+          communityResponse = await getCommunityResources(keyword, "4", filterSearch, ascending, sortType, undefined, groupPageNumberRef.current, communityTokenRef.current, PAGE_SIZE);
           resourceList = communityResponse.resources || [];
 
           // Advance pagination state for the next fetch.
