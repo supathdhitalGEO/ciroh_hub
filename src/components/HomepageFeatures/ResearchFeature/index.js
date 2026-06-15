@@ -1,6 +1,5 @@
 import useBaseUrl from "@docusaurus/useBaseUrl";
-import { fetchResourcesBySearch } from "@site/src/api/hydroshareAPI";
-import { getCommunityResources } from "@site/src/components/HydroShareImporter";
+import { fetchResourcesBySearch, getCommunityResources } from "@site/src/components/HydroShareImporter";
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import React, { useState, useRef, useEffect } from 'react';
 
@@ -42,46 +41,46 @@ export default function ResearchFeature() {
     const [statsLoading, setStatsLoading] = useState(true);
     const [statsError, setStatsError] = useState(null);
 
-    // Count resources for a single keyword, paging until exhausted
+    // Count resources for a single keyword, paging until resources are exhausted.
     async function hsCountByKeyword(keyword) {
+        const PAGE_SIZE = 40;
         let total = 0;
-        let page = 1;
-        let totalPagesChecked = 0;
+        let paginationToken = undefined;
+        let pagesFetched = 0;
         try {
             console.log(`[hsCountByKeyword] Starting count for: ${keyword}`);
             while (true) {
-                const results = await fetchResourcesBySearch(
-                keyword,
-                "",         // searchText
-                false,      // ascending
-                "modified", // sortBy
-                undefined,  // author
-                page
+                const response = await fetchResourcesBySearch(
+                    keyword,
+                    "",              // searchText
+                    false,           // ascending
+                    "lastModified",  // sortBy
+                    undefined,       // author
+                    paginationToken,
+                    PAGE_SIZE,
                 );
 
-                // Support wrappers that return array or { resources: [...] }
-                const items = Array.isArray(results) ? results : (results?.resources || []);
+                const items = response?.resources || [];
+                pagesFetched++;
 
-                console.log(`[hsCountByKeyword] Page ${page}: ${items.length} items returned for ${keyword}`);
-                totalPagesChecked++;
+                console.log(`[hsCountByKeyword] Page ${pagesFetched}: ${items.length} items returned for ${keyword}`);
 
-                if (!items || items.length === 0) {
-                    console.log(`[hsCountByKeyword] No more items on page ${page}, stopping`);
+                if (items.length === 0) {
+                    console.log(`[hsCountByKeyword] Empty page, stopping`);
                     break;
                 }
 
                 total += items.length;
 
-                // stop when a page is short (no more pages)
-                if (items.length < 40) {
-                    console.log(`[hsCountByKeyword] Short page (${items.length} < 40), stopping`);
+                if (!response?.hasMorePages) {
+                    console.log(`[hsCountByKeyword] No more pages signaled, stopping`);
                     break;
                 }
-                page++;
+                paginationToken = response.nextPaginationToken;
             }
-            console.log(`[hsCountByKeyword] ${keyword}: Total ${total} resources across ${totalPagesChecked} pages`);
+            console.log(`[hsCountByKeyword] ${keyword}: Total ${total} resources across ${pagesFetched} pages`);
         } catch (err) {
-            console.error(`[hsCountByKeyword] ${keyword} error after ${totalPagesChecked} pages:`, err);
+            console.error(`[hsCountByKeyword] ${keyword} error after ${pagesFetched} pages:`, err);
             throw err;
         }
         return total;
@@ -89,8 +88,10 @@ export default function ResearchFeature() {
 
     // Count community resources (matches datasets page behavior)
     async function hsCountCommunityResources(keyword, communityId = "4") {
-        let page = 1;
-        let totalPagesChecked = 0;
+        const PAGE_SIZE = 40;
+        let groupPageNumber = undefined;
+        let paginationToken = undefined;
+        let pagesFetched = 0;
         const resourceIds = new Set();
         try {
             console.log(`[hsCountCommunityResources] Starting count for: ${keyword}`);
@@ -98,16 +99,17 @@ export default function ResearchFeature() {
                 const response = await getCommunityResources(
                   keyword,
                   communityId,
-                  undefined,  // fullTextSearch
-                  false,      // ascending
-                  "modified", // sortBy
-                  undefined,  // author
-                  page,
-                  40          // pageSize
+                  undefined,       // fullTextSearch
+                  false,           // ascending
+                  "lastModified",  // sortBy
+                  undefined,       // author
+                  groupPageNumber,
+                  paginationToken,
+                  PAGE_SIZE,
                 );
 
                 const items = response?.resources || [];
-                totalPagesChecked++;
+                pagesFetched++;
 
                 items.forEach((item) => {
                     if (item?.resource_id) {
@@ -115,22 +117,21 @@ export default function ResearchFeature() {
                     }
                 });
 
-                const hasMorePages = Boolean(
-                    response?.groupResourcesPageData?.hasMorePages ||
-                    response?.extraResourcesPageData?.hasMorePages
-                );
+                const hasMorePages = Boolean(response?.hasMorePages);
 
-                console.log(`[hsCountCommunityResources] Page ${page}: ${items.length} items returned for ${keyword}`);
+                console.log(`[hsCountCommunityResources] Page ${pagesFetched}: ${items.length} items returned for ${keyword}`);
 
                 if (!hasMorePages || items.length === 0) {
-                    console.log(`[hsCountCommunityResources] No more items on page ${page}, stopping`);
+                    console.log(`[hsCountCommunityResources] No more items, stopping`);
                     break;
                 }
-                page++;
+
+                groupPageNumber = (response.groupResourcesPageData?.pageNumber || 1) + 1;
+                paginationToken = response.extraResourcesPageData?.nextPaginationToken;
             }
-            console.log(`[hsCountCommunityResources] ${keyword}: Total ${resourceIds.size} resources across ${totalPagesChecked} pages`);
+            console.log(`[hsCountCommunityResources] ${keyword}: Total ${resourceIds.size} resources across ${pagesFetched} pages`);
         } catch (err) {
-            console.error(`[hsCountCommunityResources] ${keyword} error after ${totalPagesChecked} pages:`, err);
+            console.error(`[hsCountCommunityResources] ${keyword} error after ${pagesFetched} pages:`, err);
             throw err;
         }
         return resourceIds.size;

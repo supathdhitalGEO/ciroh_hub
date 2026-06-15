@@ -42,64 +42,94 @@ async function fetchJson(url, errorContext = "resources") {
   return response.json();
 }
 
-function buildDiscoverApiUrl(
+/**
+ * Builds the URL for the HydroShare Discovery Atlas API based on the provided search criteria.
+ *
+ * @param {string} keyword The keyword(s) (subject) to use for the api request
+ * @param {string} searchText The text to search for in the resources
+ * @param {boolean} ascending Whether to sort the results in ascending order
+ * @param {string} sortBy The field to sort the results by. One of "viewCount", "name", "dateCreated", "lastModified", "creatorName"
+ * @param {string} author The author name to filter the results by
+ * @param {string|undefined} paginationToken Token that identifies the next page. Omit on the first request.
+ * @param {number} pageSize The number of resources to request per page
+ * @returns {string} The constructed URL for the HydroShare Discovery Atlas API
+ */
+function buildDiscoveryAtlasApiUrl(
   keyword,
   searchText,
   ascending = false,
   sortBy = undefined,
   author = undefined,
-  pageNumber = 1,
+  paginationToken = undefined,
+  pageSize = 50,
 ) {
-  const filterAuthor = author !== undefined ? convertAuthorToLastFirst(author) : undefined;
-  const filter = {
-    author: [filterAuthor].filter(a => a !== undefined),
-    subject: keyword.split(","),
-  };
+  // Add required arguments
   const params = new URLSearchParams({
-    q: searchText ? searchText : "",
-    subject: keyword,
-    asc: ascending ? "1" : "-1",
-    pnum: pageNumber.toString(),
-    filter: JSON.stringify(filter),
+    keyword: keyword,
+    order: ascending ? "asc" : "desc",
+    pageSize: pageSize.toString(),
   });
-  if (sortBy !== undefined) {
-    params.set("sort", sortBy);
+
+  // Add search terms if provided
+  if (searchText !== undefined && searchText.trim() !== "") {
+    params.set("term", searchText);
   }
-  return `https://www.hydroshare.org/discoverapi/?${params.toString()}`;
+
+  // Add author filter if provided
+  if (author !== undefined) {
+    params.set("creatorName", author);
+  }
+
+  // Add sortBy if provided
+  if (sortBy !== undefined) {
+    params.set("sortBy", sortBy);
+  }
+
+  // Add pagination token for subsequent pages
+  if (paginationToken !== undefined && paginationToken !== null) {
+    params.set("paginationToken", paginationToken);
+  }
+
+  return `https://www.hydroshare.org/hsapi/discovery-atlas/search?${params.toString()}`;
 }
 
-function mapDiscoverResource(resource) {
+function mapDiscoveryResource(resource) {
   return {
-    resource_id: resource.short_id,
-    resource_title: resource.title,
-    authors: resource.authors,
-    resource_type: resource.type,
-    resource_url: `https://www.hydroshare.org${resource.link}`,
-    abstract: resource.abstract,
-    date_created: resource.created,
-    date_last_updated: resource.modified,
+    resource_id: resource.document[0].url.match(/resource\/([^/]+)/)[1],
+    resource_title: resource.name,
+    authors: resource.creator.map(c => c.name),
+    resource_type: resource.document[0].additionalType,
+    resource_url: resource.document[0].url.replace(/^http:/, 'https:'),
+    abstract: resource.description,
+    date_created: resource.document[0].dateCreated,
+    date_last_updated: resource.document[0].dateModified,
   };
 }
 
-function parseDiscoverResources(data, { pageNumber } = {}) {
-  if (pageNumber !== undefined && pageNumber > data.pagecount) {
-    return [];
+/**
+ * Normalize a discovery-atlas response body to a raw array of resource objects.
+ * Tolerates both an already-decoded array and a JSON-encoded string.
+ * 
+ * @param {Array|String} data The raw response body from the discovery-atlas API, either as an array or a JSON string
+ * @returns {Array} An array of resource objects
+ */
+function getRawDiscoveryResources(data) {
+  // Data given is an array
+  if (Array.isArray(data)) {
+    return data;
   }
 
-  if (typeof data.resources === "string") {
+  // Data given is a JSON string
+  if (typeof data === "string") {
     try {
-      return JSON.parse(data.resources).map(mapDiscoverResource);
+      const parsed = JSON.parse(data);
+      return Array.isArray(parsed) ? parsed : [];
     } catch (error) {
-      console.error("Failed to parse data.resources as JSON string:", error);
+      console.error("Failed to parse data as JSON string:", error);
       return [];
     }
   }
-
-  if (Array.isArray(data.resources)) {
-    return data.resources.map(mapDiscoverResource);
-  }
-
-  console.warn("Unexpected format for data.resources:", data.resources);
+  console.warn("Unexpected format for data:", data);
   return [];
 }
 
@@ -262,13 +292,47 @@ function joinExtraResources(groupResources, extraResources) {
 
 }
 
-async function getCommunityResources(keyword="ciroh_portal_data,ciroh_hub_data", communityId="4", fullTextSearch=undefined, ascending=false, sortBy=undefined, author=undefined, pageNumber=undefined, pageSize=undefined) {
+/**
+ * Fetch community resources by combining hsapi group results with
+ * discovery-atlas keyword search results.
+ *
+ * Pagination is heterogeneous: `groupPageNumber` advances the hsapi group call
+ * (1-based page numbers) while `paginationToken` advances the discovery-atlas
+ * call (cursor). For the first request, omit both. For subsequent requests,
+ * read the next values off the previous response:
+ *   - groupPageNumber: previousResponse.groupResourcesPageData.pageNumber + 1
+ *   - paginationToken: previousResponse.extraResourcesPageData.nextPaginationToken
+ *
+ * `hasMorePages` is the union of both internal sources' hasMorePages.
+ *
+ * @param {string} keyword The keyword(s) to search for in the discovery-atlas API
+ * @param {string} communityId The ID of the HydroShare community to fetch group resources from
+ * @param {string} fullTextSearch Optional full text search string to filter results
+ * @param {boolean} ascending Whether to sort discovery-atlas results in ascending order
+ * @param {string} sortBy The field to sort discovery-atlas results by. One of "viewCount", "name", "dateCreated", "lastModified", "creatorName"
+ * @param {string} author The author name to filter discovery-atlas results by
+ * @param {number|undefined} groupPageNumber Page number for the hsapi group call. Omit on the first request.
+ * @param {string|undefined} paginationToken Cursor for the discovery-atlas call. Omit on the first request.
+ * @param {number} pageSize The number of resources to request per page for both sources
+ * @returns {Promise<Object>} An object containing combined resources and pagination data from both sources
+ */
+async function getCommunityResources(
+  keyword="ciroh_portal_data,ciroh_hub_data",
+  communityId="4",
+  fullTextSearch=undefined,
+  ascending=false,
+  sortBy=undefined,
+  author=undefined,
+  groupPageNumber=undefined,
+  paginationToken=undefined,
+  pageSize=undefined,
+) {
   try {
     // Fetch resources
     const groupIds = await getGroupIds(communityId);
     const [groupResourcesResponse, extraResourcesResponse] = await Promise.all([
-      joinGroupResources(groupIds, fullTextSearch, pageNumber, pageSize),
-      fetchResourcesWithPaginationData(keyword, fullTextSearch, ascending, sortBy, author, pageNumber)
+      joinGroupResources(groupIds, fullTextSearch, groupPageNumber, pageSize),
+      fetchResourcesBySearch(keyword, fullTextSearch, ascending, sortBy, author, paginationToken, pageSize),
     ]);
 
     // Extract resources
@@ -281,10 +345,9 @@ async function getCommunityResources(keyword="ciroh_portal_data,ciroh_hub_data",
     return {
       groupResourcesPageData: groupResourcesResponse,
       extraResourcesPageData: extraResourcesResponse,
-      resources: joinedResources
-    }
-
-    // return await joinGroupResources(groupIds);
+      resources: joinedResources,
+      hasMorePages: Boolean(groupResourcesResponse.hasMorePages || extraResourcesResponse.hasMorePages),
+    };
   } catch (error) {
     console.error('Community resource fetch failed:', error);
     return {};
@@ -307,98 +370,68 @@ async function fetchResourcesByKeyword(keyword, { page = 1, count = 15, fullText
   return data.results;
 }
 
-async function fetchDiscoverResourcesCore({
+/**
+ * Internal helper that performs a single discovery-atlas request and returns
+ * mapped resources together with the cursor for the next page. Callers should
+ * use `fetchResourcesBySearch` instead, which wraps this core function.
+ *
+ * @param {Object} params
+ * @param {string} params.keyword The keyword (subject) to use for the api request
+ * @param {string} params.searchText The text to look for in all the resource fields
+ * @param {boolean} params.ascending Whether to sort results in ascending order
+ * @param {string} params.sortBy The field to sort by. One of 'viewCount', 'name', 'dateCreated', 'lastModified', 'creatorName'
+ * @param {string} params.author The author to filter by
+ * @param {string|undefined} params.paginationToken Cursor returned from the previous call. Omit on the first request.
+ * @param {number} params.pageSize The number of resources to request per page
+ * @returns {Promise<{resources: Array, nextPaginationToken: string|undefined, hasMorePages: boolean}>}
+ */
+async function fetchDiscoveryResourcesCore({
   keyword,
   searchText,
   ascending = false,
   sortBy = undefined,
   author = undefined,
-  pageNumber = 1,
-  clampToPageCount = false,
+  paginationToken = undefined,
+  pageSize = 50,
 }) {
-  const url = buildDiscoverApiUrl(keyword, searchText, ascending, sortBy, author, pageNumber);
+  const url = buildDiscoveryAtlasApiUrl(keyword, searchText, ascending, sortBy, author, paginationToken, pageSize);
   const data = await fetchJson(url, "resources");
-  const resources = parseDiscoverResources(
-    data,
-    clampToPageCount ? { pageNumber } : undefined,
-  );
-  return { data, resources };
-}
-
-/**
- * Fetch resources from HydroShare based on search criteria.
- * @param {string} keyword  - The keyword (subject) to use for the api request
- * @param {string} searchText - The text to look for in all the resource fields
- * @param {boolean} ascending - Whether to sort results in ascending order (true) or descending order (false)
- * @param {string} sortBy - The field to sort by. One of 'title', 'author', 'created', 'modified'
- * @param {string} author - The author to filter by
- * @returns {Promise<Array>} Array of resource objects
- */
-async function fetchResourcesBySearch(keyword, searchText, ascending=false, sortBy=undefined, author=undefined, pageNumber=1) {
-  const { resources } = await fetchDiscoverResourcesCore({
-    keyword,
-    searchText,
-    ascending,
-    sortBy,
-    author,
-    pageNumber,
-  });
-  return resources;
-}
-
-/**
- * Fetch resources from HydroShare based on search criteria and include pagination data in the returned object.
- * @param {string} keyword  - The keyword (subject) to use for the api request
- * @param {string} searchText - The text to look for in all the resource fields
- * @param {boolean} ascending - Whether to sort results in ascending order (true) or descending order (false)
- * @param {string} sortBy - The field to sort by. One of 'title', 'author', 'created', 'modified'
- * @param {string} author - The author to filter by
- * @param {number} pageNumber - The page number to fetch (1-based indexing)
- * @returns {Promise<Object>} Object containing resources array and pagination metadata
- */
-async function fetchResourcesWithPaginationData(keyword, searchText, ascending=false, sortBy=undefined, author=undefined, pageNumber=1) {
-  const { data, resources } = await fetchDiscoverResourcesCore({
-    keyword,
-    searchText,
-    ascending,
-    sortBy,
-    author,
-    pageNumber,
-    clampToPageCount: true,
-  });
-
-  // Return the corrected resources with pagination data
+  const rawResources = getRawDiscoveryResources(data);
+  const nextPaginationToken = rawResources.length === pageSize ? (rawResources[rawResources.length - 1].paginationToken ?? null) : null;
+  const resources = rawResources.map(mapDiscoveryResource);
   return {
     resources,
-    resourcesLength: resources.length,
-    resourceCountTotal: data.rescount,
-    pageCount: data.pagecount,
-    pageSize: data.perpage,
-    pageNumber: pageNumber,
-    pageLast: data.pagecount,
-    hasMorePages: pageNumber < data.pagecount,
+    nextPaginationToken,
+    hasMorePages: nextPaginationToken !== undefined && nextPaginationToken !== null,
   };
 }
 
 /**
- * Fetch the pagination data for a given keyword and search criteria.
- * Uses the discoverapi endpoint to get resource count, page count, and resources per page.
- * @param {String} keyword The keyword/subject of the desired resources
- * @param {String} searchText The text to search for within the resources
- * @param {Boolean} ascending Whether to sort the results in ascending order
- * @param {String} sortBy The field to sort by. One of 'title', 'author', 'created', 'modified'
- * @param {String} author The author to filter the results by
- * @returns {Promise<Object>} An object containing pagination data
+ * Fetch a page of resources from HydroShare's discovery-atlas search.
+ *
+ * Returns an object so callers can drive cursor-based pagination — the previous
+ * response's `nextPaginationToken` must be passed back as `paginationToken` to
+ * fetch the next page. On the first call, pass `undefined`.
+ *
+ * @param {string} keyword The keyword (subject) to use for the api request
+ * @param {string} searchText The text to look for in all the resource fields
+ * @param {boolean} ascending Whether to sort results in ascending order
+ * @param {string} sortBy The field to sort by. One of 'viewCount', 'name', 'dateCreated', 'lastModified', 'creatorName'
+ * @param {string} author The author to filter by
+ * @param {string|undefined} paginationToken Cursor returned from the previous call. Omit on the first request.
+ * @param {number} pageSize The number of resources to request per page
+ * @returns {Promise<{resources: Array, nextPaginationToken: string|undefined, hasMorePages: boolean}>}
  */
-async function fetchKeywordPageData(keyword, searchText, ascending=false, sortBy=undefined, author=undefined) {
-  const url = buildDiscoverApiUrl(keyword, searchText, ascending, sortBy, author, 1);
-  const data = await fetchJson(url, "resources");
-
-  return {
-    resourceCount: data.rescount,
-    pageCount: data.pagecount,
-    resourcesPerPage: data.perpage
-  };
+async function fetchResourcesBySearch(keyword, searchText, ascending=false, sortBy=undefined, author=undefined, paginationToken=undefined, pageSize=undefined) {
+  return fetchDiscoveryResourcesCore({
+    keyword,
+    searchText,
+    ascending,
+    sortBy,
+    author,
+    paginationToken,
+    pageSize,
+  });
 }
 
 function normalizeKeywordList(keywords = []) {
@@ -594,7 +627,8 @@ export {
   fetchResourcesByGroup, 
   fetchResourcesByKeyword, 
   fetchResourcesByKeywordsIntersection,
-  fetchResourcesBySearch, fetchResourcesWithPaginationData, fetchKeywordPageData, getCommunityResources, 
+  fetchResourcesBySearch,
+  getCommunityResources,
   fetchResourceCustomMetadata, 
   fetchResourceMetadata,
   joinExtraResources, 
