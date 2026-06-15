@@ -37,16 +37,16 @@ const sortResources = (resourceList, sortType, sortDirection) => {
     let comparison = 0;
     
     switch (sortType) {
-      case 'modified':
+      case 'lastModified':
         comparison = a.date_last_updated.localeCompare(b.date_last_updated);
         break;
-      case 'created':
+      case 'dateCreated':
         comparison = a.date_created.localeCompare(b.date_created);
         break;
-      case 'title':
+      case 'name':
         comparison = a.title.localeCompare(b.title);
         break;
-      case 'author':
+      case 'creatorName':
         comparison = a.authors.localeCompare(b.authors);
         break;
       default:
@@ -94,42 +94,42 @@ export default function Datasets({ community_id = 4 }) {
   const [view, setView] = useState("row");
   const [activeTab, setActiveTab] = useState("all");
 
-  // Pagination State
-  const [currentPage, setCurrentPage] = useState(1);
+  // Pagination State — page number for the hsapi group call, pagination token for
+  // the discovery-atlas call. Tracked as separate refs to match the explicit
+  // parameter form on getCommunityResources.
   const [hasMore, setHasMore] = useState(true);
   const fetching = useRef(false);
-  const lastFetchedPage = useRef(0); // Track the highest page number fetched
-  const fetchedPages = useRef(new Set()); // Track fetched pages
+  const groupPageNumberRef = useRef(undefined);
+  const paginationTokenRef = useRef(undefined);
+  const placeholderBatchRef = useRef(0); // monotonically increasing id for placeholder keys
 
   // Search State
   const [searchInput,    setSearchInput]    = useState('');
   const [filterSearch,   setFilterSearch]   = useState('');
-  const [sortType,       setSortType]       = useState('modified');
+  const [sortType,       setSortType]       = useState('lastModified');
   const [sortDirection,  setSortDirection]  = useState('desc');
 
-  // Fetch all resources by group, then filter them based on curated IDs
+  // Fetch all resources by group, then filter them based on curated IDs.
+  // Pass { reset: true } for the first fetch after a filter change.
   const fetchAll = useCallback(
-    async (page) => {
+    async ({ reset = false } = {}) => {
       // Prevent concurrent fetches
       if (fetching.current) return;
-      
-      // Prevent refetching same or lower page numbers
-      if (page <= lastFetchedPage.current) {
-        return;
-      }
-
-      if (fetchedPages.current.has(page)) {
-        return;
-      }
-      
       fetching.current = true;
 
-      // Add placeholders for loading state (only for pagination, not first page)
-      if (page > 1) {
+      // Reset pagination state on a filter-change refetch.
+      if (reset) {
+        groupPageNumberRef.current = undefined;
+        paginationTokenRef.current = undefined;
+        placeholderBatchRef.current = 0;
+      } else {
+        // Add placeholders for the loading state on subsequent pages.
+        placeholderBatchRef.current += 1;
+        const batchId = placeholderBatchRef.current;
         setResources(prev => [
           ...prev,
           ...Array.from({ length: PAGE_SIZE }, (_, i) => ({
-            resource_id: `placeholder-page${page}-${i}`,
+            resource_id: `placeholder-batch${batchId}-${i}`,
             title: "",
             authors: "",
             resource_type: "",
@@ -151,14 +151,17 @@ export default function Datasets({ community_id = 4 }) {
       try {
         const [curatedIds, communityResourcesResponse] = await Promise.all([
           fetchCuratedIds(),                // get array of curated resource IDs
-          getCommunityResources("ciroh_portal_data,ciroh_hub_data", "4", fullTextSearch, ascending, sortBy, undefined, page, PAGE_SIZE) // get all resources for the group
+          getCommunityResources("ciroh_portal_data,ciroh_hub_data", "4", fullTextSearch, ascending, sortBy, undefined, groupPageNumberRef.current, paginationTokenRef.current, PAGE_SIZE),
         ]);
 
-        const resourceList = communityResourcesResponse.resources;
-        fetchedPages.current.add(page);
+        const resourceList = communityResourcesResponse.resources || [];
 
-        // Update pagination state
-        setHasMore(communityResourcesResponse.groupResourcesPageData.hasMorePages || communityResourcesResponse.extraResourcesPageData.hasMorePages);
+        // Advance pagination state for the next fetch.
+        groupPageNumberRef.current = (communityResourcesResponse.groupResourcesPageData?.pageNumber || 1) + 1;
+        paginationTokenRef.current = communityResourcesResponse.extraResourcesPageData?.nextPaginationToken;
+
+        // Update hasMore from the combined flag exposed by getCommunityResources.
+        setHasMore(Boolean(communityResourcesResponse.hasMorePages));
 
         // Map the full resource list to your internal format
         let mappedList = resourceList.map((res) => ({
@@ -176,14 +179,14 @@ export default function Datasets({ community_id = 4 }) {
           page_url: "",
           docs_url: ""
         }));
-        
+
         // Sort locally to account for curated resources
         mappedList = sortResources(mappedList, sortBy, sortDirection);
 
-        if (page === 1) {
+        if (reset) {
           setResources(mappedList);
         } else {
-          // Replace placeholders from this page with actual data
+          // Replace placeholders from this batch with actual data
           setResources(prev => [
             ...prev.filter(r => !r.resource_id.startsWith('placeholder-')),
             ...mappedList
@@ -196,23 +199,17 @@ export default function Datasets({ community_id = 4 }) {
         );
 
         curatedSubset = sortResources(curatedSubset, sortBy, sortDirection);
-        
+
         // Accumulate curated resources across pages (like main resources)
-        if (page === 1) {
+        if (reset) {
           setCuratedResources(curatedSubset);
         } else {
-          // Replace placeholders from this page with actual data
           setCuratedResources(prev => [
             ...prev.filter(r => !r.resource_id.startsWith('placeholder-')),
             ...curatedSubset
           ]);
         }
         setLoading(false);
-
-        // Update the last fetched page tracker (only if this page is higher)
-        if (page > lastFetchedPage.current) {
-          lastFetchedPage.current = page;
-        }
 
         // Allow pagination to continue - core data is loaded
         fetching.current = false;
@@ -253,20 +250,13 @@ export default function Datasets({ community_id = 4 }) {
   useEffect(() => {
     setResources(initialPlaceholders);
     setCuratedResources(initialPlaceholders);
-    setCurrentPage(1);
     setHasMore(true);
-    
+
     // Reset the fetching flag to allow new requests
     fetching.current = false;
-    
-    // Reset the last fetched page tracker
-    lastFetchedPage.current = 0;
-    
-    // Reset the fetched pages set
-    fetchedPages.current.clear();
-    
-    // Fetch first page with new filters
-    fetchAll(1);
+
+    // Fetch first page with new filters (pagination refs are cleared inside).
+    fetchAll({ reset: true });
   }, [filterSearch, sortDirection, sortType, fetchAll]);
 
   /* infinite scroll */
@@ -275,14 +265,12 @@ export default function Datasets({ community_id = 4 }) {
       if (fetching.current || !hasMore) return;
       const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
       if (scrollTop + clientHeight >= scrollHeight - SCROLL_THRESHOLD) {
-        const next = currentPage + 1;
-        setCurrentPage(next);
-        fetchAll(next);
+        fetchAll();
       }
     };
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
-  }, [currentPage, hasMore, fetchAll]);
+  }, [hasMore, fetchAll]);
 
   /* search helpers */
   const commitSearch = q => {
@@ -360,10 +348,10 @@ export default function Datasets({ community_id = 4 }) {
             onChange={e => setSortType(e.target.value)}
             className={styles.sortSelect}
           >
-            <option value="modified">Last Updated</option>
-            <option value="created">Date Created</option>
-            <option value="title">Title</option>
-            <option value="author">Authors</option>
+            <option value="lastModified">Last Updated</option>
+            <option value="dateCreated">Date Created</option>
+            <option value="name">Title</option>
+            <option value="creatorName">Authors</option>
           </select>
 
           <button
