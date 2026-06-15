@@ -7,7 +7,13 @@ import React, {
   startTransition,
   useMemo,
 } from 'react';
-import Zotero           from 'zotero-api-client';
+import {
+  zoteroApiCreate,
+  zoteroFetchTopItems,
+  zoteroFetchCollections,
+  zoteroFetchAttachments,
+  zoteroFetchAttachmentFileUrl,
+} from '@site/src/components/ZoteroImporter';
 import SelectCollection from './SelectCollection';
 import PublicationCard  from './PublicationCard';
 import SkeletonCard     from './SkeletonCard';
@@ -23,27 +29,11 @@ const SCROLL_THRESHOLD = 200;
 let   debounceTimer    = null;
 const DEBOUNCE_MS      = 1_000;
 
-/* ----- helper: read "Total-Results" header -------------------------------- */
-export async function fetchTotal(groupId, apiKey, params, keyStr = '') {
-  const path = keyStr ? `/collections/${keyStr}/items/top` : '/items/top';
-
-  const url = new URL(`https://api.zotero.org/groups/${groupId}${path}`);
-  Object.entries({ ...params, limit: 1 }).forEach(([k, v]) =>
-    url.searchParams.append(k, v),
-  );
-
-  const resp = await fetch(url.href, { headers: { 'Zotero-API-Key': apiKey } });
-  if (!resp.ok) return null;
-  const hdr = resp.headers.get('Total-Results');
-  return hdr ? Number(hdr) : null;
-}
-
 /* ------------------------------------------------------------------------- */
 export default function Publications({ apiKey, groupId }) {
-  console.log(apiKey, groupId);
   /* memoised Zotero client (doesn't re-create on every render) */
   const zotero = useMemo(
-    () => new Zotero(apiKey).library('group', groupId),
+    () => zoteroApiCreate(apiKey, groupId, 'group'),
     [apiKey, groupId],
   );
 
@@ -56,7 +46,6 @@ export default function Publications({ apiKey, groupId }) {
   const fetching = useRef(false);
 
   const [totalItems,     setTotalItems]     = useState(null);
-  const [totalLoading,   setTotalLoading]   = useState(false);
   const [collectionsCount, setCollectionsCount] = useState(null);
   const [collectionsLoading, setCollectionsLoading] = useState(false);
 
@@ -72,34 +61,19 @@ export default function Publications({ apiKey, groupId }) {
   /* stable key string for API paths & dependency arrays */
   const collectionKeyStr = selectedCollection?.value ?? '';  // '' ⇒ no filter
 
-  /* -------- total-count header ----------------------------------- */
-  const refreshTotal = useCallback(async () => {
-    const params = {
-      sort: sortType,
-      direction: sortDirection,
-      ...(filterSearch ? { q: filterSearch } : {}),
-      ...(filterItemType !== 'all' ? { itemType: filterItemType } : {}),
-    };
-    try {
-      setTotalLoading(true);
-      setTotalItems(
-        await fetchTotal(groupId, apiKey, params, collectionKeyStr),
-      );
-    } catch (e) {
-      console.error('Total-Results header error:', e);
-      setTotalItems(null);
-    } finally {
-      setTotalLoading(false);
+  /* Resolve a Zotero attachment item to a displayable URL based on its
+   * linkMode. linked_url attachments carry the URL on the data object;
+   * imported_file attachments need a Zotero round-trip to fetch a
+   * temporary file URL. Other linkModes (linked_file, imported_url) are
+   * not handled and resolve to null. */
+  const resolveAttachmentUrl = useCallback(async (attachment) => {
+    if (!attachment) return null;
+    if (attachment.linkMode === 'linked_url') return attachment.url;
+    if (attachment.linkMode === 'imported_file') {
+      return zoteroFetchAttachmentFileUrl(zotero, attachment.key);
     }
-  }, [
-    groupId,
-    apiKey,
-    filterSearch,
-    filterItemType,
-    sortType,
-    sortDirection,
-    collectionKeyStr,
-  ]);
+    return null;
+  }, [zotero]);
 
   /* -------- loader ----------------------------------------------- */
   const loadPublications = useCallback(
@@ -128,24 +102,79 @@ export default function Publications({ apiKey, groupId }) {
           ...(filterItemType !== 'all' ? { itemType: filterItemType } : {}),
         };
 
-        /* build request chain */
-        let api = zotero;
-        api = collectionKeyStr ? api.collections(collectionKeyStr).items()
-                               : api.items();
+        /* fetch publications */
+        const { data: newItems, total, hasMore: morePages } = await zoteroFetchTopItems(zotero, query, collectionKeyStr || null);
 
-        const newItems = (await api.top().get(query)).getData();
-        setHasMore(newItems.length === PAGE_SIZE);
+        setTotalItems(total);
+        setHasMore(morePages);
 
-        /* swap placeholders */
+        /* display publications while thumbnails are loading */
         setDisplayedItems(prev => {
           const upd   = [...prev];
           const first = upd.findIndex(i => i.placeholder);
-          newItems.forEach((it, i) => (upd[first + i] = it));
+          newItems.forEach((it, i) => (upd[first + i] = { ...it, thumbnailLoading: true }));
           if (newItems.length < PAGE_SIZE) {
             upd.splice(first + newItems.length, PAGE_SIZE - newItems.length);
           }
           return upd;
         });
+
+        /* For each publication, fetch attachments, resolve the thumbnail URL (if any), and stash image attachment descriptors for later resolution on demand */
+        for (const item of newItems) {
+          zoteroFetchAttachments(zotero, item.key)
+            .then(async ({ data: attachments }) => {
+              // Helper to strip extensions (allow various image file types) and allow lowercase
+              const baseTitle = (t) => (t || '').replace(/\.[a-z0-9]+$/i, '').toLowerCase();
+
+              // Find thumbnail attachment (if any)
+              const thumbnailAttachment = attachments.find(a => baseTitle(a.title) === 'thumbnail');
+
+              // Find images (if any) and sort by the number in the title (image-1, image-2, etc.)
+              const imageAttachments = attachments
+                .filter(a => /^image-\d+$/.test(baseTitle(a.title)))
+                .sort((a, b) => {
+                  const an = parseInt(baseTitle(a.title).slice('image-'.length), 10);
+                  const bn = parseInt(baseTitle(b.title).slice('image-'.length), 10);
+                  return an - bn;
+                });
+
+              // Resolve thumbnail URL (if any)
+              const thumbnailUrl = await resolveAttachmentUrl(thumbnailAttachment);
+
+              // Stash image descriptors for later resolution. Include thumbnail as first image
+              const toDescriptor = (a) => ({ key: a.key, linkMode: a.linkMode, url: a.url });
+              const hasSupportedLinkMode = (a) => a.linkMode === 'linked_url' || a.linkMode === 'imported_file';
+
+              const imageDescriptors = imageAttachments
+                .filter(hasSupportedLinkMode)
+                .map(toDescriptor);
+
+              const thumbnailDescriptor = thumbnailAttachment && thumbnailUrl && hasSupportedLinkMode(thumbnailAttachment)
+                ? toDescriptor(thumbnailAttachment)
+                : null;
+
+              const thumbnailAlreadyPresent = thumbnailDescriptor
+                ? imageDescriptors.some((img) => img.url === thumbnailDescriptor.url)
+                : false;
+
+              const images = thumbnailDescriptor && !thumbnailAlreadyPresent
+                ? [thumbnailDescriptor, ...imageDescriptors]
+                : imageDescriptors;
+              
+              // Update displayed publications with thumbnail URL and image descriptors
+              setDisplayedItems(prev => prev.map(it =>
+                it.key === item.key
+                  ? { ...it, thumbnailUrl: thumbnailUrl ?? null, images, thumbnailLoading: false }
+                  : it
+              ));
+            })
+            .catch(err => {
+              console.error(`Failed to fetch attachments for item ${item.key}:`, err);
+              setDisplayedItems(prev => prev.map(it =>
+                it.key === item.key ? { ...it, thumbnailLoading: false } : it
+              ));
+            });
+        }
       } catch {
         if (apiKey === 'dummy') setError('Site administrator: Please provide a Zotero API key in this website\'s environment file.');
         else setError('Error retrieving the publications.');
@@ -156,21 +185,32 @@ export default function Publications({ apiKey, groupId }) {
     },
     [
       zotero,
+      apiKey,
       collectionKeyStr,
       filterSearch,
       filterItemType,
       sortType,
       sortDirection,
+      resolveAttachmentUrl,
     ],
   );
+
+  /* Resolve a list of image-attachment descriptors (as stashed on each
+   * publication item by loadPublications) into displayable URLs. Called
+   * by PublicationCard when its modal opens so signed URLs are always
+   * fresh. Memoised on `zotero` so each card receives a stable reference. */
+  const resolveImageUrls = useCallback(async (imageDescriptors) => {
+    const urls = await Promise.all(imageDescriptors.map(resolveAttachmentUrl));
+    return urls.filter((u) => u !== null);
+  }, [resolveAttachmentUrl]);
 
   /* -- reload whenever filters OR selected collection change -------- */
   useEffect(() => {
     setDisplayedItems([]);
     setCurrentPage(0);
     setHasMore(true);
+    setTotalItems(null);
     loadPublications(0);
-    refreshTotal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     filterSearch,
@@ -220,12 +260,8 @@ export default function Publications({ apiKey, groupId }) {
     (async () => {
       try {
         setCollectionsLoading(true);
-        const res = await zotero.collections().get();
-        const raw = res?.raw ?? [];
-        const count = Array.isArray(raw)
-          ? raw.length
-          : (typeof res?.getData === 'function' ? res.getData().length : 0);
-        if (!cancelled) setCollectionsCount(count);
+        const { total } = await zoteroFetchCollections(zotero, { limit: 1 });
+        if (!cancelled) setCollectionsCount(total);
       } catch (err) {
         console.error('Could not load Zotero collections count:', err);
         if (!cancelled) setCollectionsCount(null);
@@ -277,7 +313,7 @@ export default function Publications({ apiKey, groupId }) {
     };
   }, [displayedItems, totalItems, collectionsCount]);
 
-  const statsLoading = loading || fetching.current || totalLoading || collectionsLoading;
+  const statsLoading = loading || fetching.current || collectionsLoading;
 
   /* ---------------- render ---------------- */
   return (
@@ -425,7 +461,7 @@ export default function Publications({ apiKey, groupId }) {
             displayedItems.map((item, i) =>
               item.placeholder
                 ? <SkeletonCard key={`ph-${i}`} />
-                : <PublicationCard key={item.key || `pub-${i}`} publication={item} />,
+                : <PublicationCard key={item.key || `pub-${i}`} publication={item} resolveImageUrls={resolveImageUrls} />,
             )}
         </div>
 

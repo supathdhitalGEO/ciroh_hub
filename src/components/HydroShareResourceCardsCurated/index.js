@@ -72,16 +72,6 @@ export default function ResourceCardCurated({ resource, defaultImage }) {
         return () => window.removeEventListener('keydown', onKeyDown);
     }, [showEmbed]);
 
-    // Close image modal on Escape key press
-    useEffect(() => {
-        if (!showImageModal) return;
-        const onKeyDown = (e) => {
-            if (e.key === 'Escape') setShowImageModal(false);
-        };
-        window.addEventListener('keydown', onKeyDown);
-        return () => window.removeEventListener('keydown', onKeyDown);
-    }, [showImageModal]);
-
     return (
         <>
             {/* Card Container */}

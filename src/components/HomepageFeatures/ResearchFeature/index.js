@@ -1,5 +1,6 @@
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import { fetchResourcesBySearch, getCommunityResources } from "@site/src/components/HydroShareImporter";
+import { zoteroApiCreate, zoteroFetchTopItems } from "@site/src/components/ZoteroImporter";
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import React, { useState, useRef, useEffect } from 'react';
 
@@ -10,24 +11,18 @@ export default function ResearchFeature() {
     const { siteConfig } = useDocusaurusContext();
     const zotero_api_key = siteConfig.customFields.zotero_api_key;
     const zotero_group_id = siteConfig.customFields.zotero_group_id;
-    const zotero_params = {
-      sort: 'date',
-      direction: 'desc',
-    } // Exact params aren't too important, it's mostly a stub
 
-    // Mirrored from 'fetchTotal' in /src/components/Publications/index.js
-    async function zoteroCountPublications(groupId, apiKey, params, keyStr = '') {
-      const path = keyStr ? `/collections/${keyStr}/items/top` : '/items/top';
-
-      const url = new URL(`https://api.zotero.org/groups/${groupId}${path}`);
-      Object.entries({ ...params, limit: 1 }).forEach(([k, v]) =>
-        url.searchParams.append(k, v),
-      );
-
-      const resp = await fetch(url.href, { headers: { 'Zotero-API-Key': apiKey } });
-      if (!resp.ok) return null;
-      const hdr = resp.headers.get('Total-Results');
-      return hdr ? Number(hdr) : null;
+    // Count total publications in the configured Zotero group library.
+    // Returns null on failure so a Zotero outage doesn't take down the other stats.
+    async function zoteroCountPublications() {
+      try {
+        const zotero = zoteroApiCreate(zotero_api_key, zotero_group_id, 'group');
+        const { total } = await zoteroFetchTopItems(zotero, { limit: 1 });
+        return total;
+      }
+      catch {
+        return null;
+      }
     }
 
     // ---------- STATS STATE + KEYWORD-BASED FETCHING ----------
@@ -154,7 +149,7 @@ export default function ResearchFeature() {
                 hsCountByKeyword("ciroh_hub_module"),
                 hsCountByKeyword("ciroh_hub_app"),
                 hsCountByKeyword("ciroh_hub_notebook"),
-                zoteroCountPublications(zotero_group_id, zotero_api_key, zotero_params),
+                zoteroCountPublications(),
             ]);
 
             setStats({
