@@ -2,6 +2,17 @@ import React, { useState, useEffect } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './styles.module.css';
 
+/**
+ * WARNING
+ * 
+ * This will not currently work on public deployments!
+ * GitHub does not like PATs being used client-side for security reasons.
+ * 
+ * If this is reinstated, it needs to be reworked such that the JSON
+ * is cached in a separate repository, preferrably via CI/CD.
+ * The query and logic should be straightforward to spin out accordingly.
+ */
+
 const ORG = 'CIROH-UA';
 const PROJECT_NUMBER = 10;
 
@@ -52,15 +63,27 @@ export default function GitHubProjectBoard() {
                       __typename
                       ... on ProjectV2ItemFieldSingleSelectValue {
                         name
-                        field { name }
+                        field {
+                          ... on ProjectV2FieldCommon {
+                            name
+                          }
+                        }
                       }
                       ... on ProjectV2ItemFieldTextValue {
                         text
-                        field { name }
+                        field {
+                          ... on ProjectV2FieldCommon {
+                            name
+                          }
+                        }
                       }
                       ... on ProjectV2ItemFieldNumberValue {
                         number
-                        field { name }
+                        field {
+                          ... on ProjectV2FieldCommon {
+                            name
+                          }
+                        }
                       }
                     }
                   }
