@@ -75,6 +75,7 @@ export const workingGroups = [
       "Lead the development of articles/publications (e.g., R2X).",
     ],
     leads: ["Arpita Patel, The University of Alabama"],
+    joinLink: 'https://app.smartsheet.com/b/form/07569d6285f643c1a57fd18daab98f7e',
   },
   {
     id: "artificial-intelligence",
