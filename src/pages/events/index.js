@@ -63,10 +63,7 @@ function EventsPageContent({ contributeUrl, docsUrl }) {
           <Header
             title="Events"
             tagline="Conferences, workshops, and meetings where CIROH and NOAA hydrologic research is shared. Click an event to browse its presentations."
-            buttons={[
-              { label: "Add your Presentation", href: contributeUrl, primary: true },
-              { label: "Browse Documentation", href: docsUrl }
-            ]}
+            buttons={[]}
           />
         </div>
       </section>
