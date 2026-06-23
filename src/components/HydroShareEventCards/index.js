@@ -158,14 +158,14 @@ export function EventCard({ resource, defaultImage }) {
                                 </div>
                             ) : (
                                 <h3 className="tw-text-base sm:tw-text-lg tw-font-semibold tw-leading-snug tw-text-slate-900 dark:tw-text-white tw-line-clamp-2">
-                                    <a
-                                        href="#"
+                                    <button
+                                        type="button"
                                         onClick={openModal}
                                         title={`View presentations for ${title}`}
-                                        className="tw-no-underline tw-text-black hover:tw-text-cyan-700 dark:tw-text-white dark:hover:tw-text-cyan-300 tw-cursor-pointer"
+                                        className="tw-text-left tw-w-full tw-bg-transparent tw-border-0 tw-p-0 tw-no-underline [font:inherit] tw-text-black hover:tw-text-cyan-700 dark:tw-text-white dark:hover:tw-text-cyan-300 tw-cursor-pointer"
                                     >
                                         {title}
-                                    </a>
+                                    </button>
                                 </h3>
                             )}
                         </div>
