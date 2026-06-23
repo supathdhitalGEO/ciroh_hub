@@ -1,9 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState, startTransition } from 'react';
+import { useTheme } from '@docusaurus/theme-common';
 import ReactDOM from 'react-dom';
 import HydroShareResourcesCards from "@site/src/components/HydroShareResourcesCards";
 import { FaWindowClose } from 'react-icons/fa';
 import { HiOutlineSortDescending, HiOutlineSortAscending, HiOutlineSearch } from 'react-icons/hi';
 import styles from './styles.module.css';
+import { useColorMode } from '@docusaurus/theme-common';
+import DatasetLightIcon from '@site/static/img/cards/datasets_logo_light.png';
+import DatasetDarkIcon from '@site/static/img/cards/datasets_logo_dark.png';
 
 const DEBOUNCE_MS = 1_000;
 
@@ -69,7 +73,9 @@ function filterAndSortPresentations(presentations, filterSearch, sortType, sortD
  * @param {boolean} loadError - Whether there was an error loading the presentations.
  */
 export default function ModalEventPresentations({ show, onClose, title, presentations, loadError }) {
-    const defaultImage = 'https://ciroh-portal-static-data.s3.us-east-1.amazonaws.com/presentation_placeholder.png';
+    const { colorMode } = useColorMode();
+    const isDarkTheme = colorMode === 'dark';
+    const defaultImage = isDarkTheme ? DatasetDarkIcon : DatasetLightIcon;
 
     // Search / Sort State
     const [searchInput, setSearchInput] = useState('');

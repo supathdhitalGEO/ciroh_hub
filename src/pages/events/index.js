@@ -10,6 +10,8 @@ import Header from "@site/src/components/Header";
 import { useColorMode } from '@docusaurus/theme-common';
 import StatsBar from "@site/src/components/StatsBar";
 import { getResourceStats } from "@site/src/utils/resourceStats";
+import DatasetLightIcon from '@site/static/img/cards/datasets_logo_light.png';
+import DatasetDarkIcon from '@site/static/img/cards/datasets_logo_dark.png';
 
 const items = [
   {
@@ -38,7 +40,7 @@ export default function EventsPage() {
 function EventsPageContent({ contributeUrl, docsUrl }) {
   const { colorMode } = useColorMode();
   const isDarkTheme = colorMode === 'dark';
-  const defaultImage = 'https://ciroh-portal-static-data.s3.us-east-1.amazonaws.com/presentation_placeholder.png';
+  const defaultImage = isDarkTheme ? DatasetDarkIcon : DatasetLightIcon;
 
   const [events, setEvents] = useState([]);
   const [statsLoading, setStatsLoading] = useState(true);
