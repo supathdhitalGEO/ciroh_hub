@@ -6,9 +6,6 @@ import HydroShareResourcesTiles from "@site/src/components/HydroShareResourcesTi
 import HydroShareResourcesRows from "@site/src/components/HydroShareResourcesRows";
 import HydroShareResourcesCards from "@site/src/components/HydroShareResourcesCards";
 import { fetchResourcesBySearch, fetchResourceCustomMetadata, getCommunityResources } from "@site/src/components/HydroShareImporter";
-import { useColorMode } from "@docusaurus/theme-common"; // Hook to detect theme
-import DatasetLightIcon from '@site/static/img/cards/datasets_logo_light.png';
-import DatasetDarkIcon from '@site/static/img/cards/datasets_logo_dark.png';
 import {
   HiOutlineSortDescending,
   HiOutlineSortAscending,
@@ -58,7 +55,6 @@ export default function HydroShareResourcesSelector({
   onResultsChange,
   cardsComponent: CardsComponent = HydroShareResourcesCards,
 }) {
-  const { colorMode } = useColorMode(); // Get the current theme
   const PLACEHOLDER_ITEMS = 10;
 
   // Initialize with placeholder objects so that the component renders immediately.
@@ -75,13 +71,6 @@ export default function HydroShareResourcesSelector({
     embed_url: "",
   }));
 
-  const hs_icon = colorMode === 'dark' ? DatasetDarkIcon : DatasetLightIcon;
-  const hsIconRef = useRef(hs_icon);
-
-  useEffect(() => {
-    hsIconRef.current = hs_icon;
-  }, [hs_icon]);
-  
   // State
   const [resources, setResources] = useState(initialPlaceholders);
   const [error, setError] = useState(null);
@@ -210,7 +199,7 @@ export default function HydroShareResourcesSelector({
             if (customMetadata?.pres_path) embedUrl = `https://www.hydroshare.org/resource/${res.resource_id}/data/contents/${customMetadata.pres_path}`;
             const updatedResource = {
               ...res,
-              thumbnail_url: customMetadata?.thumbnail_url || hsIconRef.current,
+              thumbnail_url: customMetadata?.thumbnail_url || "",
               page_url: customMetadata?.page_url || "",
               docs_url: customMetadata?.docs_url || "",
               embed_url: embedUrl,
