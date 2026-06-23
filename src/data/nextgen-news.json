@@ -1,4 +1,59 @@
 {
+	"June 2026 Update": [
+		{
+			"type": "update",
+			"title": "NGIAB-CloudInfra",
+			"link": "https://github.com/CIROH-UA/NGIAB-CloudInfra/releases/tag/v1.9.0",
+			"description": "This release enhances the platform with model version support, Snow-17 integration, and SAC-SMA build capabilities to improve model development and execution. It also includes updated scripts for compatibility with the Podman container manager, enabling simulations without requiring root permissions, and the latest TEEHR updates, providing the latest improvements in evaluation capabilities.",
+			"release_date": "06/11/2026",
+			"version": "v1.9.0",
+			"contributors": 4
+		},
+		{
+			"type": "update",
+			"title": "NGIAB-HPCInfra",
+			"link": "https://github.com/CIROH-UA/NGIAB-HPCInfra/releases/tag/v1.4.0",
+			"description": "This release ensures parity with v1.9.0 of NGIAB-CloudInfra, notably featuring Snow-17 integration and SAC-SMA build capabilities.",
+			"release_date": "06/12/2026",
+			"version": "v1.4.0",
+			"contributors": 1
+		},
+		{
+			"type": "update",
+			"title": "NGIAB_data_preprocess",
+			"link": "https://github.com/CIROH-UA/NGIAB_data_preprocess/releases/tag/v4.9.1",
+			"description": "This month's Data Preprocessor updates include new support for Snow17 and SAC-SMA and updated support for dHBV2.0. It also includes upgrades to dependencies, stability, and documentation.",
+			"release_date": "06/05/2026",
+			"version": "v4.9.1",
+			"contributors": 2
+		},
+		{
+			"type": "update",
+			"title": "NGIAB_data_preprocess",
+			"link": "https://github.com/CIROH-UA/NGIAB_data_preprocess/releases/tag/v4.9.1",
+			"description": "This month's Data Preprocessor updates include new support for Snow17 and SAC-SMA and updated support for dHBV2.0. It also includes upgrades to dependencies, stability, and documentation.",
+			"release_date": "06/05/2026",
+			"version": "v4.9.1",
+			"contributors": 2
+		},
+		{
+			"type": "update",
+			"title": "ngiab-teehr",
+			"link": "https://github.com/CIROH-UA/ngiab-teehr/pull/8",
+			"description": "NGIAB's TEEHR integration has been updated to the latest version of TEEHR, which includes Apache Iceberg integration and pulls data from the TEEHR-Cloud data warehouse, along with adding new options for multi-input configurations. Note that this update alters the format of TEEHR output folders; related tools like the Visualizer have been updated accordingly.",
+			"release_date": "05/06/2026",
+			"contributors": 1
+		},
+		{
+			"type": "update",
+			"title": "ngiab-client",
+			"link": "https://github.com/CIROH-UA/ngiab-client/pulls?q=is%3Apr+is%3Aclosed+created%3A%3E%3D2026-05-01+closed%3A%3C%3D2026-06-20",
+			"description": "The visualizer now supports the latest expansions to the NGIAB ecosystem, including support for TEEHR's updated output directories and the Podman container manager.",
+			"release_date": "05/06/2026",
+			"contributors": 1
+		}
+		
+	],
 	"April 2026 Update": [
 		{
 			"type": "update",
