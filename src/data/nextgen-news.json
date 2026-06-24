@@ -1,7 +1,7 @@
 {
 	"June 2026 Update": [
 		{
-			"type": "update",
+			"type": "NGIAB",
 			"title": "NGIAB-CloudInfra",
 			"link": "https://github.com/CIROH-UA/NGIAB-CloudInfra/releases/tag/v1.9.0",
 			"description": "This release enhances the platform with model version support, Snow-17 integration, and SAC-SMA build capabilities to improve model development and execution. It also includes updated scripts for compatibility with the Podman container manager, enabling simulations without requiring root permissions, and the latest TEEHR updates, providing the latest improvements in evaluation capabilities.",
@@ -10,7 +10,7 @@
 			"contributors": 4
 		},
 		{
-			"type": "update",
+			"type": "NGIAB",
 			"title": "NGIAB-HPCInfra",
 			"link": "https://github.com/CIROH-UA/NGIAB-HPCInfra/releases/tag/v1.4.0",
 			"description": "This release ensures parity with v1.9.0 of NGIAB-CloudInfra, notably featuring Snow-17 integration and SAC-SMA build capabilities.",
@@ -19,7 +19,7 @@
 			"contributors": 1
 		},
 		{
-			"type": "update",
+			"type": "NGIAB",
 			"title": "NGIAB_data_preprocess",
 			"link": "https://github.com/CIROH-UA/NGIAB_data_preprocess/releases/tag/v4.9.1",
 			"description": "This month's Data Preprocessor updates include new support for Snow17 and SAC-SMA and updated support for dHBV2.0. It also includes upgrades to dependencies, stability, and documentation.",
@@ -28,7 +28,7 @@
 			"contributors": 2
 		},
 		{
-			"type": "update",
+			"type": "TEEHR",
 			"title": "ngiab-teehr",
 			"link": "https://github.com/CIROH-UA/ngiab-teehr/pull/8",
 			"description": "NGIAB's TEEHR integration has been updated to the latest version of TEEHR, which includes Apache Iceberg integration and pulls data from the TEEHR-Cloud data warehouse, along with adding new options for multi-input configurations. Note that this update alters the format of TEEHR output folders; related tools like the Visualizer have been updated accordingly.",
@@ -36,14 +36,54 @@
 			"contributors": 1
 		},
 		{
-			"type": "update",
+			"type": "NGIAB",
 			"title": "ngiab-client",
 			"link": "https://github.com/CIROH-UA/ngiab-client/pulls?q=is%3Apr+is%3Aclosed+created%3A%3E%3D2026-05-01+closed%3A%3C%3D2026-06-20",
 			"description": "The visualizer now supports the latest expansions to the NGIAB ecosystem, including support for TEEHR's updated output directories and the Podman container manager.",
 			"release_date": "05/20/2026",
 			"contributors": 1
+		},
+		{
+			"type": "update",
+			"title": "NGIAB Website Update",
+			"link": "https://github.com/CIROH-UA/ngiab-website/pull/76",
+			"description": "The NGIAB website now features more up-to-date information on NRDS, including links to data buckets and the new QKrig datastream.",
+			"release_date": "05/23/2026",
+			"contributors": 1
+		},
+		{
+			"type": "NRDS",
+			"title": "Ngen-DataStream",
+			"link": "https://github.com/CIROH-UA/ngen-datastream/pulls?q=is%3Apr+is%3Aclosed+created%3A%3E%3D2026-05-01+closed%3A%3C%3D2026-06-20",
+			"description": "The NextGen DataStream now runs USGS streamflow kriging, providing live simulation outputs for yet another datastream.",
+			"release_date": "05/22/2026",
+			"contributors": 2
+		},
+		{
+			"type": "update",
+			"title": "CIROH Hub — Streamflow Kriging Blog Released",
+			"link": "https://github.com/CIROH-UA/ciroh_hub/pull/120",
+			"description": "[This new blog post introduces kriging-based streamflow simulation, along with its integration into NRDS.](/blog/continental-scale-streamflow-kriging-ngiab-nrds)",
+			"release_date": "06/08/2026",
+			"version": "v20260608-135146",
+			"contributors": 6
+		},
+		{
+			"type": "update",
+			"title": "CIROH Hub — DevCon 2026 Cyberinfrastructure Blog Released",
+			"link": "https://github.com/CIROH-UA/ciroh_hub/pull/140",
+			"description": "CIROH DevCon 2026 was made possible by a concerted effort by the CyberInfrastructure team to prepare resources and JupyterHub environments for workshop attendees. [This blog post highlights the behind-the-scenes engineering of this year's DevCon.](/blog/devcon26-infra)",
+			"release_date": "06/24/2026",
+			"contributors": 5
+		},
+		{
+			"type": "update",
+			"title": "Extended Pantarhei tutorials — Now on CIROH Hub",
+			"links": "https://github.com/CIROH-UA/ciroh_hub/pull/136",
+			"description": "Extended tutorials and examples have been added to our Pantarhei documentation! [Access them here.](/docs/services/on-prem/Pantarhei/RunningJobs/)",
+			"release_date": "06/24/2026",
+			"contributors": 1
 		}
-		
 	],
 	"April 2026 Update": [
 		{
