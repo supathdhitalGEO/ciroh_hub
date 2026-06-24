@@ -83,6 +83,12 @@
 			"description": "Extended tutorials and examples have been added to our Pantarhei documentation! [Access them here.](/docs/services/on-prem/Pantarhei/RunningJobs/)",
 			"release_date": "06/24/2026",
 			"contributors": 1
+		},
+		{
+			"type": "update",
+			"title": "New images on CIROH-2i2c JupyterHub",
+			"links": "https://github.com/CIROH-UA/awi-ciroh-image",
+			"description": "CIROH-2i2c JupyterHub has been updated with new images from CIROH DevCon 2026! Additionally, its documentation has now been updated with image creation instructions and image descriptions."
 		}
 	],
 	"April 2026 Update": [
