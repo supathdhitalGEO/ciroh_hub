@@ -79,7 +79,7 @@
   text-transform: uppercase;
 }
 
-.addProductButton {
+.joinGroupButton {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;

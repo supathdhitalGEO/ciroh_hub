@@ -101,3 +101,11 @@ export const workingGroups = [
     leads: ["Shaun Carney, RTI"],
   },
 ];
+
+// NOTE: This file lives under `src/pages/**`, so Docusaurus treats it as a page.
+// It previously caused `npm run build` to fail because there was no default export.
+// The page logic now imports working group data from `src/data/workingGroupsData.js`.
+// Keeping this default export prevents SSG failures if the file remains in `pages/`.
+export default function WorkingGroupsDataPage() {
+  return null;
+}
