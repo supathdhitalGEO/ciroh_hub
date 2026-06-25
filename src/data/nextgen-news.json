@@ -2,6 +2,12 @@
 	"June 2026 Update": [
 		{
 			"type": "NGIAB",
+			"title": "Milestone: NGIAB reaches 15,000 pulls!",
+			"link": "https://ngiab.ciroh.org/",
+			"description": "The NGIAB-CloudInfra Docker image has reached 15,000 pulls! We're grateful that the CIROH community has made such effective use of the NGIAB ecosystem so far, and we hope to continue expanding NGIAB's capabilities for operations-ready modeling."
+		},
+		{
+			"type": "NGIAB",
 			"title": "NGIAB-CloudInfra",
 			"link": "https://github.com/CIROH-UA/NGIAB-CloudInfra/releases/tag/v1.9.0",
 			"description": "This release enhances the platform with model version support, Snow-17 integration, and SAC-SMA build capabilities to improve model development and execution. It also includes updated scripts for compatibility with the Podman container manager, enabling simulations without requiring root permissions, and the latest TEEHR updates, providing the latest improvements in evaluation capabilities.",
@@ -38,13 +44,13 @@
 		{
 			"type": "NGIAB",
 			"title": "ngiab-client",
-			"link": "https://github.com/CIROH-UA/ngiab-client/pulls?q=is%3Apr+is%3Aclosed+created%3A%3E%3D2026-05-01+closed%3A%3C%3D2026-06-20",
+			"links": ["https://github.com/CIROH-UA/ngiab-client/pull/59", "https://github.com/CIROH-UA/ngiab-client/pull/61"],
 			"description": "The visualizer now supports the latest expansions to the NGIAB ecosystem, including support for TEEHR's updated output directories and the Podman container manager.",
 			"release_date": "05/20/2026",
 			"contributors": 1
 		},
 		{
-			"type": "update",
+			"type": "NGIAB",
 			"title": "NGIAB Website Update",
 			"link": "https://github.com/CIROH-UA/ngiab-website/pull/76",
 			"description": "The NGIAB website now features more up-to-date information on NRDS, including links to data buckets and the new QKrig datastream.",
@@ -54,13 +60,13 @@
 		{
 			"type": "NRDS",
 			"title": "Ngen-DataStream",
-			"link": "https://github.com/CIROH-UA/ngen-datastream/pulls?q=is%3Apr+is%3Aclosed+created%3A%3E%3D2026-05-01+closed%3A%3C%3D2026-06-20",
+			"links": ["https://github.com/CIROH-UA/ngen-datastream/pull/364", "https://github.com/CIROH-UA/ngen-datastream/pull/366"],
 			"description": "The NextGen DataStream now runs USGS streamflow kriging, providing live simulation outputs for yet another datastream.",
 			"release_date": "05/22/2026",
 			"contributors": 2
 		},
 		{
-			"type": "update",
+			"type": "blog",
 			"title": "CIROH Hub — Streamflow Kriging Blog Released",
 			"link": "https://github.com/CIROH-UA/ciroh_hub/pull/120",
 			"description": "[This new blog post introduces kriging-based streamflow simulation, along with its integration into NRDS.](/blog/continental-scale-streamflow-kriging-ngiab-nrds)",
@@ -69,7 +75,7 @@
 			"contributors": 6
 		},
 		{
-			"type": "update",
+			"type": "blog",
 			"title": "CIROH Hub — DevCon 2026 Cyberinfrastructure Blog Released",
 			"link": "https://github.com/CIROH-UA/ciroh_hub/pull/140",
 			"description": "CIROH DevCon 2026 was made possible by a concerted effort by the CyberInfrastructure team to prepare resources and JupyterHub environments for workshop attendees. [This blog post highlights the behind-the-scenes engineering of this year's DevCon.](/blog/devcon26-infra)",
@@ -77,18 +83,18 @@
 			"contributors": 5
 		},
 		{
-			"type": "update",
-			"title": "Extended Pantarhei tutorials — Now on CIROH Hub",
+			"type": "pantarhei",
+			"title": "Extended Pantarhei Documentation — Now on CIROH Hub",
 			"links": "https://github.com/CIROH-UA/ciroh_hub/pull/136",
 			"description": "Extended tutorials and examples have been added to our Pantarhei documentation! [Access them here.](/docs/services/on-prem/Pantarhei/RunningJobs/)",
 			"release_date": "06/24/2026",
 			"contributors": 1
 		},
 		{
-			"type": "update",
+			"type": "2i2c",
 			"title": "New images on CIROH-2i2c JupyterHub",
 			"links": "https://github.com/CIROH-UA/awi-ciroh-image",
-			"description": "CIROH-2i2c JupyterHub has been updated with new images from CIROH DevCon 2026! Additionally, its documentation has now been updated with image creation instructions and image descriptions."
+			"description": "CIROH-2i2c JupyterHub has been updated with [new images from CIROH DevCon 2026](/docs/services/cloudservices/2i2c/available-images)! Additionally, its documentation has now been [updated with image creation instructions and image descriptions](/docs/services/cloudservices/2i2c/available-images)."
 		}
 	],
 	"April 2026 Update": [
