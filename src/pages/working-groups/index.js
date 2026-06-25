@@ -3,6 +3,7 @@ import Layout from '@theme/Layout';
 import clsx from 'clsx';
 import { gsap } from 'gsap';
 import { FiTarget, FiSearch, FiUsers } from 'react-icons/fi';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 
 import styles from './styles.module.css';
 import { workingGroups } from '@site/src/data/workingGroupsData';
@@ -87,8 +88,10 @@ function WorkingGroupCard({ group, index }) {
 }
 
 export default function WorkingGroupsPage() {
+  const { siteConfig } = useDocusaurusContext();
   const containerRef = useRef(null);
   const [query, setQuery] = useState('');
+  const wgIntakeFormUrl = siteConfig?.customFields?.externalLinks?.wgIntakeForm || 'https://app.smartsheet.com/b/form/07569d6285f643c1a57fd18daab98f7e';
 
   const filteredGroups = useMemo(() => {
     const q = normalize(query);
@@ -202,6 +205,14 @@ export default function WorkingGroupsPage() {
               <p className="tw-mt-4 tw-max-w-3xl tw-text-[16px] tw-leading-relaxed tw-text-slate-700 dark:tw-text-slate-300">
                 CIROH's Working Groups drive innovation and collaboration across critical research areas, from hydrologic modeling and flood inundation mapping to artificial intelligence and early career development. Discover the groups shaping the future of water research, their 2025-2026 objectives, and the leaders guiding each initiative.
               </p>
+              <div className="tw-mt-5">
+                <a href={wgIntakeFormUrl} className={styles.joinGroupButton} target='_blank' rel="noreferrer noopener">
+                  <svg className="tw-w-8 w-mr-4" viewBox="0 0 24 24" aria-hidden="true" focusable="false" role="img">
+                    <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M8.5 11a4 4 0 100-8 4 4 0 000 8zM20 8v6M23 11h-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  </svg>
+                  Join Working Groups
+                </a>
+              </div>
 
               <div className="tw-mt-6 tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-3">
                 <div className="tw-flex tw-items-center tw-gap-3 tw-rounded-2xl tw-border tw-border-slate-200/70 dark:tw-border-slate-700/70 tw-bg-white/60 dark:tw-bg-slate-900/40 tw-p-4">
