@@ -82,7 +82,7 @@ function GitHubMarkdown({ apiUrl, srcUrl, cwdUrl, trimTitle = 'false' }) {
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Failed to fetch README');
+                    throw new Error('Failed to fetch markdown');
                 }
                 return response.text();
             })
@@ -104,7 +104,7 @@ function GitHubMarkdown({ apiUrl, srcUrl, cwdUrl, trimTitle = 'false' }) {
                 // Update the state with the combined content
                 setMarkdownContent(combinedHtml);
             })
-            .catch(err => console.error('Error fetching README:', err));
+            .catch(err => console.error('Error fetching markdown:', err));
     }, [apiUrl, srcUrl, cwdUrl, trimTitle]);
 
     // Render the HTML content
