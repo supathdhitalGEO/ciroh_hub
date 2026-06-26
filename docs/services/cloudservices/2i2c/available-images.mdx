@@ -1,5 +1,5 @@
 ---
-sidebar_position: 22
+sidebar_position: 03
 title: "List of Available Images"
 description: "Explore CIROH's available image configurations."
 tags: [CIROH, Services, Cloud Services, JupyterHub, 2i2c, Google Cloud, Education]
@@ -15,9 +15,6 @@ tags: [CIROH, Services, Cloud Services, JupyterHub, 2i2c, Google Cloud, Educatio
 
 Server image configurations are options for what software environment you want your Jupyter Notebook server to run in.
 
-A full listing of these images [can be found on the GitHub wiki]("https://github.com/CIROH-UA/awi-ciroh-image/wiki/2i2c-image-list").
+import GitHubWikiPage from '@site/src/components/GitHubHandling/GitHubWikiPage';
 
-{/* 
-    Note that as of June 2026, the GitHub REST API does not support markdown output of wiki pages.
-    If and when this feature is finally provided, the "GitHubWikiPage" component should provide full support.
-*/}
+<GitHubWikiPage username="CIROH-UA" repo="awi-ciroh-image" path="2i2c-image-list" />
