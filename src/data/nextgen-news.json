@@ -58,6 +58,14 @@
 			"contributors": 1
 		},
 		{
+			"type": "NGIAB",
+			"title": "NGIAB Documentation Updated — Build Information",
+			"link": "https://github.com/CIROH-UA/NGIAB-CloudInfra/pull/487",
+			"description": "NGIAB's documentation now includes a full account of how the container is built.",
+			"release_date": "06/26/2026",
+			"contributors": 1
+		},
+		{
 			"type": "NRDS",
 			"title": "Ngen-DataStream",
 			"links": ["https://github.com/CIROH-UA/ngen-datastream/pull/364", "https://github.com/CIROH-UA/ngen-datastream/pull/366"],
