@@ -74,6 +74,14 @@
 			"contributors": 2
 		},
 		{
+			"type": "update",
+			"title": "New Events portal on Hub",
+			"link": "https://github.com/CIROH-UA/ciroh_hub/pull/125",
+			"description": "CIROH Hub now has a [dedicated Events page](/events)! This portal surfaces HydroShare collections of CIROH resources related to conferences and other events.",
+			"release_date": "06/29/2026",
+			"contributors": 1
+		},
+		{
 			"type": "blog",
 			"title": "CIROH Hub — Streamflow Kriging Blog Released",
 			"link": "https://github.com/CIROH-UA/ciroh_hub/pull/120",
@@ -87,7 +95,7 @@
 			"title": "CIROH Hub — DevCon 2026 Cyberinfrastructure Blog Released",
 			"link": "https://github.com/CIROH-UA/ciroh_hub/pull/140",
 			"description": "CIROH DevCon 2026 was made possible by a concerted effort by the CyberInfrastructure team to prepare resources and JupyterHub environments for workshop attendees. [This blog post highlights the behind-the-scenes engineering of this year's DevCon.](/blog/devcon26-infra)",
-			"release_date": "06/24/2026",
+			"release_date": "06/29/2026",
 			"contributors": 5
 		},
 		{
@@ -95,7 +103,7 @@
 			"title": "Extended Pantarhei Documentation — Now on CIROH Hub",
 			"links": "https://github.com/CIROH-UA/ciroh_hub/pull/136",
 			"description": "Extended tutorials and examples have been added to our Pantarhei documentation! [Access them here.](/docs/services/on-prem/Pantarhei/RunningJobs/)",
-			"release_date": "06/24/2026",
+			"release_date": "06/29/2026",
 			"contributors": 1
 		},
 		{
