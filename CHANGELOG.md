@@ -1,21 +1,5 @@
-All notable changes to this project will be documented in this file.
-We follow the [Semantic Versioning 2.0.0](http://semver.org/) format.
+Change notes for this repository are provided via a Docusaurus blog feed!
+This allows them to be viewed on CIROH Hub itself.
 
-
-## x.y.z - YYYY-MM-DD
-
-### Added
-
-- Lorem ipsum dolor sit amet
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
-
-### Fixed
-
-- Nothing.
+To view them, head to https://hub.ciroh.org/release-notes
+or visit the /release-notes/ folder in this repository.

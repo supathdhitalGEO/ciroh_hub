@@ -1,4 +1,118 @@
 {
+	"June 2026 Update": [
+		{
+			"type": "NGIAB",
+			"title": "Milestone: NGIAB reaches 15,000 pulls!",
+			"link": "https://ngiab.ciroh.org/",
+			"description": "The NGIAB-CloudInfra Docker image has reached 15,000 pulls! We're grateful that the CIROH community has made such effective use of the NGIAB ecosystem so far, and we hope to continue expanding NGIAB's capabilities for operations-ready modeling."
+		},
+		{
+			"type": "NGIAB",
+			"title": "NGIAB-CloudInfra",
+			"link": "https://github.com/CIROH-UA/NGIAB-CloudInfra/releases/tag/v1.9.0",
+			"description": "This release enhances the platform with model version support, Snow-17 integration, and SAC-SMA build capabilities to improve model development and execution. It also includes updated scripts for compatibility with the Podman container manager, enabling simulations without requiring root permissions, and the latest TEEHR updates, providing the latest improvements in evaluation capabilities.",
+			"release_date": "06/11/2026",
+			"version": "v1.9.0",
+			"contributors": 4
+		},
+		{
+			"type": "NGIAB",
+			"title": "NGIAB-HPCInfra",
+			"link": "https://github.com/CIROH-UA/NGIAB-HPCInfra/releases/tag/v1.4.0",
+			"description": "This release ensures parity with v1.9.0 of NGIAB-CloudInfra, notably featuring Snow-17 integration and SAC-SMA build capabilities.",
+			"release_date": "06/12/2026",
+			"version": "v1.4.0",
+			"contributors": 1
+		},
+		{
+			"type": "NGIAB",
+			"title": "NGIAB_data_preprocess",
+			"link": "https://github.com/CIROH-UA/NGIAB_data_preprocess/releases/tag/v4.9.1",
+			"description": "This month's Data Preprocessor updates include new support for Snow17 and SAC-SMA and updated support for dHBV2.0. It also includes upgrades to dependencies, stability, and documentation.",
+			"release_date": "06/05/2026",
+			"version": "v4.9.1",
+			"contributors": 2
+		},
+		{
+			"type": "TEEHR",
+			"title": "ngiab-teehr",
+			"link": "https://github.com/CIROH-UA/ngiab-teehr/pull/8",
+			"description": "NGIAB's TEEHR integration has been updated to the latest version of TEEHR, which includes Apache Iceberg integration and pulls data from the TEEHR-Cloud data warehouse, along with adding new options for multi-input configurations. Note that this update alters the format of TEEHR output folders; related tools like the Visualizer have been updated accordingly.",
+			"release_date": "05/06/2026",
+			"contributors": 1
+		},
+		{
+			"type": "NGIAB",
+			"title": "ngiab-client",
+			"links": ["https://github.com/CIROH-UA/ngiab-client/pull/59", "https://github.com/CIROH-UA/ngiab-client/pull/61"],
+			"description": "The visualizer now supports the latest expansions to the NGIAB ecosystem, including support for TEEHR's updated output directories and the Podman container manager.",
+			"release_date": "05/20/2026",
+			"contributors": 1
+		},
+		{
+			"type": "NGIAB",
+			"title": "NGIAB Website Update",
+			"link": "https://github.com/CIROH-UA/ngiab-website/pull/76",
+			"description": "The NGIAB website now features more up-to-date information on NRDS, including links to data buckets and the new QKrig datastream.",
+			"release_date": "05/23/2026",
+			"contributors": 1
+		},
+		{
+			"type": "NGIAB",
+			"title": "NGIAB Documentation Updated — Build Information",
+			"link": "https://github.com/CIROH-UA/NGIAB-CloudInfra/pull/487",
+			"description": "NGIAB's documentation now includes a full account of how the container is built.",
+			"release_date": "06/26/2026",
+			"contributors": 1
+		},
+		{
+			"type": "NRDS",
+			"title": "Ngen-DataStream",
+			"links": ["https://github.com/CIROH-UA/ngen-datastream/pull/364", "https://github.com/CIROH-UA/ngen-datastream/pull/366"],
+			"description": "The NextGen DataStream now runs USGS streamflow kriging, providing live simulation outputs for yet another datastream.",
+			"release_date": "05/22/2026",
+			"contributors": 2
+		},
+		{
+			"type": "update",
+			"title": "New Events portal on Hub",
+			"link": "https://github.com/CIROH-UA/ciroh_hub/pull/125",
+			"description": "CIROH Hub now has a [dedicated Events page](/events)! This portal surfaces HydroShare collections of CIROH resources related to conferences and other events.",
+			"release_date": "06/29/2026",
+			"contributors": 1
+		},
+		{
+			"type": "blog",
+			"title": "CIROH Hub — Streamflow Kriging Blog Released",
+			"link": "https://github.com/CIROH-UA/ciroh_hub/pull/120",
+			"description": "[This new blog post introduces kriging-based streamflow simulation, along with its integration into NRDS.](/blog/continental-scale-streamflow-kriging-ngiab-nrds)",
+			"release_date": "06/08/2026",
+			"version": "v20260608-135146",
+			"contributors": 6
+		},
+		{
+			"type": "blog",
+			"title": "CIROH Hub — DevCon 2026 Cyberinfrastructure Blog Released",
+			"link": "https://github.com/CIROH-UA/ciroh_hub/pull/140",
+			"description": "CIROH DevCon 2026 was made possible by a concerted effort by the CyberInfrastructure team to prepare resources and JupyterHub environments for workshop attendees. [This blog post highlights the behind-the-scenes engineering of this year's DevCon.](/blog/devcon26-infra)",
+			"release_date": "06/29/2026",
+			"contributors": 5
+		},
+		{
+			"type": "pantarhei",
+			"title": "Extended Pantarhei Documentation — Now on CIROH Hub",
+			"links": "https://github.com/CIROH-UA/ciroh_hub/pull/136",
+			"description": "Extended tutorials and examples have been added to our Pantarhei documentation! [Access them here.](/docs/services/on-prem/Pantarhei/RunningJobs/)",
+			"release_date": "06/29/2026",
+			"contributors": 1
+		},
+		{
+			"type": "2i2c",
+			"title": "New images on CIROH-2i2c JupyterHub",
+			"links": "https://github.com/CIROH-UA/awi-ciroh-image",
+			"description": "CIROH-2i2c JupyterHub has been updated with [new images from CIROH DevCon 2026](/docs/services/cloudservices/2i2c/available-images)! Additionally, its documentation has now been [updated with image creation instructions and image descriptions](/docs/services/cloudservices/2i2c/available-images)."
+		}
+	],
 	"April 2026 Update": [
 		{
 			"type": "update",

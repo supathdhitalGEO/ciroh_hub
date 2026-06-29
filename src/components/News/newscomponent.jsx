@@ -264,7 +264,10 @@ function getBadgeClass(type) {
     NRDS: "teal",
     blog: "rose",
     TEEHR: "cyan",
-    R20: "success"
+    R20: "success",
+    cyberinfrastructure: "success",
+    pantarhei: "success",
+    "2i2c": "success"
   };
   return badgeMap[type] || "danger";
 }
@@ -307,6 +310,7 @@ function categorizeLinks(links) {
   const prLinks = [];
 
   links.forEach((link) => {
+    console.log(link);
     if (isPRLink(link)) {
       prLinks.push({
         link,
@@ -317,6 +321,7 @@ function categorizeLinks(links) {
     }
   });
 
+  console.log({ releaseLinks, prLinks });
   return { releaseLinks, prLinks };
 }
 
