@@ -305,7 +305,7 @@ const config = {
                 {
                   type: "doc",
                   docId: "products/community-fim/fimserv/index",
-                  label: "FIM as a Service",
+                  label: "FIMserv",
                 },
                 {
                   type: "doc",
